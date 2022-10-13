@@ -11,7 +11,7 @@ and open the template in the editor.
     </head>
     <body>
         <?php
-            echo "Testing 123 321 123321123123132313"
+            echo "Testing 123"
         ?>
     </body>
 </html>
