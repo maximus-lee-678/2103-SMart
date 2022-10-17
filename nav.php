@@ -55,25 +55,33 @@
     </div>
 
     <form action="" class="login-form">
-        <div class="inputBox">
-            <a href="login.php" class="btn">Login Now</a>
-        </div>
-        <div class="inputBox">
-            <a href="register.php" class="btn">Register An Account</a>
-        </div>
+        <?php
+        //Check if user is logged in
+        if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
+            ?>
+
+            <div class="inputBox" style="font-size: 1.4rem; color: #666; margin-bottom: 15px;">
+                <P>Welcome back, <?php echo $_SESSION["fname"] . " " . $_SESSION["lname"] ?>!</P>
+            </div>
+            <div class="inputBox">
+                <a href="ViewUserProfile.php" class="btn">My Profile</a>
+            </div>
+            <div class="inputBox">
+                <a href="process_logout.php" class="btn">Logout</a>
+            </div>
+
+            <?php
+        } else {
+            ?>
+            <div class="inputBox">
+                <a href="login.php" class="btn">Login Now</a>
+            </div>
+            <div class="inputBox">
+                <a href="register.php" class="btn">Register An Account</a>
+            </div>
+            <?php
+        }
+        ?>
     </form>
-
-<!--    after login-->
-<!--    <form action="" class="login-form">
-        <div class="inputBox" style="font-size: 1.4rem; color: #666; margin-bottom: 15px;">
-            <P>Welcome back, Jia Xin!</P>
-        </div>
-        <div class="inputBox">
-            <a href="ViewUserProfile.php" class="btn">My Profile</a>
-        </div>
-        <div class="inputBox">
-            <a href="#" class="btn">Logout</a>
-        </div>
-    </form>-->
-
+    
 </header>

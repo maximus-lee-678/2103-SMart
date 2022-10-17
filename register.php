@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "head.php"; ?>
+    <?php session_start();
+    include "head.php"; ?>
     <body>
         <!-- header section starts  -->
         <?php include "nav.php"; ?>
@@ -36,7 +37,7 @@
                             <label style="width: 49%">Email: </label>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" placeholder="Enter your Phone No" class="box" maxlength="8" pattern="^[689]\d{7}$">
+                            <input required style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" placeholder="Enter your Phone No" class="box" minlength="8" maxlength="8" pattern="^[689]\d{7}$">
                             <input required style="width: 49%" id="user_email" name="user_email" type="email" placeholder="Enter your Email" class="box" maxlength="200" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
                         </div>
                     </div>
@@ -50,7 +51,7 @@
                         </div>
                         <div class="inputBox">
                             <input required style="width: 59%" id="user_address1" name="user_address1" type="text" placeholder="Enter your 1st Address" class="box" maxlength="250">
-                            <input required style="width: 39%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="1st Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$">
+                            <input required style="width: 39%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="1st Postal Code" class="box" minlength="6" maxlength="6" pattern="^[0-9]{6}$">
                         </div>
                     </div>
 
@@ -77,7 +78,7 @@
                             <p>Confirm Password: </p>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 100%" class="box" type="password" id="pwd_confirm" name="pwd_confirm" maxlength="10" placeholder="Confirm Password">
+                            <input required style="width: 100%" class="box" type="password" id="pwd_confirm" name="user_password_confirm" maxlength="10" placeholder="Confirm Password">
                         </div>
                     </div>
 

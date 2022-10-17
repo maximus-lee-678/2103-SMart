@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "head.php"; ?>
+    <?php session_start();
+    include "head.php"; ?>
     <body>
         <!-- header section starts -->
-        <?php include "nav.php"; ?>
+<?php include "nav.php"; ?>
         <!-- header section ends -->
 
         <section class="home">
@@ -90,7 +91,7 @@
 
         </section>-->
 
-        <?php include "footer.php"; ?>
+<?php include "footer.php"; ?>
 
     </body>
 </html>

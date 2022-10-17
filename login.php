@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "head.php"; ?>
+    <?php session_start();
+    include "head.php"; ?>
     <body>
         <!-- header section starts  -->
         <?php include "nav.php"; ?>
@@ -31,7 +32,7 @@
                         <p>Password: </p>
                     </div>
                     <div class="inputBox">
-                        <input required id="pwd" name="pwd" type="password" placeholder="Enter your password" class="box" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
+                        <input required id="user_password" name="user_password" type="password" placeholder="Enter your password" class="box" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
                     </div>
 
 
@@ -68,7 +69,7 @@
         </section>
 
         <!-- footer section starts  -->
-        <?php include "footer.php"; ?>
+<?php include "footer.php"; ?>
         <!-- footer section ends -->
 
 
