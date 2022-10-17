@@ -10,8 +10,9 @@ and open the template in the editor.
         <title></title>
     </head>
     <body>
-        <?php
-            echo "Testing 123"
-        ?>
+        <p>to try the test connection, need to input password first in try.php file.</p>
+        <a href="home.php">Home</a>
+        <br>
+        <a href="try.php">test connection</a>
     </body>
 </html>
