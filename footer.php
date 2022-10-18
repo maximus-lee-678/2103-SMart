@@ -11,23 +11,30 @@
 <!--            <img src="image/payment.png" class="payment" alt="">-->
         </div>
 
-        <!-- after login -->
-<!--        <div class="box">
-            <h3>extra links</h3>
-            <a href="#"> <i class="fas fa-arrow-right"></i> order history </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> my favorite </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> my wishlist </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> my account </a>
-        </div>-->
-        
-        <!-- before login -->
-        <div class="box">
-            <h3>extra links</h3>
-            <a href="login.php"> <i class="fas fa-arrow-right"></i> order history </a>
-            <a href="login.php"> <i class="fas fa-arrow-right"></i> my favorite </a>
-            <a href="login.php"> <i class="fas fa-arrow-right"></i> my wishlist </a>
-            <a href="login.php"> <i class="fas fa-arrow-right"></i> my account </a>
-        </div>
+        <?php
+        //Check if user is logged in
+        if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
+            ?>
+            <div class="box">
+                <h3>extra links</h3>
+                <a href="#"> <i class="fas fa-arrow-right"></i> order history </a>
+                <a href="#"> <i class="fas fa-arrow-right"></i> my cart </a>
+                <a href="#"> <i class="fas fa-arrow-right"></i> my wishlist </a>
+                <a href="ViewUserProfile.php"> <i class="fas fa-arrow-right"></i> my account </a>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="box">
+                <h3>extra links</h3>
+                <a href="login.php"> <i class="fas fa-arrow-right"></i> order history </a>
+                <a href="login.php"> <i class="fas fa-arrow-right"></i> my favorite </a>
+                <a href="login.php"> <i class="fas fa-arrow-right"></i> my wishlist </a>
+                <a href="login.php"> <i class="fas fa-arrow-right"></i> my account </a>
+            </div>
+            <?php
+        }
+        ?>
 
         <div class="box">
             <h3>Social Media</h3>
@@ -37,7 +44,7 @@
             <a href="#"> <i class="fab fa-instagram"></i> instagram </a>
         </div>
 
-       
+
     </div>
 
 </section>

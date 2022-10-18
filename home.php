@@ -1,10 +1,11 @@
-<!DOCTYPE html>
 <html lang="en">
-    <?php session_start();
-    include "head.php"; ?>
+    <?php
+    session_start();
+    include "head.php";
+    ?>
     <body>
         <!-- header section starts -->
-<?php include "nav.php"; ?>
+        <?php include "nav.php"; ?>
         <!-- header section ends -->
 
         <section class="home">
@@ -60,38 +61,7 @@
 
         </section>
 
-<!--        <section class="banner-container">
-
-            <div class="banner">
-                <img src="image/banner-1.jpg" alt="">
-                <div class="content">
-                    <span>limited sales</span>
-                    <h3>upto 50% off</h3>
-                    <a href="#" class="btn">shop now</a>
-                </div>
-            </div>
-
-            <div class="banner">
-                <img src="image/banner-2.jpg" alt="">
-                <div class="content">
-                    <span>limited sales</span>
-                    <h3>upto 50% off</h3>
-                    <a href="#" class="btn">shop now</a>
-                </div>
-            </div>
-
-            <div class="banner">
-                <img src="image/banner-3.jpg" alt="">
-                <div class="content">
-                    <span>limited sales</span>
-                    <h3>upto 50% off</h3>
-                    <a href="#" class="btn">shop now</a>
-                </div>
-            </div>
-
-        </section>-->
-
-<?php include "footer.php"; ?>
+        <?php include "footer.php"; ?>
 
     </body>
 </html>

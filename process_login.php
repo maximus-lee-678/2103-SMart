@@ -78,23 +78,50 @@ function authenticateUser() {
 }
 ?>
 
-<html lang="en">
+<!--<html lang="en">
+    //<?php include "head.php"; ?>
+    <body>
+        //<?php
+//        //Success handling
+//        if ($success) {
+////            echo "<div class='section-header text-center'><h2>Login successful!</h2>";
+////            echo "<form action='home.php' method='get'><button type='submit' class='btn btn-success'>Start Shopping!</button></form></div>";
+////            echo "<p>Welcome back, " . $fname . " " . $lname . ".</p>";
+//        } else {
+//            echo "<div class='section-header text-center'><h2>Oops!</h2>";
+//            echo "<p>" . $errorMsg . "</p>";
+//            echo "<form action='login.php' method='get'><button type='submit' class='btn btn-danger'>Return to Log In</button></form></div>";
+//        }
+//        
+?> 
+         header section starts  
+        //<?php include "nav.php"; ?>
+         header section ends 
+    </body>
+</html>-->
+
+
+<html>
+    <title>Login Results</title>
     <?php include "head.php"; ?>
     <body>
-        <?php
-        //Success handling
-        if ($success) {
-            echo "<div class='section-header text-center'><h2>Login successful!</h2>";
-            echo "<p>Welcome back, " . $fname . " " . $lname . ".</p>";
-            echo "<form action='home.php' method='get'><button type='submit' class='btn btn-success'>Start Shopping!</button></form></div>";
-        } else {
-            echo "<div class='section-header text-center'><h2>Oops!</h2>";
-            echo "<p>" . $errorMsg . "</p>";
-            echo "<form action='login.php' method='get'><button type='submit' class='btn btn-danger'>Return to Log In</button></form></div>";
-        }
-        ?> 
-        <!-- header section starts  -->
         <?php include "nav.php"; ?>
-        <!-- header section ends -->
+        <main class = "resultContainer">
+            <div class ="content">
+                <?php
+                if ($success) {
+                    echo "<h2>Login successful!</h2>";
+                    echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";
+                    echo "<meta http-equiv=\"refresh\" content=\"3;URL=home.php\">";
+                } else {
+                    echo "<h2>Oops!</h2>";
+                    echo "<h4>The following errors were detected:</h4>";
+                    echo "<p>" . $errorMsg . "</p>";
+                    echo "<a href='login.php' class='btn btn-danger'>Return to Login</a>";
+                }
+                ?>
+                <br>
+            </div>
+        </main>
     </body>
 </html>

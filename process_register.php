@@ -86,7 +86,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         echo "<p>" . $_POST["user_password"] . "|||" . $_POST["user_password_confirm"] . "|||" . $_POST["pwd_confirm"] . " </p>";
         $errorMsg .= "Password is required.<br>";
         $success = false;
-    } elseif (!$number || !$uppercase || !$lowercase || $special || strlen($_POST["user_password"]) < 8) {  //Check if contain at least one number, uppercase and lowercase letter, and at least 8 characters.
+    } elseif (!$number || !$uppercase || !$lowercase || !$special || strlen($_POST["user_password"]) < 8) {  //Check if contain at least one number, uppercase and lowercase letter, and at least 8 characters.
         $errorMsg .= "Password must contain at least one number, uppercase and lowercase letter, and at least 8 characters.<br>";
         $success = false;
     } elseif ($_POST["user_password"] != $_POST["user_password_confirm"]) {     //Check if password confirmation matches password
@@ -196,25 +196,28 @@ function checkIfUnique() {
 }
 ?>
 
-
-<html lang="en">
+<html>
+    <title>Registration Results</title>
     <?php include "head.php"; ?>
     <body>
-        <?php
-        //Success handling
-        if ($success) {
-            echo "<div><h2>Your registration is successful!</h2>";
-            echo "<p>Thank you for signing up, " . $fname . " " . $lname . ".</p>";
-            echo "<form action='login.php' method='get'><button type='submit' class='btn btn-success'>Log-in</button></form></div>";
-        } else {
-            echo "<div><h2>Oops!</h2>";
-            echo "<h2>The following input errors were detected:</h2>";
-            echo "<p>" . $errorMsg . "</p>";
-            echo "<a href='register.php'><button type='button' class='btn btn-danger'>Return to Sign Up</button></a></div>";
-        }
-        ?>
-        <!-- header section starts  -->
         <?php include "nav.php"; ?>
-        <!-- header section ends -->
+        <main class = "resultContainer">
+            <div class ="content">
+                <?php
+                if ($success) {
+                    echo "<h2>Your registration is successful!</h2>";
+                    echo "<h4>Thank you for signing up, " . $fname . " " . $lname . ".</h4>";
+                    echo "<p>Redirecting you to login page.</p>";
+                    echo "<meta http-equiv=\"refresh\" content=\"3;URL=login.php\">";
+                } else {
+                    echo "<h2>Oops!</h2>";
+                    echo "<h4>The following input errors were detected:</h4>";
+                    echo "<p>" . $errorMsg . "</p>";
+                    echo "<a href='Registration.php' class='btn btn-danger'>Return to Sign Up</a>";
+                }
+                ?>
+                <br>
+            </div>
+        </main>
     </body>
 </html>

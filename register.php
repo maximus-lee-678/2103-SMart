@@ -1,7 +1,9 @@
-<!DOCTYPE html>
 <html lang="en">
-    <?php session_start();
-    include "head.php"; ?>
+    <<title>Register</title>
+    <?php
+    session_start();
+    include "head.php";
+    ?>
     <body>
         <!-- header section starts  -->
         <?php include "nav.php"; ?>

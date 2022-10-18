@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    <title>Shop</title>
     <?php
     session_start();
     include "head.php";
@@ -8,7 +8,7 @@
     <script src="js/ajax-shop.js" type="text/javascript"></script>
     <body>
         <!-- header section starts  -->
-<?php include "nav.php"; ?>
+        <?php include "nav.php"; ?>
         <!-- header section ends -->
         <div class="heading">
             <h1>our shop</h1>
@@ -50,7 +50,7 @@
             <h1 class="title"> All <span>products</span> </h1>
 
             <div class="box-container" id = "product-list">
-                
+
                 <!-- 
                                 <div class="box">
                                     <div class="icons">
@@ -79,6 +79,6 @@
             <div class = "product-list-tail" id = "0" style='display: none;'></div>
 
         </section>
-<?php include "footer.php"; ?>
+        <?php include "footer.php"; ?>
     </body>
 </html>

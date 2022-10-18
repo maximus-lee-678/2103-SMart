@@ -50,7 +50,7 @@ function display_data($displayData) {
         $output = "";
         $lastId = 0;
         foreach ($displayData as $data) {
-            $output .= '<div class="box" id="'. $data['id'] .'">
+            $output .= '<div class="box" id="' . $data['id'] . '">
                             <div class="icons">
                                 <a href="#" class="fas fa-shopping-cart"></a>
                                 <a href="#" class="fas fa-heart"></a>
@@ -78,4 +78,5 @@ function display_data($displayData) {
     }
     return;
 }
+
 ?>

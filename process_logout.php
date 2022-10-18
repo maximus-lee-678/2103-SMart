@@ -15,24 +15,28 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true) {
 }
 ?>
 
-<html lang="en">
+
+<html>
+    <title>Login Results</title>
     <?php include "head.php"; ?>
     <body>
-        <?php
-        //Success handling
-        if ($success) {
-            echo "<div class='section-header text-center'><h2>Logout successful!</h2>";
-            echo "<p>See you soon, $fname $lname.</p>";
-            echo "<form action='home.php' method='get'><button type='submit' class='btn btn-success'>Return to Home</button></form></div>";
-        } else {
-            echo "<div class='section-header text-center'><h2>Oops!</h2>";
-            echo "<h2>The following errors were detected:</h2>";
-            echo "<p>You are not logged in!</p>";
-            echo "<form action='home.php' method='get'><button type='submit' class='btn btn-danger'>Return to Home</button></form></div>";
-        }
-        ?> 
-        <!-- header section starts  -->
         <?php include "nav.php"; ?>
-        <!-- header section ends -->
+        <main class = "resultContainer">
+            <div class="content">
+                <?php
+                if ($success) {
+                    echo "<h2>Logout successful!</h2>";
+                    echo "<h4>See you soon, $fname $lname.</h4>";
+                    echo "<a href='Home.php' class='outBtn'>Return to home</a>";
+                } else {
+                    echo "<h2>Oops!</h2>";
+                    echo "<h4> You're not logged in! </h4>";
+                    echo "<p>" . $errorMsg . "</p>";
+                    echo "<meta http-equiv=\"refresh\" content=\"3;URL=login.php\">";
+                }
+                ?>
+                <br>
+            </div>
+        </main>
     </body>
 </html>

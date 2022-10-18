@@ -1,9 +1,11 @@
 <html lang="en">
-    <?php session_start();
-    include "head.php"; ?>
+    <?php
+    session_start();
+    include "head.php";
+    ?>
     <body>
         <!-- header section starts  -->
-<?php include "nav.php"; ?>
+        <?php include "nav.php"; ?>
 
         <div class="heading">
             <h1>our shop</h1>
@@ -40,6 +42,6 @@
                 ?>                
             </div>
         </section>
-<?php include "footer.php"; ?>
+        <?php include "footer.php"; ?>
     </body>
 </html>
