@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php session_start();
+
+    <?php
+    session_start();
     include "head.php";
-    ?>
+    ?>    
+    <script src="js/ajax-shop.js" type="text/javascript"></script>
     <body>
         <!-- header section starts  -->
-        <?php include "nav.php"; ?>
+<?php include "nav.php"; ?>
         <!-- header section ends -->
         <div class="heading">
             <h1>our shop</h1>
@@ -16,28 +19,28 @@
             <h1 class="title"> our <span>category</span> <a href="category.php">view all >></a> </h1>
             <div class="box-container">
 
-                <a href="#" class="box">
-                    <img src="image/cat8.png" alt="">
+                <a href="shop.php?category=fruit-vegetable" class="box">
+                    <img src="image/category/fruit-vegetable.png" alt="">
                     <h3>Fruits & Vegetables</h3>
                 </a>
 
-                <a href="#" class="box">
-                    <img src="image/cat10.png" alt="">
+                <a href="shop.php?category=meat-seafood" class="box">
+                    <img src="image/category/meat-seafood.png" alt="">
                     <h3>Meat & Seafood</h3>
                 </a>
 
-                <a href="#" class="box">
-                    <img src="image/cat4.png" alt="">
+                <a href="shop.php?category=dairy-chilled-frozen" class="box">
+                    <img src="image/category/dairy-chilled-frozen.png" alt="">
                     <h3>Dairy, Chilled & Frozen</h3>
                 </a>
 
-                <a href="#" class="box">
-                    <img src="image/cat9.png" alt="">
+                <a href="shop.php?category=health-beauty" class="box">
+                    <img src="image/category/health-beauty.png" alt="">
                     <h3>Health & Beauty</h3>
                 </a>
 
-                <a href="#" class="box">
-                    <img src="image/cat13.png" alt="">
+                <a href="shop.php?category=rice-noodles-pasta" class="box">
+                    <img src="image/category/rice-noodles-pasta.png" alt="">
                     <h3>Rice, Noodles & Pasta</h3>
                 </a>
             </div>
@@ -46,52 +49,9 @@
         <section class="products">
             <h1 class="title"> All <span>products</span> </h1>
 
-            <div class="box-container">
-
-                <?php
-                $config = parse_ini_file('../../private/db-config.ini');
-                $conn = new mysqli($config['servername'], $config['username'],
-                        $config['password'], $config['dbname']);
-                // Check connection    
-                if ($conn->connect_error) {
-                    echo "Connection failed: " . $conn->connect_error;
-                } else {
-                    $result = $conn->query("SELECT * FROM Product WHERE active = 1 ORDER BY RAND() LIMIT 100");
-
-                    //Check if there are any results
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            ?>
-                            <div class="box">
-                                <div class="icons">
-                                    <a href="#" class="fas fa-shopping-cart"></a>
-                                    <a href="#" class="fas fa-heart"></a>
-                                    <a href="#" class="fas fa-eye"></a>
-                                </div>
-                                <div class="image">
-                                    <img src="<?php echo $row['image_url'] ?>" alt="">
-                                </div>
-                                <div class="content">
-                                    <h3><?php echo $row['name'] ?></h3>
-                                    <div class="price">$<?php echo $row['price'] ?></div>
-                                    <div class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <?php
-                        }
-                    } else {
-                        echo "Sorry nothing to show!";
-                    }
-                }
-                ?>
-                <!--
+            <div class="box-container" id = "product-list">
+                
+                <!-- 
                                 <div class="box">
                                     <div class="icons">
                                         <a href="#" class="fas fa-shopping-cart"></a>
@@ -116,6 +76,8 @@
                 -->
 
             </div>
+            <div class = "product-list-tail" id = "0" style='display: none;'></div>
+
         </section>
 <?php include "footer.php"; ?>
     </body>
