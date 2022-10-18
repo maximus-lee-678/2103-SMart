@@ -27,7 +27,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true) {
                 if ($success) {
                     echo "<h2>Logout successful!</h2>";
                     echo "<h4>See you soon, $fname $lname.</h4>";
-                    echo "<a href='Home.php' class='outBtn'>Return to home</a>";
+                    echo "<meta http-equiv=\"refresh\" content=\"3;URL=home.php\">";
                 } else {
                     echo "<h2>Oops!</h2>";
                     echo "<h4> You're not logged in! </h4>";
