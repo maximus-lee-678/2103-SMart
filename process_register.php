@@ -81,7 +81,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     $number = preg_match('@[0-9]@', $_POST["user_password"]);         //Check if there are numbers
     $uppercase = preg_match('@[A-Z]@', $_POST["user_password"]);      //Check if there are uppercase
     $lowercase = preg_match('@[a-z]@', $_POST["user_password"]);      //Check if there are lowercase
-    $special = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $_POST["user_password"]);
+    $special = preg_match('/[\'^£$%&!*()}{@#~?><>,|=_+¬-]/', $_POST["user_password"]);
     if (empty($_POST["user_password"]) || empty($_POST["user_password_confirm"])) {
         echo "<p>" . $_POST["user_password"] . "|||" . $_POST["user_password_confirm"] . "|||" . $_POST["pwd_confirm"] . " </p>";
         $errorMsg .= "Password is required.<br>";
@@ -213,7 +213,7 @@ function checkIfUnique() {
                     echo "<h2>Oops!</h2>";
                     echo "<h4>The following input errors were detected:</h4>";
                     echo "<p>" . $errorMsg . "</p>";
-                    echo "<a href='Registration.php' class='btn btn-danger'>Return to Sign Up</a>";
+                    echo "<a href='register.php' class='btn btn-danger'>Return to Sign Up</a>";
                 }
                 ?>
                 <br>
