@@ -10,13 +10,11 @@
         <?php include "nav.php"; ?>
         <!-- header section ends -->
 
-
         <section class="contact" style="margin-top: 100px; margin-bottom: 20px;">
-
 
             <div class="row">
 
-                <img src="image/loginpicture1.jpg" alt="Login and register Image" class="map" style="width: 50%;">
+                <img src="image/loginpicture1.jpg" alt="Login and register Image" class="img1">
 
                 <form action="process_login.php" class="login-form" method="post" name="myLoginForm">
                     <h3>LOGIN FORM</h3>
@@ -32,6 +30,7 @@
                     <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                         <p>Password: </p>
                     </div>
+
                     <div class="inputBox">
                         <input required id="user_password" name="user_password" type="password" placeholder="Enter your password" class="box" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
                     </div>
@@ -56,15 +55,13 @@
                     <div class="inputBox" style="font-size: 1.4rem; margin-top: 20px;">
                         <p>forget password? <a href="#" style="color: #bac34e;">click here</a></p>
                     </div>
+
                     <div class="inputBox" style="font-size: 1.4rem;">
                         <p>don't have an account? <a href="register.php" style="color: #bac34e;">create one</a></p>
                     </div>
                 </form>
-
             </div>
-
         </section>
-
         <!-- footer section starts  -->
         <?php include "footer.php"; ?>
         <!-- footer section ends -->

@@ -53,7 +53,6 @@
                         <img src="image/home-img-4.png" alt="">
                     </div>
                 </div>
-
             </div>
 
             <div id="next-slide" class="fas fa-angle-right" onclick="next()"></div>

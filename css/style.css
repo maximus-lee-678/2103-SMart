@@ -88,6 +88,7 @@ section {
     color: #fff;
     font-size: 1.7rem;
     cursor: pointer;
+    border-radius: 4px;
 }
 
 .btn:hover {
@@ -239,7 +240,8 @@ section {
 }
 
 .header .shopping-cart .box .content h3 {
-    font-size: 1.7rem;
+    margin-right: 40px;
+    font-size: 1.5rem;
     padding-bottom: .5rem;
     color: #222;
 }
@@ -264,6 +266,7 @@ section {
 }
 
 .header .shopping-cart .btn {
+    border-radius: 4px;
     text-align: center;
     width: 100%;
 }
@@ -322,6 +325,7 @@ section {
 }
 
 .header .login-form .btn {
+    border-radius: 4px;
     margin: 1rem 0;
     width: 100%;
     text-align: center;
@@ -342,6 +346,7 @@ section {
 }
 
 #menu-btn {
+    border-radius: 4px;
     display: none;
 }
 
@@ -723,11 +728,25 @@ section {
     resize: none;
 }
 
-.contact .row .map {
+.contact .row .img1 {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 40rem;
     flex: 1 1 40rem;
-    width: 100%;
+    /*width: 100%;*/
+    width: 50%; 
+    height: 100%; 
+    margin-top: 120px;
+}
+
+.contact .row .img2 {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 40rem;
+    flex: 1 1 40rem;
+    /*width: 100%;*/
+    width: 50%; 
+    height: 100%; 
+    margin-top: 18%; 
+    margin-bottom: 10%;
 }
 
 .footer {
@@ -821,6 +840,7 @@ section {
 
 @media (max-width: 768px) {
     #menu-btn {
+        border-radius: 4px;
         display: inline-block;
     }
     .header .search-form {
@@ -888,7 +908,6 @@ section {
 
 .resultContainer h2 {
     font-size: 5rem;
-    padding-top: 5px;
 }
 
 .resultContainer h4 {
@@ -898,13 +917,14 @@ section {
 
 .resultContainer p {
     font-size: 1.5rem;
-    padding: 5px
+    padding: 5px;
 }
 
 .resultContainer .btn {
     color: white;
     border-radius: 8px;
     background-color: red;
+    padding: 5px;
 }
 
 .resultContainer .outBtn {
@@ -938,6 +958,7 @@ section {
     cursor: pointer;
     transition: 0.3s;
     font-size: 17px;
+    border-radius: 4px;
 }
 
 /* Change background color of buttons on hover */

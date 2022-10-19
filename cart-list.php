@@ -30,7 +30,7 @@ if (isset($_SESSION["id"])) {
 
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            $captionText = "Retrieved " . $result->num_rows . " rows.";
+//            $captionText = "Retrieved " . $result->num_rows . " rows.";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo '<div class="box" id="cartid_' . $row["prod_id"] . '">
                     <i class="fas fa-times remove-from-cart"></i>
@@ -42,7 +42,7 @@ if (isset($_SESSION["id"])) {
                         <span class="price">$' . $row["price"] . '</span>
                     </div>
                 </div>';
-                
+
                 $total_cost += $row["quantity"] * $row["price"];
             }
 
@@ -56,8 +56,7 @@ if (isset($_SESSION["id"])) {
     $conn->close();
     echo "<caption>" . $captionText . "</caption>";
 } else {
-    echo "Please login first before using of cart!";           
-            
+    echo '<div class ="cartBox" style="font-size: 1.4rem; color: #666;">Please login first before using of cart!</div>';
 }
 ?>
 

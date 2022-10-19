@@ -37,9 +37,11 @@
             <div class="inputBox" style="font-size: 1.4rem; color: #666; margin-bottom: 15px;">
                 <P>Welcome back, <?php echo $_SESSION["fname"] . " " . $_SESSION["lname"] ?>!</P>
             </div>
+            
             <div class="inputBox">
                 <a href="ViewUserProfile.php" class="btn">My Profile</a>
             </div>
+            
             <div class="inputBox">
                 <a href="process_logout.php" class="btn">Logout</a>
             </div>
@@ -50,6 +52,7 @@
             <div class="inputBox">
                 <a href="login.php" class="btn">Login Now</a>
             </div>
+            
             <div class="inputBox">
                 <a href="register.php" class="btn">Register An Account</a>
             </div>

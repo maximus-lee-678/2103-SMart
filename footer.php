@@ -43,11 +43,7 @@
             <a href="#"> <i class="fab fa-youtube"></i> youtube </a>
             <a href="#"> <i class="fab fa-instagram"></i> instagram </a>
         </div>
-
-
     </div>
-
 </section>
-
 
 <!-- footer section ends -->

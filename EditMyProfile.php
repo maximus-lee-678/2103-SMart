@@ -95,11 +95,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
                         <div class="inputBox">
                             <input type="submit" style="width: 98%" name="updateaddress" value="Update" class="btn">
                         </div>
@@ -122,7 +117,6 @@
                                 <input required style="width: 100%" id="user_password" name="user_password" type="password" placeholder="Enter your Password" class="box" maxlength="10" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
                             </div>
                         </div>
-
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
@@ -215,9 +209,7 @@
                 </div>
             </div>
 
-
         </section>
-
 
         <br><br><br><br><br><br><br><br><br><br>
         <br><br><br><br><br><br><br><br><br><br>

@@ -8,7 +8,7 @@
         <?php include "nav.php"; ?>
 
         <div class="heading">
-            <h1>our shop</h1>
+            <h1>Categories</h1>
             <p> <a href="shop.php">shop >></a> category </p>
         </div>
 

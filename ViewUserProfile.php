@@ -24,15 +24,13 @@
 
             <div id="myprofile" class="tabcontent">
                 <div class="row">
-
-
                     <form action="EditMyProfile.php" class="register-form" method="post" name="myUserProfileForm" style="">
+                        
                         <h3>My User Profile</h3>
 
                         <div style="margin-bottom: 15px;">
                             <img src="image/blog-2.jpg" alt="Girl in a jacket" width="200" height="200" style="margin-top: 20px; margin-bottom: 20px;">
                         </div>
-
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
@@ -65,11 +63,9 @@
                             </div>
                         </div>
 
-
                         <div class="inputBox">
                             <input type="submit" style="width: 98%" name="editmyprofile" value="Edit My Profile" class="btn">
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -77,9 +73,8 @@
             <div id="editaccount" class="tabcontent">
                 <div class="row">
                     <form action="#" class="register-form" method="post" name="mynewaddressForm">
-
                         <h3>Add / Edit Address</h3>
-
+                        
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 59%">Address: </label>
@@ -102,7 +97,7 @@
             <div id="changepassword" class="tabcontent">
                 <div class="row">
                     <form action="process_UpdatePassword.php" class="register-form" method="post" name="myChangePasswordForm">
-
+                        
                         <h3>Change Password</h3>
 
                         <div style="margin-bottom: 15px;">
@@ -113,7 +108,6 @@
                                 <input required style="width: 100%" id="user_password" name="user_password" type="password" placeholder="Enter your Password" class="box" maxlength="10" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
                             </div>
                         </div>
-
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
@@ -156,7 +150,6 @@
                             </select>
                         </div>
 
-
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <p>Owner: </p>
@@ -165,7 +158,6 @@
                                 <input required style="width: 100%" id="user_owner" name="user_owner" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
                             </div>
                         </div>
-
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
@@ -184,7 +176,6 @@
                                 <input required style="width: 98%; font-size: 1.4rem; color: #666;" id="user_cardexpirydate" name="user_cardexpirydate" type="date" placeholder="Enter your Expiry Date" class="box">
                             </div>
                         </div>
-
 
                         <div class="inputBox">
                             <input type="submit" style="width: 98%" name="addnewcard" value="Add" class="btn">
