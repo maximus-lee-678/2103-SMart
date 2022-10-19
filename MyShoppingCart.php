@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <title>Login</title>
+    <title>My Shopping Cart/title>
     <?php
     session_start();
     include "head.php";
@@ -15,7 +15,7 @@
         
         <section class="myShoppingCart cartcontainter">
 
-    <h1 class="title"><span>My Shopping Cart</span> <a href="#">Empty Cart</a> </h1>
+    <h1 class="carttitle"><span>My Shopping Cart</span> <a href="#">Empty Cart</a> </h1>
 
     <div class="box-container">
 
