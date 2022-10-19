@@ -47,7 +47,7 @@ if (isset($_SESSION["id"])) {
             }
 
             echo '<h3 class="total"> total : <span>$' . $total_cost . '</span> </h3>
-                <a href="#" class="btn">checkout cart</a>';
+                <a href="MyShoppingCart.php" class="btn">View My Cart</a>';
         } else {
             $captionText = "Cart is empty!";
         }
@@ -56,7 +56,8 @@ if (isset($_SESSION["id"])) {
     $conn->close();
     echo "<caption>" . $captionText . "</caption>";
 } else {
-    echo "Login to make use of cart!";
+    echo "Please login first before using of cart!";           
+            
 }
 ?>
 

@@ -12,6 +12,11 @@
 
     <!-- custom css file link  -->
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- cart css -->
+    <link rel="stylesheet" href="css/cart.css">
+    
+    
 
     <!-- custom css file link  -->
     <script defer src="js/script.js"></script>

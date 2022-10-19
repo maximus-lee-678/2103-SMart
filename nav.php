@@ -1,6 +1,6 @@
 <header class="header">
 
-    <a href="try.php" class="logo"> <i class="fas fa-shopping-basket"></i> S-Mart </a>
+    <a href="home.php" class="logo"> <i class="fas fa-shopping-basket"></i> S-Mart </a>
 
     <nav class="navbar">
         <a href="home.php">home</a>

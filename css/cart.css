@@ -1,0 +1,145 @@
+
+
+
+.myShoppingCart .box-container {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: minmax(30rem, 1fr)[auto-fit];
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    gap: 1.5rem;
+}
+
+.myShoppingCart .box-container .box {
+    height: 25rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.myShoppingCart .box-container .box img {
+    height: 100%;
+    width: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+
+.myShoppingCart .box-container .box:hover img {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+.myShoppingCart .box-container .box:hover .icons {
+    bottom: 0;
+}
+
+.myShoppingCart .box-container .box .icons {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1.5rem 0;
+    position: absolute;
+    bottom: -6rem;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.myShoppingCart .box-container .box .icons a {
+    font-size: 2.5rem;
+    color: #fff;
+    margin: 0 1.5rem;
+}
+
+.myShoppingCart .box-container .box .icons a:hover {
+    color: #bac34e;
+}
+
+
+
+
+
+.title {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    padding: 1.2rem 0;
+    border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
+    color: #222;
+}
+
+.title span {
+    color: #B5838D;
+    padding-left: .7rem;
+}
+
+.title a {
+    margin-left: auto;
+    color: #666;
+    font-size: 1.5rem;
+}
+
+.title a:hover {
+    color: #B5838D;
+}
+
+
+
+
+
+
+table {
+    border: 1px solid #DDD;
+    width: 100%;
+    font-size: 1.4rem;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #DDD;
+    vertical-align: middle;
+}
+
+tr:hover {background-color: #F5E1FD;}
+
+
+.imagesize {
+    width: 150px;
+    height: 150px;
+}
+
+.iconsize {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+
+/*for quantity text box*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: show;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+.cartcontainter {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+
+
+.numbertextbox {
+    text-align:center;
+}
+
+

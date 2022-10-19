@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     $(document).on("click", '.add-to-cart', function () {
         if (loggedIn) {
-            var answer = confirm('u sure u want to add to cart?');
+            var answer = confirm('Add item to Cart? Click Confirm to continue.');
 
             if (answer) {
                 $.ajax({
@@ -35,7 +35,7 @@ $(document).ready(function () {
     $(document).on("click", '.remove-from-cart', function () {
         console.log($($(this).parent()).attr('id').slice(7));
         if (loggedIn) {
-            var answer = confirm('u sure u want to delete dis?');
+            var answer = confirm('Delete this item? Click confirm to continue.');
 
             if (answer) {
                 $.ajax({
