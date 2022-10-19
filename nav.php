@@ -20,38 +20,9 @@
     </form>
 
     <div class="shopping-cart">
-        <div class="box">
-            <i class="fas fa-times"></i>
-            <img src="image/cart-1.jpg" alt="">
-            <div class="content">
-                <h3>organic food</h3>
-                <span class="quantity">1</span>
-                <span class="multiply">x</span>
-                <span class="price">$18.99</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class="fas fa-times"></i>
-            <img src="image/cart-2.jpg" alt="">
-            <div class="content">
-                <h3>organic food</h3>
-                <span class="quantity">1</span>
-                <span class="multiply">x</span>
-                <span class="price">$18.99</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class="fas fa-times"></i>
-            <img src="image/cart-3.jpg" alt="">
-            <div class="content">
-                <h3>organic food</h3>
-                <span class="quantity">1</span>
-                <span class="multiply">x</span>
-                <span class="price">$18.99</span>
-            </div>
-        </div>
-        <h3 class="total"> total : <span>56.97</span> </h3>
-        <a href="#" class="btn">checkout cart</a>
+        <?php
+        include "cart-list.php";
+        ?> 
     </div>
 
     <form action="" class="login-form">
@@ -59,6 +30,9 @@
         //Check if user is logged in
         if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
             ?>
+            <script type='text/javascript'>
+                var loggedIn = true; 
+            </script>
 
             <div class="inputBox" style="font-size: 1.4rem; color: #666; margin-bottom: 15px;">
                 <P>Welcome back, <?php echo $_SESSION["fname"] . " " . $_SESSION["lname"] ?>!</P>

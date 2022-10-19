@@ -15,4 +15,7 @@
 
     <!-- custom css file link  -->
     <script defer src="js/script.js"></script>
+    
+     <!-- cart functionality js  -->
+    <script defer src="js/cart.js"></script>
 </head>

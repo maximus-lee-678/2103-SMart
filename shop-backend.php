@@ -52,7 +52,7 @@ function display_data($displayData) {
         foreach ($displayData as $data) {
             $output .= '<div class="box" id="' . $data['id'] . '">
                             <div class="icons">
-                                <a href="#" class="fas fa-shopping-cart"></a>
+                                <a href="#" class="fas fa-shopping-cart add-to-cart"></a>
                                 <a href="#" class="fas fa-heart"></a>
                                 <a href="#" class="fas fa-eye"></a>
                             </div>
