@@ -35,6 +35,9 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     } elseif (strlen($_POST["user_phonenum"]) != 8) {   //Check if len of phone is 8
         $errorMsg .= "Phone number must be 8 digits long.<br>";
         $success = false;
+    } elseif (!is_numeric($_POST["user_phonenum"])) {   //Check if int
+        $errorMsg .= "Phone number must be only contain numbers.<br>";
+        $success = false;
     } else {
         $phone = sanitize_input($_POST["user_phonenum"]);
     }
@@ -73,11 +76,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     } elseif (strlen($_POST["user_postalcode1"]) != 6) {   //Check if len of postal is 6
         $errorMsg .= "Postal code must be 6 digits long.<br>";
         $success = false;
+    } elseif (!is_numeric($_POST["user_postalcode1"])) {   //Check if lint
+        $errorMsg .= "Postal code must be only contain numbers.<br>";
+        $success = false;
     } else {
         $postal = sanitize_input($_POST["user_postalcode1"]);
     }
 
-    //Password (regex sucks)
+//Password (regex sucks)
     $number = preg_match('@[0-9]@', $_POST["user_password"]);         //Check if there are numbers
     $uppercase = preg_match('@[A-Z]@', $_POST["user_password"]);      //Check if there are uppercase
     $lowercase = preg_match('@[a-z]@', $_POST["user_password"]);      //Check if there are lowercase
@@ -96,7 +102,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $pwd_hashed = password_hash($_POST["user_password"], PASSWORD_DEFAULT);
     }
 
-    //DB handling
+//DB handling
     if ($success) {
         checkIfUnique();
     }
@@ -185,7 +191,7 @@ function checkIfUnique() {
     } else {
         $result = $stmt->get_result();
         $stmt->close();
-        //Check if cart is empty
+        //Check if customer is empty
         if ($result->num_rows > 0) {
             $errorMsg .= "Email already exist";
             $success = false;
