@@ -58,9 +58,9 @@ function sanitize_input($data) {
             <h1>My Profile</h1>
         </div>
 
-        <br><br><br><br><br><br><br><br>
+        
 
-        <section class="contact" style="margin-bottom: 20px;">
+        <section class="contact" style="margin-top: 50px; margin-bottom: 650px;">
 
             <div class="tab">
                 <button class="tablinks" onclick="openCity(event, 'myprofile')" id="defaultOpen">My Profile</button>
@@ -78,7 +78,7 @@ function sanitize_input($data) {
                         <h3>My User Profile</h3>
 
                         <div style="margin-bottom: 15px;">
-                            <img src="image/blog-2.jpg" alt="Girl in a jacket" width="200" height="200" style="margin-top: 20px; margin-bottom: 20px;">
+                            <img src="image/pic-6.png" alt="Girl in a jacket" width="200" height="200" style="margin-top: 20px; margin-bottom: 20px;">
                         </div>
 
                         <div style="margin-bottom: 15px;">
@@ -140,7 +140,7 @@ function sanitize_input($data) {
                         <h3>My Address</h3>
 
                         <table id="myaddresstable" border="1">
-                            <tr id="tHeader">
+                            <tr id="tHeader" style="background: #6D6875; color: white;">
                                 <th>Address</th>
                                 <th>Postal Code</th>
                             </tr>
@@ -165,7 +165,7 @@ function sanitize_input($data) {
                         </table>
 
 
-                        <div style="margin-bottom: 15px;">
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
 
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 59%">Address: </label>
@@ -296,11 +296,7 @@ function sanitize_input($data) {
                 </div>
             </div>
         </section>
-        <br><br><br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br><br><br>
+        
 
         <!-- footer section starts  -->
         <?php include "footer.php"; ?>

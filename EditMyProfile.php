@@ -82,9 +82,9 @@
                 <div class="row">
                     <form action="#" class="register-form" method="post" name="mynewaddressForm">
 
-                        <h3>Edit Address</h3>
+                        <h3>My Address</h3>
 
-                        <div style="margin-bottom: 15px;">
+                        <div style="margin-bottom: 15px; margin-top: 15%;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 59%">Address: </label>
                                 <label style="width: 39%">Postal Code: </label>
