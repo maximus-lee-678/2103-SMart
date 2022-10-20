@@ -20,9 +20,6 @@
     </form>
 
     <div class="shopping-cart">
-        <?php
-        include "cart-list.php";
-        ?> 
     </div>
 
     <form action="" class="login-form">
