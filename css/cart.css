@@ -78,20 +78,20 @@
     color: #B5838D;
 }
 
-table {
+.carttable {
     border: 1px solid #DDD;
     width: 100%;
     font-size: 1.4rem;
 }
 
-th, td {
+.carttable th, td {
     padding: 8px;
     text-align: center;
     border: 1px solid #DDD;
     vertical-align: middle;
 }
 
-tr:hover {
+.carttable tr:hover {
     background-color: #F5E1FD;
 }
 

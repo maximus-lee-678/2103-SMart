@@ -71,7 +71,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
 
                     $result = $stmt->get_result();
                     if ($result->num_rows > 0) {
-                        echo '<table>
+                        echo '<table class="carttable">
                         <tr style="background: #6D6875; color: white;">
                             <th>ID</th>
                             <th>Product</th>
