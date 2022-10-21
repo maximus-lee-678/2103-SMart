@@ -49,6 +49,12 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
             }
         case "empty-cart":
             break;
+        case "modify-item-count":
+            if (!isset($_POST['prod_id']) || !isset($_POST['quantity'])) {
+                echo "Missing fields!";
+                exit;
+            }
+            break;
         default:
             break;
     }
@@ -119,7 +125,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 if (!$stmt->execute()) {
                     $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 } else {
-                    $captionText .= $product_name . " successfully removed from cart.";
+                    $captionText .= "Product successfully removed from cart.";
                 }
                 break;
 
@@ -151,7 +157,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     if (!$stmt->execute()) {
                         $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                     } else {
-                        $captionText .= $product_name . " successfully decremented by 1.";
+                        $captionText .= "Quantity successfully decremented by 1.";
                     }
                 } else {
                     // 2.2. Quantity == 1, remove from cart
@@ -163,7 +169,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     if (!$stmt->execute()) {
                         $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                     } else {
-                        $captionText .= $product_name . " successfully removed from cart.";
+                        $captionText .= "Product successfully removed from cart.";
                     }
                 }
                 break;
@@ -181,7 +187,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 if (!$stmt->execute()) {
                     $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 } else {
-                    $captionText .= $product_name . " successfully decremented by 1.";
+                    $captionText .= "Quantity successfully incremented by 1.";
                 }
                 break;
 
@@ -198,6 +204,24 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 } else {
                     $captionText .= "Cart successfully cleared!";
+                }
+                break;
+                
+            case "modify-item-count":
+                //form parameters
+                $cust_id = sanitize_input($_SESSION["id"]);
+                $prod_id = sanitize_input($_POST['prod_id']);
+                $quantity = sanitize_input($_POST['quantity']);
+
+                // Prepare the statement:
+                $stmt = $conn->prepare("UPDATE Cart SET quantity = ? WHERE cust_id = ? AND prod_id = ?");
+                // Bind & execute the query statement:
+                $stmt->bind_param("iii", $quantity, $cust_id, $prod_id);
+                // execute the query statement:
+                if (!$stmt->execute()) {
+                    $captionText .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                } else {
+                    $captionText .= "Quanitity successfully updated!";
                 }
                 break;
 

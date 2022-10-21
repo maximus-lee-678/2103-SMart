@@ -125,6 +125,7 @@ input[type=number] {
 }
 
 .numbertextbox {
+    width: 50px;
     text-align:center;
 }
 
