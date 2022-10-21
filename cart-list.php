@@ -10,6 +10,18 @@ session_start();
 
 <?php
 
+//Functions
+// Function to sanitize inputs
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+?>
+
+<?php
+
 if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
     $config = parse_ini_file('../../private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
@@ -20,10 +32,28 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
     } else {
         switch ($_POST["operation"]) {
             case "toolbar":
+                //form parameters
+                $cust_id = sanitize_input($_SESSION["id"]);
+                // 1. Get number of rows associated with this user
                 // Prepare the statement:
-                $stmt = $conn->prepare("SELECT c.prod_id, c.quantity, p.name, p.image_url, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ?");
+                $stmt = $conn->prepare("SELECT COUNT(*) as count FROM SMart.Cart WHERE cust_id = ?");
                 // Bind & execute the query statement:
-                $stmt->bind_param("s", $_SESSION["id"]);
+                $stmt->bind_param("i", $cust_id);
+                // execute the query statement:
+                if (!$stmt->execute()) {
+                    $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                }
+
+                $result = $stmt->get_result();
+                $row = mysqli_fetch_assoc($result);
+
+                $number_of_rows = $row["count"];
+
+                // 2. Get the actual content
+                // Prepare the statement:
+                $stmt = $conn->prepare("SELECT c.prod_id, c.quantity, p.name, p.image_url, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ? ORDER BY c.id DESC LIMIT 3");
+                // Bind & execute the query statement:
+                $stmt->bind_param("i", $cust_id);
                 // execute the query statement:
                 if (!$stmt->execute()) {
                     $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -35,19 +65,23 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
 
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo '<div class="box" id="cartid_' . $row["prod_id"] . '">
-                    <i class="fas fa-times remove-from-cart"></i>
+                    <i class="fas fa-times remove-from-cart cart-minor"></i>
                     <img src="' . $row["image_url"] . '" alt="">
                     <div class="content">
                         <h3>' . $row["name"] . '</h3>
-                        <a href="#"><img src="image/minus.png" alt="Decrement Item" class="iconsize minus-button"></a>
+                        <a href="#"><img src="image/minus.png" alt="Decrement Item" class="iconsize minus-button cart-minor"></a>
                         <span class="quantity" > ' . $row["quantity"] . ' </span>
-                        <a href="#"><img src="image/plus.png" alt="Increment Item" class="iconsize plus-button"></a>
+                        <a href="#"><img src="image/plus.png" alt="Increment Item" class="iconsize plus-button cart-minor"></a>
                         <span class="multiply">*</span>
                         <span class="price">$' . $row["price"] . '</span>
                     </div>
                 </div>';
 
                             $total_cost += $row["quantity"] * $row["price"];
+                        }
+                        
+                        if($number_of_rows > 3){
+                            echo '<h3>and ' . ($number_of_rows - 3) . ' more product(s).</h3>';
                         }
 
                         echo '<h3 class="total"> total : <span>$' . $total_cost . '</span> </h3>
@@ -57,6 +91,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     }
                 }
                 break;
+
             case "cart-page":
                 // Prepare the statement:
                 $stmt = $conn->prepare("SELECT c.prod_id, p.name, p.image_url, c.quantity, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ?");
@@ -73,8 +108,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     if ($result->num_rows > 0) {
                         echo '<table class="carttable">
                         <tr style="background: #6D6875; color: white;">
-                            <th>ID</th>
-                            <th>Product</th>
+                            <th colspan="2">Product</th>
                             <th>Quantity</th>
                             <th>Price (in $)</th>
                             <th>Total (in $)</th>
@@ -82,21 +116,18 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                         </tr>';
 
                         while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<tr>
-                            <td>' . $row["prod_id"] . '</td>
-                            <td>'
-                            . $row["name"] . '<br>
-                                <img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize">
-                            </td>
+                            echo '<tr id="cartid_' . $row["prod_id"] . '">
+                            <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
+                            <td>' . $row["name"] . '</td>
                             <td>
-                                <a href="#"><img src="image/minus.png" alt="Decrement Item" class="iconsize minus-button"></a>
+                                <a href="#"><img src="image/minus.png" alt="Decrement Item" class="iconsize minus-button cart-major"></a>
                                 <input class="numbertextbox" type="number" value="' . $row["quantity"] . '" min="1" max="100">
-                                <a href="#"><img src="image/plus.png" alt="Increment Item" class="iconsize plus-button"></a>
+                                <a href="#"><img src="image/plus.png" alt="Increment Item" class="iconsize plus-button cart-major"></a>
                             </td>
                             <td>' . $row["price"] . '</td>
                             <td>' . ($row["price"] * $row["quantity"]) . '</td>
                             <th>
-                                <a href="#"><img src="image/bin.png" alt="Remove Item" class="iconsize"></a>
+                                <a href="#"><img src="image/bin.png" alt="Remove Item" class="iconsize remove-from-cart cart-major"></a>
                             </th>
                         </tr>
                         <tr>';

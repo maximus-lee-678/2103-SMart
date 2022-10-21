@@ -28,39 +28,18 @@ function load_cart(operation) {
     }
 }
 
-function update_cart(operation, parameters) {
-    switch (operation) {
-        case "add-new":
-            $.ajax({
-                type: 'POST',
-                url: 'cart-update.php',
-                data: parameters,
-                success: function () {
-                    load_cart("toolbar");
-                }
-            });
-            break;
-        case "remove-item":
-            $.ajax({
-                type: 'POST',
-                url: 'cart-update.php',
-                data: parameters,
-                success: function () {
-                    load_cart("toolbar");
-                }
-            });
-            break;
-        default:
-            break;
-    }
+function update_cart(parameters) {
+    $.ajax({
+        type: 'POST',
+        url: 'cart-update.php',
+        data: parameters,
+        success: function () {
+            render_carts();
+        }
+    });
 }
 
-$(document).ready(function () {
-//
-//    $(document).on("click", function (e) {
-//        console.log(e);
-//    });
-
+function render_carts() {
     // Always load the toolbar cart
     load_cart("toolbar");
 
@@ -68,6 +47,14 @@ $(document).ready(function () {
     if ((window.location.href).includes("MyShoppingCart.php")) {
         load_cart("cart-page");
     }
+}
+
+$(document).ready(function () {
+
+//    $(document).on("click", function (e) {
+//        console.log(e);
+//    });
+    render_carts();
 
     $(document).on("click", '.add-to-cart', function (e) {
         if (loggedIn) {
@@ -75,7 +62,7 @@ $(document).ready(function () {
             var answer = confirm('Add item to Cart? Click Confirm to continue.');
 
             if (answer) {
-                update_cart("add-new", {prod_id: $(this).parent().parent().attr('id'), quantity: 1});
+                update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
             }
         } else {
             alert('login first eh?');
@@ -88,17 +75,60 @@ $(document).ready(function () {
             var answer = confirm('Delete this item? Click confirm to continue.');
 
             if (answer) {
-                update_cart("remove-item", {remove: $($(this).parent()).attr('id').slice(7)});
+                if (this.classList.contains("cart-major"))
+                    update_cart({operation: "remove-item", prod_id: $($(this).closest('tr')).attr('id').slice(7)});
+                else if (this.classList.contains("cart-minor"))
+                    update_cart({operation: "remove-item", prod_id: $($(this).closest('.box')).attr('id').slice(7)});
             }
         } else {
             alert('login first eh?');
         }
     });
-    
-    $(document).on('keypress',function(e) {
-    if(e.which == 13) {
-        alert('You pressed enter!');
-    }
-});
+
+    $(document).on("click", '.minus-button', function (e) {
+        e.preventDefault();
+
+        if (loggedIn) {
+            if (this.classList.contains("cart-major"))
+                update_cart({operation: "decrement-item", prod_id: $($(this).closest('tr')).attr('id').slice(7)});
+            else if (this.classList.contains("cart-minor"))
+                update_cart({operation: "decrement-item", prod_id: $($(this).closest('.box')).attr('id').slice(7)});
+        } else {
+            alert('login first eh?');
+        }
+    });
+
+    $(document).on("click", '.plus-button', function (e) {
+        e.preventDefault();
+
+        if (loggedIn) {
+            if (this.classList.contains("cart-major"))
+                update_cart({operation: "increment-item", prod_id: $($(this).closest('tr')).attr('id').slice(7)});
+            else if (this.classList.contains("cart-minor"))
+                update_cart({operation: "increment-item", prod_id: $($(this).closest('.box')).attr('id').slice(7)});
+        } else {
+            alert('login first eh?');
+        }
+    });
+
+    $(document).on("click", '.empty-cart', function (e) {
+        e.preventDefault();
+
+        if (loggedIn) {
+            var answer = confirm('Are you sure you want to empty your cart?');
+
+            if (answer) {
+                update_cart({operation: "empty-cart"});
+            }
+        } else {
+            alert('login first eh?');
+        }
+    });
+
+//    $(document).on('keypress',function(e) {
+//    if(e.which == 13) {
+//        alert('You pressed enter!');
+//    }
+//});
 });
 
