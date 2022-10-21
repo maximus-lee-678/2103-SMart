@@ -51,7 +51,11 @@ session_start();
                     </tr>
                     <tr style="text-align: center; background: white;">
                         <td>Delivery Fee: </td>
-                        <td colspan="2">$12 (Standard Price)</td>
+                        <td colspan="2">$5</td>
+                    </tr>
+                    <tr style="text-align: center; background: white;">
+                        <td>Service Fee: </td>
+                        <td colspan="2">$3.99</td>
                     </tr>
                     <tr style="text-align: center; background: white;">
                         <td>Total: </td>
@@ -59,7 +63,7 @@ session_start();
                     </tr>
                 </table>
                 
-                <a href="ordersummary.php" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">Confirm Order</a>
+                <a href="DeliveryAddress.php" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">Confirm Order</a>
                 
             </section>
             

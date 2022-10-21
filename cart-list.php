@@ -144,7 +144,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                         echo '<tr>
                                     <td colspan="2">Total:</td>
                                     <td>' . $total_quantity . '</td>
-                                    <td colspan="2">' . number_format($total_cost, 2, '.', '') . '</td>
+                                    <td colspan="2">$' . number_format($total_cost, 2, '.', '') . '</td>
                                     <td></td>
                                     </tr>
                             </table>';
@@ -188,13 +188,19 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                         </tr>';
 
                             $total_cost += $row["quantity"] * $row["price"];
+                            $total_quantity += $row["quantity"];
+                            $totalprice_plusdelivery = $total_cost + 5 + 3.99;
                         }
 
+                        
                         echo '<tr>
-                                    <td>Total:</td>
-                                    <td>' . number_format($total_cost, 2, '.', '') . '</td>
+                                    <td colspan="2">Total:</td>
+                                    <td>'. $total_quantity .'</td>
+                                    <td colspan="2">$' . number_format($total_cost, 2, '.', '') . '</td>
                                     </tr>
                             </table>';
+                        
+                        
                     } else {
                         $captionText = "Cart is empty!";
                     }

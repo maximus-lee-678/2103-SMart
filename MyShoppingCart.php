@@ -4,7 +4,7 @@ session_start();
 ?>
 
 <html lang="en">
-    <title>My Shopping Cart</title>
+    <title>My Shopping Cart - My Cart</title>
         <?php
         include "head.php";
         ?>
