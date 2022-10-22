@@ -15,12 +15,21 @@
 
         <section class="individual">
             <h1 class="title"> product name </h1>
-            
+
             <!--if got purchase history-->
             <div class="box-container">
-                <p> this page under maintenance... please wait! </p>
+                <div class="productimage">
+                    <img src="image/tired.jpg" alt=""></img>
+                </div>
+                <div class="infobox">
+                    <p class="mart"> which mart? </p>
+                    <h2> organic food </h2>
+                    <h3>$18.99</h3>
+                    <h4>quantity | brand</h4>
+                    <a href="#" class="fas fa-shopping-cart add-to-cart">  Add to cart</a>
+                    <p><br>rating? review?</p>
+                </div>
             </div>
-
 
         </section>
         <?php include "footer.php"; ?>

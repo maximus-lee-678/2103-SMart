@@ -25,6 +25,7 @@
                         <h3>Mart Name</h3>
                         <p>Purchased Date: </p>
                         <p>Purchased QTY: </p>
+                        <p>Order Process: </p>
                     </div>
                     <div class="image">
                         <img src="image/product-1.jpg" alt="">

@@ -279,12 +279,17 @@ function sanitize_input($data) {
                         <h3>My Card</h3>
 
                         <table id="mycardtable" border="1">
-                            <tr id="tHeader" style="background: #6D6875; color: white;">
+                            <!--if got card-->
+<!--                            <tr id="tHeader" style="background: #6D6875; color: white;">
                                 <th>Payment Type</th>
                                 <th>Owner</th>
                                 <th>Account No.</th>
                                 <th>Expiry Date</th>
-                            </tr>
+                            </tr>-->
+                            <!--if no card-->
+                            <div class="resultContainer3">
+                                <h4>There is no card added currently! Please add a card.</h4>
+                            </div>
                             <tbody id="mycarddata">
                                 <?php
                                 $stmtPayment->execute();

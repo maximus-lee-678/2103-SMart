@@ -40,7 +40,7 @@
             </div>
             
             <div class="inputBox">
-                <a href="orderHistory.php" class="btn">Purchase History</a>
+                <a href="orderHistory.php" class="btn">Purchased History</a>
             </div>
             
             <div class="inputBox">

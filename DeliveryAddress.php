@@ -23,7 +23,6 @@ session_start();
                 
                 <h1 class="carttitle">
                     <!--<span>My Shopping Cart > Order Summary </span>-->
-                    <br><br>
                     <span>
                         <img src="image/location.png" alt="location" class="iconsize"><label style="color: #ffcdb2;">Delivery Address</label>  --  
                         <img src="image/clock.png" alt="location" class="iconsize">Time Slot  --  
