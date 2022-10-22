@@ -35,7 +35,7 @@ session_start();
                 
                 <div class="row">
                     
-                    <form action="process_paymentmethod.php" class="register-form" method="post" name="myDeliveryDetails" style="">
+                    <form action="process_paymentmethod.php" class="register-form" method="post" name="myDeliveryDetails">
                     
                         <h3>Payment Method</h3>
                         
@@ -102,7 +102,7 @@ session_start();
                         
                         
                         <div class="inputBox">
-                            <a href="#" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Pay Grocery Fees</a>
+                            <a href="eReceipt.php" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Pay Grocery Fees</a>
                         </div>
                     
                     </form>
@@ -112,10 +112,6 @@ session_start();
             </section>
             
             
-            <script>
-                var today = new Date().toISOString().split('T')[0];
-                document.getElementsByName("setTodaysDate")[0].setAttribute('min', today);
-            </script>
             
             
             <!-- footer section starts  -->
