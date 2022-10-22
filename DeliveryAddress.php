@@ -12,14 +12,24 @@ session_start();
         <body>
             <!-- header section starts  -->
             <?php include "nav.php"; ?>
-            <!-- header section ends -->           
+            <!-- header section ends -->
+            
+            <div class="heading">
+                <h1>Cart</h1>
+                <p> <a href="MyShoppingCart.php">My Shopping Cart >></a> Order Summary  </p>
+            </div>
             
             <section class="myShoppingCart cartcontainer contact">
                 
                 <h1 class="carttitle">
-                    <span>My Shopping Cart > Order Summary </span>
+                    <!--<span>My Shopping Cart > Order Summary </span>-->
                     <br><br>
-                    <span>[location icon] Delivery Address  --  B  --  C  --  D</span>
+                    <span>
+                        <img src="image/location.png" alt="location" class="iconsize"><label style="color: #ffcdb2;">Delivery Address</label>  --  
+                        <img src="image/clock.png" alt="location" class="iconsize">Time Slot  --  
+                        <img src="image/credit-card.png" alt="location" class="iconsize">Payment Method  --  
+                        <img src="image/receipt.png" alt="location" class="iconsize">E-Receipt
+                    </span>
                 </h1>
                 
                 
@@ -33,15 +43,19 @@ session_start();
                         
                         <h3>Add Delivery Address</h3>
                         
-                        <div class="inputBox">
-                            <select required style="width: 100%; color: #666;" name="selectaddress" id="selectaddress" class="box">
-                                <option value="">- Select an Address -</option>
-                                <option value="Address1">Address 1</option>
-                                <option value="Address2">Address 2</option>
-                            </select>
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 98%">Select An Existing Address: </label>
+                            </div>
+                            <div class="inputBox">
+                                <select required style="width: 100%; color: #666;" name="selectaddress" id="selectaddress" class="box">
+                                    <option value="">- Select an Address -</option>
+                                    <option value="Address1">Address 1</option>
+                                    <option value="Address2">Address 2</option>
+                                </select>
+                            </div>
                         </div>
-                        
-                        
+                                                
                         
                         <div style="margin-bottom: 20px; margin-top: 20px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">

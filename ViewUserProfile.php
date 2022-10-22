@@ -316,8 +316,6 @@ function sanitize_input($data) {
                                 <option value="">- Payment Type -</option>
                                 <option value="Visa">Visa</option>
                                 <option value="Master">Master</option>
-                                <option value="Amex">Amex</option>
-                                <option value="PayPal">PayPal</option>
                             </select>
                         </div>
 

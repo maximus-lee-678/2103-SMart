@@ -12,11 +12,15 @@ session_start();
             <!-- header section starts  -->
             <?php include "nav.php"; ?>
             <!-- header section ends -->
+            
+            <div class="heading">
+                <h1>Cart</h1>
+                <p> <a href="shop.php">Shop >></a> My Shopping Cart </p>
+            </div>
 
             <section class="myShoppingCart cartcontainer">
                 <h1 class="carttitle">
                     <span>My Shopping Cart</span> 
-                    <a href="shop.php">Back to Shopping</a>
                     <a href="#" class="empty-cart">Empty Cart</a>
                 </h1>
                 <div class="box-container" id="cart-contents">

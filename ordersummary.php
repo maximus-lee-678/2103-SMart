@@ -12,12 +12,17 @@ session_start();
         <body>
             <!-- header section starts  -->
             <?php include "nav.php"; ?>
-            <!-- header section ends -->           
+            <!-- header section ends -->   
+            
+            <div class="heading">
+                <h1>Cart</h1>
+                <p> <a href="MyShoppingCart.php">My Shopping Cart >></a> Order Summary  </p>
+            </div>
             
             <section class="myShoppingCart cartcontainer">
                 
                 <h1 class="carttitle">
-                    <span>My Shopping Cart > Order Summary </span>
+                    <span>Order Summary </span>
                 </h1>
                 <div class="box-container" id="checkout-contents">
                 </div>    
@@ -58,7 +63,7 @@ session_start();
                         <td colspan="2">$3.99</td>
                     </tr>
                     <tr style="text-align: center; background: white;">
-                        <td>Total: </td>
+                        <td>Total Cost: </td>
                         <td colspan="2">$212</td>
                     </tr>
                 </table>

@@ -13,20 +13,28 @@ session_start();
         <body>
             <!-- header section starts  -->
             <?php include "nav.php"; ?>
-            <!-- header section ends -->           
+            <!-- header section ends --> 
+            
+            <div class="heading">
+                <h1>Cart</h1>
+                <p> <a href="MyShoppingCart.php">My Shopping Cart >></a> Order Summary  </p>
+            </div>
             
             <section class="myShoppingCart cartcontainer contact">
                 
                 <h1 class="carttitle">
-                    <span>My Shopping Cart > Order Summary </span>
-                    <br><br>
-                    <span>[location icon] Delivery Address  --  [clock icon] Time Slot  --  C  --  D</span>
+                    <span>
+                        <img src="image/location.png" alt="location" class="iconsize">Delivery Address  --  
+                        <img src="image/clock.png" alt="location" class="iconsize"><label style="color: #ffcdb2;">Time Slot</label>  --  
+                        <img src="image/credit-card.png" alt="location" class="iconsize">Payment Method  --  
+                        <img src="image/receipt.png" alt="location" class="iconsize">E-Receipt
+                    </span>
                 </h1>
                 
                 
                 <div class="row">
                     
-                    <form action="process_deliverydetails.php" class="register-form" method="post" name="myDeliveryDetails" style="">
+                    <form action="process_timeslot.php" class="register-form" method="post" name="myDeliveryDetails" style="">
                     
                         <h3>Time Slot</h3>
                         
@@ -64,7 +72,7 @@ session_start();
                         
                         <div class="inputBox">
                             <!--<input type="submit" style="width: 98%" name="saveandcontinue" value="Save and Continue" class="btn">-->
-                            <a href="#" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Continue</a>
+                            <a href="PaymentMethod.php" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Save and Continue</a>
                         </div>
                     
                     </form>
