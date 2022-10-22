@@ -89,7 +89,6 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     $lowercase = preg_match('@[a-z]@', $_POST["user_password"]);      //Check if there are lowercase
     $special = preg_match('/[\'^£$%&!*()}{@#~?><>,|=_+¬-]/', $_POST["user_password"]);
     if (empty($_POST["user_password"]) || empty($_POST["user_password_confirm"])) {
-        echo "<p>" . $_POST["user_password"] . "|||" . $_POST["user_password_confirm"] . "|||" . $_POST["pwd_confirm"] . " </p>";
         $errorMsg .= "Password is required.<br>";
         $success = false;
     } elseif (!$number || !$uppercase || !$lowercase || !$special || strlen($_POST["user_password"]) < 8) {  //Check if contain at least one number, uppercase and lowercase letter, and at least 8 characters.

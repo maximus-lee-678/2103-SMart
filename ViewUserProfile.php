@@ -14,7 +14,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
         // Prepare the statement:        
         $stmtCust = $conn->prepare("SELECT * FROM Customer WHERE id = ?");
         $stmtCust->bind_param("i", $custId);
-        $stmtAddress = $conn->prepare("SELECT * FROM Customer_Address WHERE cust_id = ?");
+        $stmtAddress = $conn->prepare("SELECT * FROM Customer_Address WHERE cust_id = ? and active = true");
         $stmtAddress->bind_param("i", $custId);
         $stmtPayment = $conn->prepare("SELECT * FROM Customer_Payment WHERE cust_id = ?");
         $stmtPayment->bind_param("i", $custId);
@@ -58,7 +58,7 @@ function sanitize_input($data) {
             <h1>My Profile</h1>
         </div>
 
-        
+
 
         <section class="contact" style="margin-top: 50px; margin-bottom: 650px;">
 
@@ -66,8 +66,8 @@ function sanitize_input($data) {
                 <button class="tablinks" onclick="openCity(event, 'myprofile')" id="defaultOpen">My Profile</button>
                 <button class="tablinks" onclick="openCity(event, 'myaddress')">My Address</button>
                 <button class="tablinks" onclick="openCity(event, 'changepassword')">Change Password</button>
-                <button class="tablinks" onclick="openCity(event, 'addnewcard')">Add New Card</button>
-                <button class="tablinks" onclick="openCity(event, 'deletemyaccount')">Delete My Account</button>
+                <button class="tablinks" onclick="openCity(event, 'mypayment')">My Payment</button>
+                <!--<button class="tablinks" onclick="openCity(event, 'deletemyaccount')">Delete My Account</button>-->
             </div>
 
             <div id="myprofile" class="tabcontent">
@@ -141,6 +141,7 @@ function sanitize_input($data) {
 
                         <table id="myaddresstable" border="1" width="100%">
                             <tr id="tHeader" style="background: #6D6875; color: white;">
+                                <th>Alias</th>
                                 <th>Address</th>
                                 <th>Unit Number</th>
                                 <th>Postal Code</th>
@@ -154,8 +155,10 @@ function sanitize_input($data) {
                                     while ($rowAddress = $resultAddress->fetch_assoc()) {
                                         ?>
                                         <tr id = "address_<?php echo $rowAddress['id'] ?>" class="addressRow">
+                                            <td class ="alias_data"><?php echo $rowAddress['alias'] ?></td>    
                                             <td class ="address_data"><?php echo $rowAddress['address'] ?></td>
-                                            <td class ="postal_data"><?php echo $rowAddress['postal_code'] ?></td>
+                                            <td class ="unitno_data"><?php echo $rowAddress['unit_no'] ?></td>
+                                            <td class ="postal_data"><?php echo $rowAddress['postal_code'] ?></td>                                            
                                         </tr>
                                         <?php
                                     }
@@ -165,33 +168,42 @@ function sanitize_input($data) {
                             </tbody>
                         </table>
 
-
                         <div style="margin-bottom: 20px; margin-top: 20px;">
 
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <label style="width: 98%">Address: </label>
+                                <label style="width: 98%">Alias: </label>                                
+                            </div>
+                            <div class="inputBox">
+                                <input required style="width: 98%" id="user_alias" name="user_alias" type="text" placeholder="Enter your Alias (Eg: Home)" class="box" maxlength="250">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 98%">Address: </label>                                
                             </div>
                             <div class="inputBox">
                                 <input id="user_addressid1" name="user_addressid1" type="hidden">
                                 <input required style="width: 98%" id="user_address1" name="user_address1" type="text" placeholder="Enter your Address" class="box" maxlength="250">
                             </div>
                         </div>
-                        
-                        
+
+
                         <div style="margin-bottom: 20px; margin-top: 20px;">
 
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 49%">Unit Number: </label>
-                                <label style="width: 49%">Postal Code: </label>
+                                <label style="width: 49%">Postal Code: </label>                                
                             </div>
                             <div class="inputBox">
                                 <input id="user_addressid1" name="user_addressid1" type="hidden">
-                                <input required style="width: 49%" id="user_unitno" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
-                                <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >      
+                                <input required style="width: 49%" id="user_unitno" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="10">
+                                <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
                             </div>
                         </div>
-                        
-                        
+
+
                         <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
                             <p hidden id="submission_feedback2"></p>
                         </div>
@@ -209,25 +221,34 @@ function sanitize_input($data) {
 
             <div id="changepassword" class="tabcontent">
                 <div class="row">
-                    <form action="process_UpdatePassword.php" class="register-form" method="post" name="myChangePasswordForm">
-                        
+                    <form action="" class="register-form" method="post" name="myChangePasswordForm">
+
                         <h3>Change Password</h3>
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <p>Password: </p>
+                                <p>Current Password: </p>
                             </div>
                             <div class="inputBox">
-                                <input required style="width: 100%" id="user_password" name="user_password" type="password" placeholder="Enter your Password" class="box" maxlength="10" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
+                                <input required style="width: 100%" id="user_old_password" name="user_old_password" type="password" placeholder="Enter your Password" class="box" maxlength="10" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
                             </div>
                         </div>
 
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <p>Confirm Password: </p>
+                                <p>New Password: </p>
                             </div>
                             <div class="inputBox">
-                                <input required style="width: 100%" class="box" type="password" id="pwd_confirm" name="pwd_confirm" maxlength="10" placeholder="Confirm Password">
+                                <input required style="width: 100%" id="user_new_password" name="user_new_password" type="password" placeholder="Enter your Password" class="box" maxlength="10" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <p>Confirm New Password: </p>
+                            </div>
+                            <div class="inputBox">
+                                <input required style="width: 100%" class="box" type="password" id="user_confirm_password" name="user_confirm_password" maxlength="10" placeholder="Confirm Password">
                             </div>
                         </div>
 
@@ -240,21 +261,58 @@ function sanitize_input($data) {
                             </p>
                         </div>
 
+                        <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
+                            <p hidden id="submission_feedback3"></p>
+                        </div>
+
                         <div class="inputBox">
-                            <input type="submit" style="width: 98%" name="changepassword" value="Update" class="btn">
+                            <input type="button" style="width: 98%" id="changepasswordBtn" name="changepassword" value="Update" class="btn">
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div id="addnewcard" class="tabcontent">
+            <div id="mypayment" class="tabcontent">
                 <div class="row">
-                    <form action="process_addnewcard.php" class="register-form" method="post" name="mynewcardForm">
+                    <form action="" class="register-form" method="post" name="mynewcardForm">
 
-                        <h3>Add New Card</h3>
+                        <h3>My Card</h3>
+
+                        <table id="mycardtable" border="1">
+                            <tr id="tHeader" style="background: #6D6875; color: white;">
+                                <th>Payment Type</th>
+                                <th>Owner</th>
+                                <th>Account No.</th>
+                                <th>Expiry Date</th>
+                            </tr>
+                            <tbody id="mycarddata">
+                                <?php
+                                $stmtPayment->execute();
+                                $resultPayment = $stmtPayment->get_result();
+                                if ($resultPayment->num_rows > 0) {
+
+                                    while ($rowPayment = $resultPayment->fetch_assoc()) {
+                                        ?>
+                                        <tr id = "payment_<?php echo $rowPayment['id'] ?>" class="paymentRow">
+                                            <td class ="paytype_data"><?php echo $rowPayment['payment_type'] ?></td>
+                                            <td class ="owner_data"><?php echo $rowPayment['owner'] ?></td>
+                                            <td class ="acc_data"><?php echo $rowPayment['account_no'] ?></td>
+                                            <td class ="expiry_data"><?php echo $rowPayment['expiry'] ?></td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                $stmtPayment->close();
+                                ?>
+                            </tbody>
+                        </table>
 
                         <div class="inputBox">
-                            <select required style="width: 100%; color: #666;" name="ismember" id="ismember" class="box">
+                            <input id="user_payid" name="user_payid" type="hidden">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <p>Payment Type: </p>
+                            </div>
+                            <select required style="width: 100%; color: #666;" name="user_payment_type" id="user_payment_type" class="box">
                                 <option value="">- Payment Type -</option>
                                 <option value="Visa">Visa</option>
                                 <option value="Master">Master</option>
@@ -263,7 +321,7 @@ function sanitize_input($data) {
                             </select>
                         </div>
 
-                        <div style="margin-bottom: 15px;">
+                        <div style="margin-bottom: 15px;">                            
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <p>Owner: </p>
                             </div>
@@ -290,14 +348,20 @@ function sanitize_input($data) {
                             </div>
                         </div>
 
+                        <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
+                            <p hidden id="submission_feedback4"></p>
+                        </div>
+
                         <div class="inputBox">
-                            <input type="submit" style="width: 98%" name="addnewcard" value="Add" class="btn">
+                            <input type="button" style="width: 32%" id="updatecardBtn" name="updatecardBtn" value="Update" class="btn">
+                            <input type="button" style="width: 32%" id="addcardBtn" name="addcardBtn" value="Add" class="btn">
+                            <input type="button" style="width: 32%" id="deletecardBtn" name="deletecardBtn" value="Delete" class="btn">
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div id="deletemyaccount" class="tabcontent">
+<!--            <div id="deletemyaccount" class="tabcontent">
                 <div class="row">
                     <form action="process_deleteaccount.php" class="register-form" method="post" name="deleteaccountform">
 
@@ -308,9 +372,9 @@ function sanitize_input($data) {
                         </div>
                     </form>
                 </div>
-            </div>
+            </div>-->
         </section>
-        
+
 
         <!-- footer section starts  -->
         <?php include "footer.php"; ?>
