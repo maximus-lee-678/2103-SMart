@@ -636,7 +636,6 @@ section {
     color: #6d6875;
 }
 
-
 .contact .icons-container {
     display: -ms-grid;
     display: grid;
@@ -889,11 +888,6 @@ section {
 }
 
 .resultContainer {
-    /*    position:absolute;
-        top:30%;
-        left:30%;
-        margin-top:-50px;  this is half the height of your div
-        margin-left:-100px; this is half of width of your div*/
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -979,4 +973,109 @@ section {
     width: 70%;
     border-left: none;
     /*height: 300px;*/
+}
+
+.history .box-container {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: minmax(25rem, 1fr);
+    grid-template-columns: repeat(3, minmax(25rem, 1fr));
+    gap: 1.5rem;
+}
+
+.history .box-container .box {
+    position: relative;
+    background: #f3f3f3;
+    text-align: center;
+    overflow: hidden;
+}
+
+.history .box-container .box:hover .info {
+    top: 0;
+}
+
+.history .box-container .box .info {
+    position: absolute;
+    top: -105%;
+    left: 0;
+    height: 30rem;
+    width: 100%;
+    background: rgba(243, 243, 243, 0.8);
+    gap: 1rem;
+}
+
+.history .box-container .box .info h3 {
+    font-size: 2rem;
+    padding-top: 50px;
+    padding-bottom: 20px;
+    color: #666;
+}
+
+.history .box-container .box .info p {
+    font-size: 1.7rem;
+    padding-top: 20px;
+    color: #666;
+}
+
+.history .box-container .box .image {
+    height: 30rem;
+    width: 100%;
+    overflow: hidden;
+}
+
+.history .box-container .box .image img {
+    height: 100%;
+    width: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+
+.history .box-container .box .content {
+    padding: 1.5rem;
+}
+
+.history .box-container .box .content h3 {
+    font-size: 2rem;
+    color: #222;
+}
+
+.history .box-container .box .content .price {
+    font-size: 2rem;
+    color: #222;
+    padding: 1rem 0;
+}
+
+.history .box-container .box .content .stars a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #b5838d;
+}
+
+.history .box-container .box .content .stars a:hover {
+    color: #6d6875;
+}
+
+.resultContainer2 {
+    min-height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resultContainer2 .content{
+    justify-content: center;
+    align-items: center;
+}
+
+.resultContainer2 h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #666;
+}
+
+.resultContainer2 h4 {
+    text-align: center;
+    font-size: 1.5rem;
+    padding-top: 5px;
+    color: #666;
 }

@@ -17,8 +17,8 @@
             ?>
             <div class="box">
                 <h3>extra links</h3>
-                <a href="#"> <i class="fas fa-arrow-right"></i> order history </a>
-                <a href="#"> <i class="fas fa-arrow-right"></i> my cart </a>
+                <a href="orderHistory.php"> <i class="fas fa-arrow-right"></i> order history </a>
+                <a href="cart.php"> <i class="fas fa-arrow-right"></i> my cart </a>
                 <a href="#"> <i class="fas fa-arrow-right"></i> my wishlist </a>
                 <a href="ViewUserProfile.php"> <i class="fas fa-arrow-right"></i> my account </a>
             </div>

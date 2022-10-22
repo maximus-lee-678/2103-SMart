@@ -49,33 +49,7 @@
         <section class="products">
             <h1 class="title"> All <span>products</span> </h1>
 
-            <div class="box-container" id = "product-list">
-
-                <!-- 
-                                <div class="box">
-                                    <div class="icons">
-                                        <a href="#" class="fas fa-shopping-cart"></a>
-                                        <a href="#" class="fas fa-heart"></a>
-                                        <a href="#" class="fas fa-eye"></a>
-                                    </div>
-                                    <div class="image">
-                                        <img src="image/product-1.jpg" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <h3>organic food</h3>
-                                        <div class="price">$18.99</div>
-                                        <div class="stars">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                -->
-
-            </div>
+            <div class="box-container" id = "product-list"></div>
             <div class = "product-list-tail" id = "0" style='display: none;'></div>
 
         </section>
