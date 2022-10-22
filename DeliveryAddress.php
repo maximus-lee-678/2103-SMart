@@ -19,7 +19,7 @@ session_start();
                 <h1 class="carttitle">
                     <span>My Shopping Cart > Order Summary </span>
                     <br><br>
-                    <span>Delivery Address  --  B  --  C  --  D</span>
+                    <span>[location icon] Delivery Address  --  B  --  C  --  D</span>
                 </h1>
                 
                 
@@ -59,7 +59,6 @@ session_start();
                                 <label style="width: 49%">Unit Number: </label>
                             </div>
                             <div class="inputBox">
-                                <input id="user_addressid1" name="user_addressid1" type="hidden">
                                 <input required style="width: 49%" id="user_address1" name="user_floorno" type="text" placeholder="Enter Floor No" class="box" maxlength="20">
                                 <input required style="width: 49%" id="user_postalcode1" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
                             </div>
@@ -86,7 +85,7 @@ session_start();
                                 <label style="width: 98%">Name: </label>
                             </div>
                             <div class="inputBox">
-                                <input readonly=false style="width: 98%" id="user_name" name="user_name" type="text" class="box">
+                                <input required style="width: 98%" id="user_name" name="user_name" type="text" class="box">
                             </div>
                         </div>
                         
@@ -96,8 +95,8 @@ session_start();
                                 <label style="width: 49%">Email: </label>
                             </div>
                             <div class="inputBox">
-                                <input readonly=false style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" class="box" value="<?php echo $rowCust['telephone'] ?>">
-                                <input readonly=false style="width: 49%" id="user_email" name="user_email" type="email" class="box" value="<?php echo $rowCust['email'] ?>">
+                                <input required style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" class="box" value="<?php echo $rowCust['telephone'] ?>">
+                                <input required style="width: 49%" id="user_email" name="user_email" type="email" class="box" value="<?php echo $rowCust['email'] ?>">
                             </div>
                         </div>
                         
