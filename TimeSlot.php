@@ -47,7 +47,7 @@ session_start();
                                 <label style="width: 98%">Delivery Timing: </label>
                             </div>
                             <div class="inputBox">
-                                <select required style="width: 100%; color: #666;" name="selecttiming" id="selecttiming" class="box">
+                                <select required style="width: 98%; color: #666;" name="selecttiming" id="selecttiming" class="box">
                                     <option value="">- Select Timing -</option>
                                     <option value="Address1">8am - 10am</option>
                                     <option value="Address2">10am - 12pm</option>

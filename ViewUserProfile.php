@@ -142,7 +142,6 @@ function sanitize_input($data) {
                         <table id="myaddresstable" border="1" width="100%">
                             <tr id="tHeader" style="background: #6D6875; color: white;">
                                 <th>Address</th>
-                                <th>Floor Number</th>
                                 <th>Unit Number</th>
                                 <th>Postal Code</th>
                             </tr>
@@ -170,13 +169,11 @@ function sanitize_input($data) {
                         <div style="margin-bottom: 20px; margin-top: 20px;">
 
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <label style="width: 59%">Address: </label>
-                                <label style="width: 39%">Postal Code: </label>
+                                <label style="width: 98%">Address: </label>
                             </div>
                             <div class="inputBox">
                                 <input id="user_addressid1" name="user_addressid1" type="hidden">
-                                <input required style="width: 59%" id="user_address1" name="user_address1" type="text" placeholder="Enter your Address" class="box" maxlength="250">
-                                <input required style="width: 39%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
+                                <input required style="width: 98%" id="user_address1" name="user_address1" type="text" placeholder="Enter your Address" class="box" maxlength="250">
                             </div>
                         </div>
                         
@@ -184,13 +181,13 @@ function sanitize_input($data) {
                         <div style="margin-bottom: 20px; margin-top: 20px;">
 
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <label style="width: 49%">Floor Number: </label>
                                 <label style="width: 49%">Unit Number: </label>
+                                <label style="width: 49%">Postal Code: </label>
                             </div>
                             <div class="inputBox">
                                 <input id="user_addressid1" name="user_addressid1" type="hidden">
-                                <input required style="width: 49%" id="user_address1" name="user_floorno" type="text" placeholder="Enter Floor No" class="box" maxlength="20">
-                                <input required style="width: 49%" id="user_postalcode1" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
+                                <input required style="width: 49%" id="user_unitno" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
+                                <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >      
                             </div>
                         </div>
                         

@@ -55,24 +55,15 @@ session_start();
                         
                         <div style="margin-bottom: 20px; margin-top: 20px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <label style="width: 49%">Floor Number: </label>
                                 <label style="width: 49%">Unit Number: </label>
+                                <label style="width: 49%">Postal Code: </label>
                             </div>
                             <div class="inputBox">
-                                <input required style="width: 49%" id="user_address1" name="user_floorno" type="text" placeholder="Enter Floor No" class="box" maxlength="20">
                                 <input required style="width: 49%" id="user_postalcode1" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
+                                <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
                             </div>
                         </div>
                         
-                        
-                        <div style="margin-bottom: 20px; margin-top: 20px;">
-                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                <label style="width: 98%">Postal Code: </label>
-                            </div>
-                            <div class="inputBox">
-                                <input required style="width: 98%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
-                            </div>
-                        </div>
                         
                         
                         <br><br><br>
