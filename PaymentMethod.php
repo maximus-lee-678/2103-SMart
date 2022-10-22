@@ -41,7 +41,7 @@ session_start();
                         
                         <br><br><br>
                         
-                        <div style="margin-bottom: 25px; margin-top: 20px;">
+                        <div style="margin-bottom: 35px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 98%">Select An Existing Card: </label>
                             </div>
@@ -102,7 +102,7 @@ session_start();
                         
                         
                         <div class="inputBox">
-                            <a href="#" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Save and Continue</a>
+                            <a href="#" style="width: 98%; margin-top: 40px; margin-bottom: 20px; text-align: center;" class="btn">Pay Grocery Fees</a>
                         </div>
                     
                     </form>
