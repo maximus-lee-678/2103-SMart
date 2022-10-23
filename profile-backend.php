@@ -626,7 +626,7 @@ function addCard(){
         return;
     }
     // Prepare the statement:        
-    $stmt = $conn->prepare("INSERT INTO Customer_Payment (cust_id, payment_type, owner, account_no, expiry) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO Customer_Payment (cust_id, payment_type, owner, account_no, expiry, active) VALUES (?, ?, ?, ?, ?, true)");
     $stmt->bind_param("issss", sanitize_input($_SESSION['id']), $paytype, $owner, $accno, $expiry);
 
     if (!$stmt->execute()) {

@@ -60,8 +60,6 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 if (!$stmt->execute()) {
                     $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 } else {
-
-
                     $result = $stmt->get_result();
                     if ($result->num_rows > 0) {
 
@@ -153,8 +151,8 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     }
                 }
                 break;
-                
-                case "checkout-page":
+
+            case "summary-page":
                 //form parameters
                 $cust_id = sanitize_input($_SESSION["id"]);
 
@@ -167,46 +165,60 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                     $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 } else {
                     $total_cost = 0;
-                    
+                    $total_quantity = 0;
+                    $service_charge_percent = 0.05;
+                    $delivery_charge = 5;
+
                     $result = $stmt->get_result();
                     if ($result->num_rows > 0) {
                         echo '<table class="carttable" style="font-size: 1.4rem;">
                             <tr style="text-align: center; background: #6D6875; color: white;">
                                 <th colspan="2">Product</th>
+                                <th>Price</th>
+                                <th>Total</th>
                                 <th>Quantity</th>
-                                <th>Price (in $)</th>
-                                <th>Total (in $)</th>
                             </tr>';
 
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo '<tr id="cartid_' . $row["prod_id"] . '">
                             <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
                             <td>' . $row["name"] . '</td>
+                            <td>$' . $row["price"] . '</td>
+                            <td>$' . number_format($row["price"] * $row["quantity"], 2, '.', '') . '</td>
                             <td>' . $row["quantity"] . '</td>
-                            <td>' . $row["price"] . '</td>
-                            <td>' . number_format($row["price"] * $row["quantity"], 2, '.', '') . '</td>
                         </tr>';
 
                             $total_cost += $row["quantity"] * $row["price"];
                             $total_quantity += $row["quantity"];
-                            $totalprice_plusdelivery = $total_cost + 5 + 3.99;
                         }
 
-                        
                         echo '<tr>
-                                    <td colspan="2">Total:</td>
-                                    <td>'. $total_quantity .'</td>
-                                    <td colspan="2">$' . number_format($total_cost, 2, '.', '') . '</td>
-                                    </tr>
-                            </table>';
-                        
-                        
+                                     <td colspan="3" style="text-align: right;">Total: </td>
+                                     <td>$' . number_format($total_cost, 2, '.', '') . '</td>
+                                     <td>' . $total_quantity . '</td>
+                                </tr>
+                            </table>
+                            <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
+                                <tr style="text-align: center; background: white;">
+                                    <td colspan="2">Delivery Fee (' . $service_charge_percent * 100 . '%): </td>
+                                    <td colspan="2">$' . number_format($total_cost * $service_charge_percent, 2, '.', '') . '</td>
+                                </tr>
+                                <tr style="text-align: center; background: white;">
+                                    <td colspan="2">Service Fee: </td>
+                                    <td colspan="2">$' . number_format($delivery_charge, 2, '.', '') . '</td>
+                                </tr>
+                                <tr style="text-align: center; background: white;">
+                                    <td colspan="2">Final Cost: </td>
+                                    <td colspan="2">$' . number_format(($total_cost * (1 + $service_charge_percent)) + $delivery_charge, 2, '.', '') . '</td>
+                                </tr>
+                            </table>
+                            </div>';
                     } else {
                         $captionText = "Cart is empty!";
                     }
                 }
                 break;
-                
+
             default:
                 break;
         }

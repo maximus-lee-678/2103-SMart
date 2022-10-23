@@ -1,8 +1,14 @@
 //# - ID
 //. = class
 
+//    $(document).on("click", function (e) {
+//        console.log(e);
+//    });
+
+// Sets a specific part of a page to contain a render of cart contents
 function load_cart(operation) {
     switch (operation) {
+        // The cart in the navbar
         case "toolbar":
             $.ajax({
                 type: 'POST',
@@ -13,6 +19,7 @@ function load_cart(operation) {
                 }
             });
             break;
+        // Cart in MyShoppingCart.php
         case "cart-page":
             $.ajax({
                 type: 'POST',
@@ -23,13 +30,14 @@ function load_cart(operation) {
                 }
             });
             break;
-        case "checkout-page":
+        // Cart in ordersummary.php    
+        case "summary-page":
             $.ajax({
                 type: 'POST',
                 url: 'cart-list.php',
                 data: {operation: operation},
                 success: function (data) {
-                    $("#checkout-contents").html(data);
+                    $("#summary-contents").html(data);
                 }
             });
             break;
@@ -49,6 +57,7 @@ function update_cart(parameters) {
     });
 }
 
+//Startup Function
 function render_carts() {
     // Always load the toolbar cart
     load_cart("toolbar");
@@ -60,17 +69,14 @@ function render_carts() {
     
     // Function only runs on ordersummary.php
     if ((window.location.href).includes("ordersummary.php")) {
-        load_cart("checkout-page");
+        load_cart("summary-page");
     }
 }
 
 $(document).ready(function () {
-
-//    $(document).on("click", function (e) {
-//        console.log(e);
-//    });
     render_carts();
 
+    // cart icon on shop.php
     $(document).on("click", '.add-to-cart', function (e) {
         if (loggedIn) {
             e.preventDefault();
@@ -83,7 +89,8 @@ $(document).ready(function () {
             alert('login first eh?');
         }
     });
-
+    
+    // cross icon in cart on nav bar, trash icon on MyShoppingCart.php
     $(document).on("click", '.remove-from-cart', function (e) {
         if (loggedIn) {
             e.preventDefault();
@@ -100,6 +107,7 @@ $(document).ready(function () {
         }
     });
 
+    // minus button in cart on nav bar and on MyShoppingCart.php
     $(document).on("click", '.minus-button', function (e) {
         e.preventDefault();
 
@@ -109,6 +117,7 @@ $(document).ready(function () {
             update_cart({operation: "decrement-item", prod_id: $($(this).closest('.box')).attr('id').slice(7)});
     });
 
+    // plus button in cart on nav bar and on MyShoppingCart.php
     $(document).on("click", '.plus-button', function (e) {
         e.preventDefault();
 
@@ -118,6 +127,7 @@ $(document).ready(function () {
             update_cart({operation: "increment-item", prod_id: $($(this).closest('.box')).attr('id').slice(7)});
     });
 
+    // empty cart button on MyShoppingCart.php
     $(document).on("click", '.empty-cart', function (e) {
         e.preventDefault();
 
@@ -127,7 +137,8 @@ $(document).ready(function () {
             update_cart({operation: "empty-cart"});
         }
     });
-
+    
+    // edit button on MyShoppingCart.php
     $(document).on("click", '.edit-quantity', function (e) {
         e.preventDefault();
 
@@ -171,5 +182,4 @@ $(document).ready(function () {
             }
         }
     });
-
 });
