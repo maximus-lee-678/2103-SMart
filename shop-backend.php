@@ -54,7 +54,7 @@ function display_data($displayData) {
                             <div class="icons">
                                 <a href="#" class="fas fa-shopping-cart add-to-cart"></a>
                                 <a href="#" class="fas fa-heart"></a>
-                                <a href="#" class="fas fa-eye"></a>
+                                <a href="productPage.php?id=' . $data['id'] . '" class="fas fa-eye"></a>
                             </div>
                         <div class="image">
                             <img src="' . $data['image_url'] . '" alt="">

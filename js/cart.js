@@ -83,7 +83,11 @@ $(document).ready(function () {
             var answer = confirm('Add item to Cart? Click Confirm to continue.');
 
             if (answer) {
-                update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
+                if ((window.location.href).includes("shop.php"))
+                    update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
+                
+                if ((window.location.href).includes("productPage.php"))
+                    update_cart({operation: "add-new", prod_id: $(document).find('.title').attr('id')});
             }
         } else {
             alert('login first eh?');
