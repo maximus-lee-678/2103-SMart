@@ -1,5 +1,7 @@
 <?php
 
+include "helper-functions.php";
+
 if (isset($_GET['lastId'])) {
     $config = parse_ini_file('../../private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'],
@@ -10,13 +12,6 @@ if (isset($_GET['lastId'])) {
     $fetchData = fetch_data($lastId, $category);
     $displayData = display_data($fetchData);
     echo $displayData;
-}
-
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 function fetch_data($lastId, $category) {

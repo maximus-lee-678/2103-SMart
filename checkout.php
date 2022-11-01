@@ -21,7 +21,7 @@ session_start();
 
         <section class="myShoppingCart cartcontainer contact">                
             <div class="row">
-                <form action="#" class="register-form" method="post" name="myDeliveryDetails">
+                <form action="eReceipt.php" class="register-form" method="post" name="myDeliveryDetails">
                     <h3><img src="image/location.png" alt="location" class="iconsize">Delivery Address</h3>
 
                     <div style="margin-bottom: 20px; margin-top: 20px;">
@@ -29,7 +29,7 @@ session_start();
                             <label style="width: 98%">Select a Saved Address Profile: </label>
                         </div>
                         <div class="inputBox">
-                            <select required style="width: 100%; color: #666;" name="selectaddress" id="alias-dropdown" class="box">
+                            <select required style="width: 100%; color: #666;" name="address_alias" id="alias-dropdown" class="box">
                             </select>
                         </div>
                     </div>
@@ -38,7 +38,7 @@ session_start();
                             <label style="width: 98%">Address: </label>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 100%" id="address-field" type="text" placeholder="Enter your Address" class="box" maxlength="250">
+                            <input required style="width: 100%" name="address_address" id="address-field" type="text" placeholder="Enter your Address" class="box" maxlength="250">
                         </div>
                     </div>
                     <div style="margin-bottom: 20px; margin-top: 20px;">
@@ -47,8 +47,8 @@ session_start();
                             <label style="width: 49%">Postal Code: </label>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 49%" id="unit-no-field" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
-                            <input required style="width: 49%" id="postal-code-field" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
+                            <input required style="width: 49%" name="address_unit_number" id="unit-no-field" type="text" placeholder="Enter Unit No" class="box" maxlength="3">
+                            <input required style="width: 49%" name="address_postal_code" id="postal-code-field" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
                         </div>
                     </div>
 
@@ -59,10 +59,7 @@ session_start();
                             <label style="width: 98%">Select An Existing Card Profile: </label>
                         </div>
                         <div class="inputBox">
-                            <select required style="width: 100%; color: #666;" name="selectaddress" id="credit-dropdown" class="box">
-                                <option value="">- Select a Card -</option>
-                                <option value="Card1">Card 1</option>
-                                <option value="Card2">Card 2</option>
+                            <select required style="width: 100%; color: #666;" name="payment_type" id="credit-dropdown" class="box">
                             </select>
                         </div>
                     </div>
@@ -72,7 +69,7 @@ session_start();
                             <p>Owner: </p>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 100%" id="owner-field" name="user_owner" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
+                            <input required style="width: 100%" name="payment_owner" id="owner-field" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
                         </div>
                     </div>
 
@@ -81,7 +78,7 @@ session_start();
                             <p>Account No: </p>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 100%" id="account-no-field" name="user_accountno" type="text" placeholder="Enter your Account Number" class="box" minlength="15" maxlength="16" pattern="^[0-9]{15,16}">
+                            <input required style="width: 100%" name="payment_account_no" id="account-no-field" type="text" placeholder="Enter your Account Number" class="box" minlength="15" maxlength="16" pattern="^[0-9]{15,16}">
                         </div>
                     </div>
 
@@ -91,8 +88,8 @@ session_start();
                             <label style="width: 49%">CVV: </label>
                         </div>
                         <div class="inputBox">
-                            <input required style="width: 49%; font-size: 1.4rem; color: #666;" id="expiry-date-field" name="user_cardexpirydate" type="text" placeholder="Enter your Expiry Date" class="box">
-                            <input required style="width: 49%; font-size: 1.4rem; color: #666;" id="cvv-field" name="user_ccv" type="password" placeholder="Enter your CVV" maxlength="3" pattern="^[0-9]{3}" class="box">
+                            <input required style="width: 49%; font-size: 1.4rem; color: #666;" name="payment_expiry_date" id="expiry-date-field" type="text" placeholder="Enter your Expiry Date" class="box">
+                            <input required style="width: 49%; font-size: 1.4rem; color: #666;" name="payment_cvv" id="cvv-field" type="password" placeholder="Enter your CVV" maxlength="3" pattern="^[0-9]{3}" class="box">
                         </div>
                     </div>
                     <div style="margin-bottom: 15px;">

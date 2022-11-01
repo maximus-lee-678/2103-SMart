@@ -1,23 +1,13 @@
 <?php
 
 session_start();
+
+include "helper-functions.php";
 //
 //if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
 //    header("refresh: 0; url=shop.php");
 //    exit;
 //}
-?>
-
-<?php
-
-//Functions
-// Function to sanitize inputs
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
 ?>
 
 <?php
@@ -180,7 +170,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                             </tr>';
 
                         while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<tr id="cartid_' . $row["prod_id"] . '">
+                            echo '<tr id="' . $row["prod_id"] . '">
                             <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
                             <td>' . $row["name"] . '</td>
                             <td>$' . $row["price"] . '</td>

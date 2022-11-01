@@ -1,24 +1,15 @@
 <?php
 
 session_start();
-//
+
+include "helper-functions.php";
+
 //if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
 //    header("refresh: 0; url=shop.php");
 //    exit;
 //}
 ?>
 
-<?php
-
-//Functions
-// Function to sanitize inputs
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-?>
 
 <?php
 
@@ -55,7 +46,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 $cust_id = sanitize_input($_SESSION["id"]);
 
                 // Prepare the statement:
-                $stmt = $conn->prepare("SELECT alias FROM Customer_Address WHERE cust_id = ?");
+                $stmt = $conn->prepare("SELECT alias FROM Customer_Address WHERE cust_id = ? AND active = 1");
                 // Bind & execute the query statement:
                 $stmt->bind_param("i", $cust_id);
                 // execute the query statement:
@@ -78,7 +69,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 $alias = sanitize_input($_POST["alias_string"]);
 
                 // Prepare the statement:
-                $stmt = $conn->prepare("SELECT address, unit_no, postal_code FROM Customer_Address WHERE cust_id = ? AND alias = ?");
+                $stmt = $conn->prepare("SELECT address, unit_no, postal_code FROM Customer_Address WHERE cust_id = ? AND alias = ? AND active = 1");
                 // Bind & execute the query statement:
                 $stmt->bind_param("is", $cust_id, $alias);
                 // execute the query statement:
@@ -98,7 +89,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 $cust_id = sanitize_input($_SESSION["id"]);
 
                 // Prepare the statement:
-                $stmt = $conn->prepare("SELECT payment_type FROM Customer_Payment WHERE cust_id = ?");
+                $stmt = $conn->prepare("SELECT payment_type FROM Customer_Payment WHERE cust_id = ? AND active = 1");
                 // Bind & execute the query statement:
                 $stmt->bind_param("i", $cust_id);
                 // execute the query statement:
@@ -121,7 +112,7 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                 $payment_type = sanitize_input($_POST["card_type"]);
 
                 // Prepare the statement:
-                $stmt = $conn->prepare("SELECT owner, account_no, expiry FROM Customer_Payment WHERE cust_id = ? AND payment_type = ?");
+                $stmt = $conn->prepare("SELECT owner, account_no, expiry FROM Customer_Payment WHERE cust_id = ? AND payment_type = ? AND active = 1");
                 // Bind & execute the query statement:
                 $stmt->bind_param("is", $cust_id, $payment_type);
                 // execute the query statement:

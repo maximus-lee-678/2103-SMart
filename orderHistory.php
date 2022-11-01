@@ -18,7 +18,7 @@
             <h1 class="title"> order <span>history</span> </h1>
 
             <!--if got purchase history-->
-<!--            <div class="box-container">
+            <div class="box-container">
 
                 <div class="box">
                     <div class="info">
@@ -38,7 +38,67 @@
                             <a href="#">Buy Again</a>
                         </div>
                     </div>
-                </div>-->
+                </div>
+                
+                <div class="box">
+                    <div class="info">
+                        <h3>Mart Name</h3>
+                        <p>Purchased Date: </p>
+                        <p>Purchased QTY: </p>
+                        <p>Order Process: </p>
+                    </div>
+                    <div class="image">
+                        <img src="image/product-1.jpg" alt="">
+                    </div>
+                    <div class="content">
+                        <h3>organic food</h3>
+                        <div class="price">$18.99</div>
+                        <div class="stars">
+                            <p> this one will lead user to the product page </p>
+                            <a href="#">Buy Again</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="box">
+                    <div class="info">
+                        <h3>Mart Name</h3>
+                        <p>Purchased Date: </p>
+                        <p>Purchased QTY: </p>
+                        <p>Order Process: </p>
+                    </div>
+                    <div class="image">
+                        <img src="image/product-1.jpg" alt="">
+                    </div>
+                    <div class="content">
+                        <h3>organic food</h3>
+                        <div class="price">$18.99</div>
+                        <div class="stars">
+                            <p> this one will lead user to the product page </p>
+                            <a href="#">Buy Again</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="box">
+                    <div class="info">
+                        <h3>Mart Name</h3>
+                        <p>Purchased Date: </p>
+                        <p>Purchased QTY: </p>
+                        <p>Order Process: </p>
+                    </div>
+                    <div class="image">
+                        <img src="image/product-1.jpg" alt="">
+                    </div>
+                    <div class="content">
+                        <h3>organic food</h3>
+                        <div class="price">$18.99</div>
+                        <div class="stars">
+                            <p> this one will lead user to the product page </p>
+                            <a href="#">Buy Again</a>
+                        </div>
+                    </div>
+                </div>
 
                 <!--if no purchase history-->
                 <div class = "resultContainer2">

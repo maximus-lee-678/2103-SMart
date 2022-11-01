@@ -2,22 +2,11 @@
 
 session_start();
 
+include "helper-functions.php";
+
 if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
     header("refresh: 0; url=shop.php");
     exit;
-}
-?>
-
-
-<?php
-
-//Functions
-// Function to sanitize inputs
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 ?>
 
