@@ -8,6 +8,8 @@
         <?php include "nav.php"; ?>
         <!-- header section ends -->
 
+        
+        
         <section class="home">
             <div class="slides-container">
                 <div class="slide active">
@@ -59,6 +61,9 @@
             <div id="prev-slide" class="fas fa-angle-left" onclick="prev()"></div>
 
         </section>
+        
+        
+        <a href="Employee_Home.php" style="font-size: 3.4rem;">Employee_Home</a>
 
         <?php include "footer.php"; ?>
 
