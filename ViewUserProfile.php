@@ -103,17 +103,6 @@ function sanitize_input($data) {
                             </div>
                         </div>
 
-                        <!--                        <div style="margin-bottom: 15px;">
-                                                    <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                                        <label style="width: 59%">Address: </label>
-                                                        <label style="width: 39%">Postal Code: </label>
-                                                    </div>
-                                                    <div class="inputBox">
-                                                        <input readonly="true" style="width: 59%" id="user_address1" name="user_address1" type="text" class="box" value="<?php echo $row['address'] ?>">
-                                                        <input readonly="true" style="width: 39%" id="user_postalcode1" name="user_postalcode1" type="text" class="box" value="<?php echo $row['postal_code'] ?>">
-                                                    </div>
-                                                </div>-->
-
                         <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
                             <p hidden id="submission_feedback1"></p>
                         </div>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-$fname = $lname = $phone = $email = $address = $postal = $errorMsg = $pwd_hashed = "";
+$fname = $lname = $phone = $email = $address = $unitno = $postal = $errorMsg = $pwd_hashed = "";
 $success = true;
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
@@ -68,7 +68,18 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     } else {
         $address = sanitize_input($_POST["user_address1"]);
     }
-
+    
+    //Unit No
+    if (empty($_POST["user_unitno"])) {       //Check if unit no exists
+        $errorMsg .= "Unit number is required.<br>";
+        $success = false;
+    } elseif (strlen($_POST["user_unitno"]) > 10) {   //Check if len of alias is more than 10
+        $errorMsg .= "Unit number cannot be more than 10 characters.<br>";
+        $success = false;
+    } else {
+        $unitno = sanitize_input($_POST["user_unitno"]);
+    }
+    
     //Postal
     if (empty($_POST["user_postalcode1"])) {       //Check if postal exists
         $errorMsg .= "Postal code is required.<br>";
@@ -83,7 +94,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $postal = sanitize_input($_POST["user_postalcode1"]);
     }
 
-//Password (regex sucks)
+    //Password (regex sucks)
     $number = preg_match('@[0-9]@', $_POST["user_password"]);         //Check if there are numbers
     $uppercase = preg_match('@[A-Z]@', $_POST["user_password"]);      //Check if there are uppercase
     $lowercase = preg_match('@[a-z]@', $_POST["user_password"]);      //Check if there are lowercase
@@ -101,7 +112,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $pwd_hashed = password_hash($_POST["user_password"], PASSWORD_DEFAULT);
     }
 
-//DB handling
+    //DB handling
     if ($success) {
         checkIfUnique();
     }
@@ -122,7 +133,7 @@ function sanitize_input($data) {
 }
 
 function saveMemberToDB() {
-    global $fname, $lname, $phone, $email, $address, $postal, $pwd_hashed, $errorMsg, $success;
+    global $fname, $lname, $phone, $email, $unitno, $address, $postal, $pwd_hashed, $errorMsg, $success;
     // Create database connection.    
     $config = parse_ini_file('../../private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'],
@@ -149,11 +160,11 @@ function saveMemberToDB() {
         $lastid = (int) $conn->insert_id;
         // Prepare the statement:        
         $stmtAddress = $conn->prepare(
-                "INSERT INTO Customer_Address (cust_id, address, postal_code) "
-                . "VALUES (?, ?, ?)"
+                "INSERT INTO Customer_Address (cust_id, alias, address, unit_no, postal_code, active) "
+                . "VALUES (?, 'Home', ?, ?, ?, true)"
         );
         // Bind & execute the query statement:        
-        $stmtAddress->bind_param("iss", $lastid, $address, $postal);
+        $stmtAddress->bind_param("isss", $lastid, $address, $unitno, $postal);
         if (!$stmtAddress->execute()) {
             $errorMsg .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             $success = false;
