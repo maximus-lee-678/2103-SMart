@@ -70,5 +70,13 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
+$(document).ready(function () {
+    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php")) {
+        document.getElementById("defaultOpen").click();
+    }
+});
+
 // Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
+//if ((window.location.href).includes("Employee_Home.php")) {
+//     document.getElementById("defaultOpen").click();
+//}
