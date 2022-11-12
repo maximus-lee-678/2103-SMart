@@ -764,8 +764,6 @@ section {
     font-size: 2rem;
 }
 
-
-
 @media (max-width: 991px) {
     html {
         font-size: 55%;
@@ -932,9 +930,11 @@ section {
 }
 
 .history .box-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: minmax(25rem, 1fr);
+    -ms-grid-columns: minmax(25rem, 1fr)[autofit];
     grid-template-columns: repeat(3, minmax(25rem, 1fr));
     gap: 1.5rem;
 }
@@ -950,7 +950,7 @@ section {
     top: 0;
 }
 
-.history .box-container .box .info {
+/*.history .box-container .box .info {
     position: absolute;
     top: -105%;
     left: 0;
@@ -971,7 +971,7 @@ section {
     font-size: 1.7rem;
     padding-top: 20px;
     color: #666;
-}
+}*/
 
 .history .box-container .box .image {
     height: 30rem;
@@ -1103,4 +1103,79 @@ section {
 
 .individual .box-container .infobox a:hover{
     background-color: #b5838d;
+}
+
+.wrapper {
+  padding: 10px;
+  overflow: hidden;
+}
+
+.acc-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.accordion-item {
+  margin-bottom: 15px;
+}
+
+.accordion-header {
+  cursor: pointer;
+  display: block;
+  line-height: 40px;
+  font-size: 20px;
+  position: relative;
+  background-color: #ffffff;
+  color: #373737;
+  padding: 10px 55px 10px 20px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 4px;
+}
+
+/* position for the button */
+.accordion-header > span {
+  position: absolute;
+  border-radius: 50%;
+  padding: 12px;
+  right: 20px;
+  top: 50%;
+  height: 25px;
+  width: 25px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.accordion-header > span::before {
+  position: absolute;
+  content: "";
+  left: 50%;
+  top: 50%;
+  height: 10px;
+  width: 2px;
+  background-color: #000000;
+  transform: translate(-50%, -50%);
+  transition: transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s;
+}
+
+.accordion-header > span::after {
+  position: absolute;
+  content: "";
+  left: 50%;
+  top: 50%;
+  height: 10px;
+  width: 2px;
+  background-color: #000000;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.accordion-open .accordion-header > span::before {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+/*  */
+.accordion-body {
+  padding: 20px;
+  background-color: white;
+  font-size: 18px;
+  text-align: justify;
+  display: none;
 }
