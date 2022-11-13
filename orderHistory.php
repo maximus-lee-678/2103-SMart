@@ -14,9 +14,9 @@
             <p> <a href="home.php">home >></a> order history </p>
         </div>
 
-        <section class="history">
+        <section class="products">
             <h1 class="title"> order <span>history</span> </h1>
-            
+
             <!--if got purchase history-->
             <div class="wrapper">  
                 <!-- Accordion Starts Here -->
@@ -91,7 +91,7 @@
                                         <div class="content">
                                             <h3>organic food</h3>
                                             <div class="price">$18.99</div>
-                                            <div class="stars">
+                                            <div class="againBtn">
                                                 <a href="#">Buy Again</a>
                                             </div>
                                         </div>
@@ -104,7 +104,7 @@
                                         <div class="content">
                                             <h3>organic food</h3>
                                             <div class="price">$18.99</div>
-                                            <div class="stars">
+                                            <div class="againBtn">
                                                 <a href="#">Buy Again</a>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="accordion-item ">
                             <label class="accordion-header">
                                 <table class="historyIDTitle">
