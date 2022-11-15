@@ -95,7 +95,15 @@
             </div>
 
         </section>
+        
+        
+        
+        
+        
         <section class ="products">
+            
+            <h1 class="title">You May Also Like</h1>
+            
             <div class="box-container" id = "product-list">
                 <?php
                 if ($result->num_rows > 0) {

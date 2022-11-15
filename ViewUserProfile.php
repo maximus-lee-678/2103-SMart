@@ -60,7 +60,7 @@ function sanitize_input($data) {
 
 
 
-        <section class="contact" style="margin-top: 50px; margin-bottom: 650px;">
+        <section class="contact" style="margin-top: 50px; margin-bottom: 800px;">
 
             <div class="tab">
                 <button class="tablinks" onclick="openCity(event, 'myprofile')" id="defaultOpen">My Profile</button>
@@ -267,14 +267,14 @@ function sanitize_input($data) {
 
                         <h3>My Card</h3>
 
-                        <table id="mycardtable" border="1">
+                        <table id="mycardtable" border="1" width="100%" style="margin-bottom: 30px;">
                             <!--if got card-->
-<!--                            <tr id="tHeader" style="background: #6D6875; color: white;">
+                            <tr id="tHeader" style="background: #6D6875; color: white;">
                                 <th>Payment Type</th>
                                 <th>Owner</th>
                                 <th>Account No.</th>
                                 <th>Expiry Date</th>
-                            </tr>-->
+                            </tr>
                             <!--if no card-->
                             <div class="resultContainer3">
                                 <h4>There is no card added currently! Please add a card.</h4>
