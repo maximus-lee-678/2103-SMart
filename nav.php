@@ -40,6 +40,14 @@
             </div>
             
             <div class="inputBox">
+                <a href="FoodExpiryList.php" class="btn">My Food List <span style="border-radius: 50%; background-color: red; color: white; padding: 2 10px; top: -10px; right: -10px; margin-left: 5px;">4</span></a>
+            </div>
+            
+            <div class="inputBox">
+                <a href="TrackMyPurchases.php" class="btn">Track My Order</a>
+            </div>
+            
+            <div class="inputBox">
                 <a href="orderHistory.php" class="btn">Purchased History</a>
             </div>
             

@@ -64,7 +64,9 @@
         
         
         <a href="Employee_Home.php" style="font-size: 3.4rem;">Employee_Home</a>
+        
 
+        
         <?php include "footer.php"; ?>
 
     </body>
