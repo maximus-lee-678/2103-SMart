@@ -119,7 +119,7 @@
                             </div>
                             <!--name-and-username-->
                             <div class="name-user">
-                                <strong>Touseeq Ijaz</strong>
+                                <strong>name</strong>
                             </div>
                         </div>
                         <!--reviews------>
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <!--Comments---------------------------------------->
-                    <div class="client-comment">
+                    <div class="userComment">
                         <p>HI</p>
                     </div>
                 </div>
@@ -148,8 +148,7 @@
                             </div>
                             <!--name-and-username-->
                             <div class="name-user">
-                                <strong>J.K Rowling</strong>
-                                <span>@jkrowling</span>
+                                <strong>name</strong>
                             </div>
                         </div>
                         <!--reviews------>
@@ -162,7 +161,7 @@
                         </div>
                     </div>
                     <!--Comments---------------------------------------->
-                    <div class="client-comment">
+                    <div class="userComment">
                         <p>bye</p>
                     </div>
                 </div>
