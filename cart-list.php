@@ -3,58 +3,40 @@
 session_start();
 
 include "helper-functions.php";
-//
+
 //if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
 //    header("refresh: 0; url=shop.php");
 //    exit;
 //}
-?>
 
-<?php
+if (!(isset($_SESSION["id"]) && isset($_POST["operation"]))) {
+    echo '<div class="cartBox" style="font-size: 1.4rem; color: #666;">Login to use the Cart!</div>';
+    exit();
+}
 
-if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
-    $config = parse_ini_file('../../private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+$conn = make_connection();
 
-    // Check connection
-    if ($conn->connect_error) {
-        $captionText = "Connection failed: " . $conn->connect_error;
-    } else {
-        switch ($_POST["operation"]) {
-            case "toolbar":
-                //form parameters
-                $cust_id = sanitize_input($_SESSION["id"]);
+switch ($_POST["operation"]) {
+    case "toolbar":
+        //form parameters
+        $cust_id = sanitize_input($_SESSION["id"]);
 
-                // 1. Get number of rows and total associated with this user
-                // Prepare the statement:
-                $stmt = $conn->prepare("SELECT SUM(c.quantity*p.price) as sum, COUNT(*) as count FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ?");
-                // Bind & execute the query statement:
-                $stmt->bind_param("i", $cust_id);
-                // execute the query statement:
-                if (!$stmt->execute()) {
-                    $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-                } else {
-                    $result = $stmt->get_result();
-                    $row = mysqli_fetch_assoc($result);
+        // 1. Get cart item count and total cart cost associated with this user
+        $query = 'SELECT SUM(c.quantity*p.price) as sum, COUNT(*) as count FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
+        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
 
-                    $number_of_rows = $row["count"];
-                    $total_cost = $row["sum"];
-                }
+        $row = mysqli_fetch_assoc($result);
 
-                // 2. Get the actual content
-                // Prepare the statement:
-                $stmt = $conn->prepare("SELECT c.prod_id, c.quantity, p.name, p.image_url, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ? ORDER BY c.id DESC LIMIT 3");
-                // Bind & execute the query statement:
-                $stmt->bind_param("i", $cust_id);
-                // execute the query statement:
-                if (!$stmt->execute()) {
-                    $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-                } else {
-                    $result = $stmt->get_result();
-                    if ($result->num_rows > 0) {
+        $number_of_rows = $row["count"];
+        $total_cost = $row["sum"];
 
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<div class="box" id="cartid_' . $row["prod_id"] . '">
+        // 2. Get the actual content
+        $query = 'SELECT c.prod_id, c.quantity, p.name, p.image_url, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ? ORDER BY c.id DESC LIMIT 3';
+        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
+
+        if ($result->num_rows > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<div class="box" id="cartid_' . $row["prod_id"] . '">
                     <i class="fas fa-times remove-from-cart cart-minor"></i>
                     <img src="' . $row["image_url"] . '" alt="">
                     <div class="content">
@@ -66,38 +48,33 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                         <span class="price">$' . $row["price"] . '</span>
                     </div>
                 </div>';
-                        }
+            }
 
-                        if ($number_of_rows > 3) {
-                            echo '<h3>and ' . ($number_of_rows - 3) . ' more product(s).</h3>';
-                        }
+            if ($number_of_rows > 3) {
+                echo '<h3>and ' . ($number_of_rows - 3) . ' more product(s).</h3>';
+            }
 
-                        echo '<h3 class="total"> total : <span>$' . number_format($total_cost, 2, '.', '') . '</span> </h3>
+            echo '<h3 class="total"> total : <span>$' . number_format($total_cost, 2, '.', '') . '</span> </h3>
                 <a href="MyShoppingCart.php" class="btn">View My Cart</a>';
-                    } else {
-                        $captionText = "Cart is empty!";
-                    }
-                }
-                break;
+        } else {
+            echo "<caption>Cart is empty!</caption>";
+        }
 
-            case "cart-page":
-                //form parameters
-                $cust_id = sanitize_input($_SESSION["id"]);
+        break;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    case "cart-page":
+        //form parameters
+        $cust_id = sanitize_input($_SESSION["id"]);
 
-                // Prepare the statement:
-                $stmt = $conn->prepare("SELECT c.prod_id, p.name, p.image_url, c.quantity, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ?");
-                // Bind & execute the query statement:
-                $stmt->bind_param("s", $cust_id);
-                // execute the query statement:
-                if (!$stmt->execute()) {
-                    $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-                } else {
-                    $total_cost = 0.00;
-                    $total_quantity = 0;
+        // 1. Get cart items, total cart cost and quantity associated with this user
+        $query = 'SELECT c.prod_id, p.name, p.image_url, c.quantity, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
+        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
 
-                    $result = $stmt->get_result();
-                    if ($result->num_rows > 0) {
-                        echo '<table class="carttable">
+        $total_cost = 0.00;
+        $total_quantity = 0;
+
+        if ($result->num_rows > 0) {
+            echo '<table class="carttable">
                         <tr style="background: #6D6875; color: white;">
                             <th colspan="2">Product</th>
                             <th>Quantity</th>
@@ -106,8 +83,8 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                             <th>Remove</th>
                         </tr>';
 
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<tr id="cartid_' . $row["prod_id"] . '">
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<tr id="cartid_' . $row["prod_id"] . '">
                             <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
                             <td>' . $row["name"] . '</td>
                             <td>
@@ -125,43 +102,38 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                             </th>
                         </tr>';
 
-                            $total_cost += $row["quantity"] * $row["price"];
-                            $total_quantity += $row["quantity"];
-                        }
+                $total_cost += $row["quantity"] * $row["price"];
+                $total_quantity += $row["quantity"];
+            }
 
-                        echo '<tr>
-                                    <td colspan="2">Total:</td>
-                                    <td>' . $total_quantity . '</td>
-                                    <td colspan="2">$' . number_format($total_cost, 2, '.', '') . '</td>
-                                    <td></td>
-                                    </tr>
-                            </table>';
-                    } else {
-                        $captionText = "Cart is empty!";
-                    }
-                }
-                break;
+            echo '<tr>
+                        <td colspan="2">Total:</td>
+                        <td>' . $total_quantity . '</td>
+                        <td colspan="2">$' . number_format($total_cost, 2, '.', '') . '</td>
+                        <td></td>
+                    </tr>
+                </table>';
+        } else {
+            echo "<caption>Cart is empty!</caption>";
+        }
 
-            case "summary-page":
-                //form parameters
-                $cust_id = sanitize_input($_SESSION["id"]);
+        break;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    case "summary-page":
+        //form parameters
+        $cust_id = sanitize_input($_SESSION["id"]);
 
-                // Prepare the statement:
-                $stmt = $conn->prepare("SELECT c.prod_id, p.name, p.image_url, c.quantity, p.price FROM SMart.Cart as c INNER JOIN SMart.Product as p ON c.prod_id = p.id WHERE c.cust_id = ?");
-                // Bind & execute the query statement:
-                $stmt->bind_param("s", $cust_id);
-                // execute the query statement:
-                if (!$stmt->execute()) {
-                    $captionText = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-                } else {
-                    $total_cost = 0;
-                    $total_quantity = 0;
-                    $service_charge_percent = 0.05;
-                    $delivery_charge = 5;
+        // 1. Get cart items, total cart cost and quantity associated with this user
+        $query = 'SELECT c.prod_id, p.name, p.image_url, c.quantity, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
+        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
 
-                    $result = $stmt->get_result();
-                    if ($result->num_rows > 0) {
-                        echo '<table class="carttable" style="font-size: 1.4rem;">
+        $total_cost = 0;
+        $total_quantity = 0;
+        $service_charge_percent = 0.05;
+        $delivery_charge = 5;
+
+        if ($result->num_rows > 0) {
+            echo '<table class="carttable" style="font-size: 1.4rem;">
                             <tr style="text-align: center; background: #6D6875; color: white;">
                                 <th colspan="2">Product</th>
                                 <th>Price</th>
@@ -169,8 +141,8 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                                 <th>Quantity</th>
                             </tr>';
 
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<tr id="' . $row["prod_id"] . '">
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<tr id="' . $row["prod_id"] . '">
                             <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
                             <td>' . $row["name"] . '</td>
                             <td>$' . $row["price"] . '</td>
@@ -178,11 +150,11 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                             <td>' . $row["quantity"] . '</td>
                         </tr>';
 
-                            $total_cost += $row["quantity"] * $row["price"];
-                            $total_quantity += $row["quantity"];
-                        }
+                $total_cost += $row["quantity"] * $row["price"];
+                $total_quantity += $row["quantity"];
+            }
 
-                        echo '<tr>
+            echo '<tr>
                                      <td colspan="3" style="text-align: right;">Total: </td>
                                      <td>$' . number_format($total_cost, 2, '.', '') . '</td>
                                      <td>' . $total_quantity . '</td>
@@ -203,21 +175,14 @@ if (isset($_SESSION["id"]) && isset($_POST["operation"])) {
                                 </tr>
                             </table>
                             </div>';
-                    } else {
-                        $captionText = "Cart is empty!";
-                    }
-                }
-                break;
-
-            default:
-                break;
+        } else {
+            echo "<caption>Cart is empty!</caption>";
         }
-        $stmt->close();
-        $conn->close();
-    }
-    echo "<caption>" . $captionText . "</caption>";
-} else {
-    echo '<div class ="cartBox" style="font-size: 1.4rem; color: #666;">Please login first before using of cart!</div>';
-}
-?>
 
+        break;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    default:
+        break;
+}
+$conn->close();
+?>
