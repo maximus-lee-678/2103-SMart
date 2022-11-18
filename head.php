@@ -16,9 +16,7 @@
     <!-- any css enjoyers: if have time tidy up whats in my css file and move it to yours :D -->
     <link rel="stylesheet" href="css/max.css">
 
-    <!-- custom css file link  -->
+    <!--JS-->
     <script defer src="js/script.js"></script>
-
-    <!-- cart functionality js  -->
     <script defer src="js/cart.js"></script>
 </head>

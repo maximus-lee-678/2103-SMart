@@ -76,9 +76,16 @@
                     <img src="<?php echo $image_url; ?>" alt=""></img> <!--Image-->
                 </div>
                 <div class="infobox">
-                    <p class="mart"><?php echo $supermarket_name; ?></p> <!--Supermarket-->
                     <h2><?php echo $category_name; ?></h2> <!--Category-->
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
                     <h3>$<?php echo number_format($price, 2, '.', ''); ?></h3> <!--Price-->
+                    <p class="mart"><?php echo $supermarket_name; ?></p> <!--Supermarket-->
                     <h4>
                         Unit: <?php echo $display_unit; ?> <!--Unit-->
                         <br>
@@ -86,24 +93,87 @@
                         <br>
                         Brand: <?php echo $brand_name; ?> <!--Brand-->
                     </h4> <!--Brand-->
-                    <a href="#" class="fas fa-shopping-cart add-to-cart">Add to cart</a>
-                    <p><br>rating? review?</p> <!--idk lol-->
+                    <a href="#"><i class="fas fa-shopping-cart add-to-cart"></i>Add to cart</a>
                     <!--if got purchase history-->
+                    
                 </div>
-
-
             </div>
-
         </section>
-        
-        
-        
-        
-        
+
+        <!--review-->
+        <section class="rateReview">
+
+            <h1 class="title">Reviews</h1>
+
+            <!--BOX-1-------------->
+            <div class="rateReview-box-container">
+                <!--BOX-1-------------->
+                <div class="rateReview-box">
+                    <!--top------------------------->
+                    <div class="box-top">
+                        <!--profile----->
+                        <div class="profile">
+                            <!--img---->
+                            <div class="profile-img">
+                                <img src="images/c-1.jpg" />
+                            </div>
+                            <!--name-and-username-->
+                            <div class="name-user">
+                                <strong>Touseeq Ijaz</strong>
+                            </div>
+                        </div>
+                        <!--reviews------>
+                        <div class="reviews">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i><!--Empty star-->
+                        </div>
+                    </div>
+                    <!--Comments---------------------------------------->
+                    <div class="client-comment">
+                        <p>HI</p>
+                    </div>
+                </div>
+                <!--BOX-2-------------->
+                <div class="rateReview-box">
+                    <!--top------------------------->
+                    <div class="box-top">
+                        <!--profile----->
+                        <div class="profile">
+                            <!--img---->
+                            <div class="profile-img">
+                                <img src="images/c-2.jpg" />
+                            </div>
+                            <!--name-and-username-->
+                            <div class="name-user">
+                                <strong>J.K Rowling</strong>
+                                <span>@jkrowling</span>
+                            </div>
+                        </div>
+                        <!--reviews------>
+                        <div class="reviews">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i><!--Empty star-->
+                        </div>
+                    </div>
+                    <!--Comments---------------------------------------->
+                    <div class="client-comment">
+                        <p>bye</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--related products-->
         <section class ="products">
-            
+
             <h1 class="title">You May Also Like</h1>
-            
+
             <div class="box-container" id = "product-list">
                 <?php
                 if ($result->num_rows > 0) {
@@ -137,6 +207,8 @@
 
             </div>
         </section>
+
+
         <?php include "footer.php"; ?>
     </body>
 </html>

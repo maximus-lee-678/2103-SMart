@@ -44,10 +44,6 @@
             </div>
             
             <div class="inputBox">
-                <a href="TrackMyPurchases.php" class="btn">Track My Order</a>
-            </div>
-            
-            <div class="inputBox">
                 <a href="orderHistory.php" class="btn">Purchased History</a>
             </div>
             
