@@ -152,6 +152,24 @@ input[type=number] {
     padding: 0px;
 }
 
+.historyIDTitle span {
+    border: 1px solid #6d6875;
+    border-radius: 10px;
+    color: white;
+    background-color: #6d6875;
+    padding: 8px 15px;
+    margin-left: 10rem;
+}
+
+.historyIDTitle a{
+    color: white;
+}
+
+.historyIDTitle span:hover {
+    border: 1px solid #b5838d;
+    background-color: #b5838d;
+}
+
 .historyIDTable {
     margin-left: auto;
     margin-right: auto;

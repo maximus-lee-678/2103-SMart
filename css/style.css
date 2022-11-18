@@ -1255,4 +1255,33 @@ section {
     }
 }
 
+.tab2 {
+  overflow: hidden;
+  background-color: #6d6875;
+}
 
+.tab2 button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 16px 30px;
+  transition: 0.3s;
+  font-size: 17px;
+  color: white;
+}
+
+.tab2 button:hover {
+  background-color: #b5838d;
+}
+
+.tab2 button.active {
+  background-color: #b5838d;
+}
+
+.tabcontent2 {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;
+}

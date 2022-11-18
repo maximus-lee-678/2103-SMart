@@ -57,10 +57,14 @@ function prev() {
 }
 
 function openCity(evt, cityName) {
-    var i, tabcontent, tablinks;
+    var i, tabcontent, tabcontent2, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
+    }
+    tabcontent2 = document.getElementsByClassName("tabcontent2");
+    for (i = 0; i < tabcontent2.length; i++) {
+        tabcontent2[i].style.display = "none";
     }
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
@@ -71,7 +75,7 @@ function openCity(evt, cityName) {
 }
 
 $(document).ready(function () {
-    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php")) {
+    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") || (window.location.href).includes("orderHistory.php")){
         document.getElementById("defaultOpen").click();
     }
 });
@@ -80,3 +84,20 @@ $(document).ready(function () {
 //if ((window.location.href).includes("Employee_Home.php")) {
 //     document.getElementById("defaultOpen").click();
 //}
+
+let tabHeader = document.getElementsByClassName("tab-header")[0];
+let tabIndicator = document.getElementsByClassName("tab-indicator")[0];
+let tabBody = document.getElementsByClassName("tab-body")[0];
+
+let tabsPane = tabHeader.getElementsByTagName("div");
+
+for(let i=0;i<tabsPane.length;i++){
+  tabsPane[i].addEventListener("click",function(){
+    tabHeader.getElementsByClassName("active")[0].classList.remove("active");
+    tabsPane[i].classList.add("active");
+    tabBody.getElementsByClassName("active")[0].classList.remove("active");
+    tabBody.getElementsByTagName("div")[i].classList.add("active");
+    
+    tabIndicator.style.left = `calc(calc(100% / 4) * ${i})`;
+  });
+}
