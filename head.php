@@ -13,7 +13,8 @@
     <!-- css file links  -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cart.css">
-
+    <!-- any css enjoyers: if have time tidy up whats in my css file and move it to yours :D -->
+    <link rel="stylesheet" href="css/max.css">
 
     <!-- custom css file link  -->
     <script defer src="js/script.js"></script>
