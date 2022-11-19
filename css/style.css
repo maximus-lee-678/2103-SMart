@@ -855,6 +855,12 @@ section {
     }
 }
 
+@media only screen and (max-width: 600px) {
+  .columns {
+    width: 100%;
+  }
+}
+
 .resultContainer {
     min-height: 100vh;
     display: flex;
@@ -1284,34 +1290,34 @@ section {
 }
 
 .tab2 {
-  overflow: hidden;
-  background-color: #6d6875;
+    overflow: hidden;
+    background-color: #6d6875;
 }
 
 .tab2 button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 16px 30px;
-  transition: 0.3s;
-  font-size: 17px;
-  color: white;
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 16px 30px;
+    transition: 0.3s;
+    font-size: 17px;
+    color: white;
 }
 
 .tab2 button:hover {
-  background-color: #b5838d;
+    background-color: #b5838d;
 }
 
 .tab2 button.active {
-  background-color: #b5838d;
+    background-color: #b5838d;
 }
 
 .tabcontent2 {
-  display: none;
-  padding: 6px 12px;
-  border-top: none;
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
 }
 
 .rateReview{
@@ -1391,4 +1397,67 @@ section {
 .userComment p{
     font-size: 0.9rem;
     color: #4b4b4b;
+}
+
+.products .compare {
+    display: flex;
+}
+
+.products .columns {
+    float: left;
+    width: 33.3%;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.products .columns .price {
+    list-style-type: none;
+    border: 1px solid #eee;
+    margin: 0;
+    padding: 0;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.products .columns .price:hover {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2);
+}
+
+.price .top {
+    height: 30rem;
+    width: 100%;
+    font-size: 25px;
+}
+
+.price .top img {
+    height: 100%;
+    width: 100%;
+    font-size: 25px;
+}
+
+.price li {
+    border-bottom: 1px solid #eee;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.price .grey {
+    background-color: #eee;
+    font-size: 1.5rem;
+}
+
+.products .columns .button {
+    background-color: #6d6875;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.products .columns .button:hover {
+    background-color: #b5838d;
 }
