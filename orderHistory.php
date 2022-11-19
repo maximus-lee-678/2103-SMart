@@ -1,8 +1,16 @@
+<?php
+session_start();
+
+include "helper-functions.php";
+?>
+
 <!DOCTYPE html>
+
+<script defer src="js/order-history.js"></script>
+
 <html lang="en">
     <title>Shop</title>
     <?php
-    session_start();
     include "head.php";
     ?>    
     <body>
@@ -18,17 +26,17 @@
             <h1 class="title"> my <span>purchases</span> </h1>
 
             <div class="tab2" style="float: none;">
-                <button class="tablinks" onclick="openCity(event, 'ship')" id="defaultOpen">to ship</button>
-                <button class="tablinks" onclick="openCity(event, 'receive')">to receive</button>
-                <button class="tablinks" onclick="openCity(event, 'completed')">completed</button>
+                <button class="tablinks" onclick="openCity(event, 'pack')" id="defaultOpen">Packing</button>
+                <button class="tablinks" onclick="openCity(event, 'deliver')">Delivering</button>
+                <button class="tablinks" onclick="openCity(event, 'complete')">Complete</button>
             </div>
 
-            <div id="ship" class="tabcontent2">
+            <div id="pack" class="tabcontent2">
                 <!--if got purchase history-->
                 <div class="wrapper">  
                     <!-- Accordion Starts Here -->
                     <div class="acc-container">
-                        <div class="accordion">
+                        <div class="accordion" type="pack">
                             <div class="accordion-item ">
                                 <label class="accordion-header">
                                     <table class="historyIDTitle">
@@ -97,12 +105,12 @@
                 </div>
             </div>
 
-            <div id="receive" class="tabcontent2" style="float: none;">
+            <div id="deliver" class="tabcontent2" style="float: none;">
                 <!--if got purchase history-->
                 <div class="wrapper">  
                     <!-- Accordion Starts Here -->
                     <div class="acc-container">
-                        <div class="accordion">
+                        <div class="accordion" type="deliver">
                             <div class="accordion-item ">
                                 <label class="accordion-header">
                                     <table class="historyIDTitle" style="width: 100%;">
@@ -110,7 +118,7 @@
                                             <td>Order ID: 1234</td>
                                             <td>Order Status: Shipping</td>
                                             <td>Purchased Date: 12/12/12</td>
-                                            <td><span><a href="productReview.php">received</a></span></td>
+                                            <td><span><a href="productReview.php">Review</a></span></td>
                                         </tr>
                                     </table>
                                     <span></span>
@@ -172,12 +180,12 @@
                 </div>
             </div>
 
-            <div id="completed" class="tabcontent2" style="float: none;">
+            <div id="complete" class="tabcontent2" style="float: none;">
                 <!--if got purchase history-->
                 <div class="wrapper">  
                     <!-- Accordion Starts Here -->
                     <div class="acc-container">
-                        <div class="accordion">
+                        <div class="accordion" type="complete">
                             <div class="accordion-item ">
                                 <label class="accordion-header">
                                     <table class="historyIDTitle">
@@ -286,26 +294,5 @@
         </section>
         <?php include "footer.php"; ?>
 
-        <script>
-            $(document).ready(function () {
-                accordion();
-            });
-
-            function accordion() {
-                $(".accordion-header").click(function () {
-                    if ($(this).next().is(":visible")) {
-                        $(this).next().hide("slow");
-                        //                        $(this).next().slideUp();
-                    } else {
-                        $(".accordion-body").hide();
-                        $(this).next().show("Slow");
-                        //                        $(".accordion-body").slideUp();
-                        //                        $(this).next().slideDown();
-                    }
-                });
-            }
-        </script>
     </body>
 </html>
-
-

@@ -29,6 +29,7 @@ function get_staff_role() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 $staff_roles = get_staff_role();
 ?>
+<!DOCTYPE html>
 
 <script defer src="js/employee-home.js"></script>
 

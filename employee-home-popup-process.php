@@ -78,10 +78,10 @@ switch ($operation) {
             </div>
             <div style="margin-bottom: 20px; margin-top: 20px;">
                 <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                    <label>Password</label>
+                    <label>Change Password</label>
                 </div>
                 <div class="inputBox">
-                    <input type="text" class="box popup-input-field" style="width: 100%;" value="' . $row["password"] . '">
+                    <input type="text" class="box popup-input-field" style="width: 100%;" value="">
                 </div>
             </div>
             <div style="margin-bottom: 20px; margin-top: 20px;">
@@ -155,8 +155,8 @@ switch ($operation) {
 
         echo '<div style="margin-bottom: 20px; margin-top: 20px;">
                 <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                    <label style="width: 49%;">First Name</label>
-                    <label style="width: 49%;">Last Name</label>
+                    <label style="width: 49%; display: inline-block;">First Name</label>
+                    <label style="width: 49%; display: inline-block;">Last Name</label>
                 </div>
                 <div>
                     <input type="text" class="box popup-input-field" style="width: 49%;">
