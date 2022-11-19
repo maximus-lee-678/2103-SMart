@@ -23,7 +23,7 @@ session_start();
             <div class="row">
                 <form action="eReceipt.php" class="register-form" method="post" name="myDeliveryDetails">
                     <h3><img src="image/location.png" alt="location" class="iconsize">Delivery Address</h3>
-
+                    <input type="hidden" id="address-id" name="address_id" value="">
                     <div style="margin-bottom: 20px; margin-top: 20px;">
                         <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                             <label style="width: 98%">Select a Saved Address Profile: </label>
@@ -53,7 +53,7 @@ session_start();
                     </div>
 
                     <h3><img src="image/credit-card.png" alt="location" class="iconsize">Payment Method</h3>
-
+                    <input type="hidden" id="payment-id" name="payment_id" value="">
                     <div style="margin-bottom: 20px; margin-top: 20px;">
                         <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                             <label style="width: 98%">Select An Existing Card Profile: </label>
@@ -63,7 +63,6 @@ session_start();
                             </select>
                         </div>
                     </div>
-
                     <div style="margin-bottom: 15px;">                            
                         <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                             <p>Owner: </p>
@@ -72,7 +71,6 @@ session_start();
                             <input required style="width: 100%" name="payment_owner" id="owner-field" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
                         </div>
                     </div>
-
                     <div style="margin-bottom: 15px;">
                         <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                             <p>Account No: </p>
@@ -81,7 +79,6 @@ session_start();
                             <input required style="width: 100%" name="payment_account_no" id="account-no-field" type="text" placeholder="Enter your Account Number" class="box" minlength="15" maxlength="16" pattern="^[0-9]{15,16}">
                         </div>
                     </div>
-
                     <div style="margin-bottom: 15px;">
                         <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                             <label style="width: 49%">Expiry Date: </label>
@@ -93,7 +90,7 @@ session_start();
                         </div>
                     </div>
                     <div style="margin-bottom: 15px;">
-                    <input type="submit" value="Submit" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">
+                        <input type="submit" value="Submit" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">
                     </div>
                 </form>
             </div>

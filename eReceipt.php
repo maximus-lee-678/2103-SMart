@@ -31,8 +31,8 @@ function handle_potential_updates($operation, $data_array) {
     switch ($operation) {
         case "address":
             // 1. Check if changes made to fields for row in [Customer_Address]
-            $query = 'SELECT id AS address_id, address, unit_no, postal_code FROM Customer_Address WHERE alias = ? AND cust_id = ? AND active = 1';
-            $result = payload_deliver($conn, $query, "si", $params = array($data_array["alias"], $data_array["user_id"]));
+            $query = 'SELECT address, unit_no, postal_code FROM Customer_Address WHERE id = ? AND cust_id = ? AND active = 1';
+            $result = payload_deliver($conn, $query, "ii", $params = array($data_array["address_id"], $data_array["user_id"]));
 
             if ($result->num_rows != 1) {
                 $conn->close();
@@ -43,18 +43,16 @@ function handle_potential_updates($operation, $data_array) {
 
             // User made changes to address fields
             if ($row["address"] != $data_array["address"] || $row["unit_no"] != $data_array["unit_no"] || $row["postal_code"] != $data_array["postal_code"]) {
-                //Store data for future use
-                $address_id = $row["address_id"];
 
                 // 2. Check if [Orders] table has the address id for any of its rows
                 $query = 'SELECT id FROM SMart.Order WHERE address_id = ?';
-                $result = payload_deliver($conn, $query, "i", $params = array($address_id));
+                $result = payload_deliver($conn, $query, "i", $params = array($data_array["address_id"]));
 
                 // No rows returned, no entries for this address in [Orders], just update the address
                 if ($result->num_rows == 0) {
                     // 3.1. Make updates to corresponding [Customer_Address] row
                     $query = 'UPDATE Customer_Address SET address = ?, unit_no = ?, postal_code = ? WHERE id = ?';
-                    payload_deliver($conn, $query, "ssii", $params = array($data_array["address"], $data_array["unit_no"], $data_array["postal_code"], $address_id));
+                    payload_deliver($conn, $query, "ssii", $params = array($data_array["address"], $data_array["unit_no"], $data_array["postal_code"], $data_array["address_id"]));
 
                     $conn->close();
                     return "Address updated!";
@@ -62,8 +60,8 @@ function handle_potential_updates($operation, $data_array) {
                 // Rows returned, there exist entries for this address in [Orders], set the address to be inactive and add a new address
                 else {
                     // 3.2.1. Set old [Customer_Address] row active = 0
-                    $query = 'UPDATE Customer_Address SET active = 0 WHERE alias = ? AND cust_id = ?';
-                    payload_deliver($conn, $query, "si", $params = array($data_array["alias"], $data_array["user_id"]));
+                    $query = 'UPDATE Customer_Address SET active = 0 WHERE id = ? AND cust_id = ?';
+                    payload_deliver($conn, $query, "ii", $params = array($data_array["address_id"], $data_array["user_id"]));
 
                     // 3.2.2. Create new [Customer_Address] row
                     $query = 'INSERT INTO Customer_Address (cust_id, alias, address, unit_no, postal_code, active) VALUES (?,?,?,?,?,true)';
@@ -83,8 +81,8 @@ function handle_potential_updates($operation, $data_array) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
         case "payment":
             // 1. Check if changes made to fields for row in [Customer_Payment]
-            $query = 'SELECT id AS payment_id, owner, account_no, expiry FROM Customer_Payment WHERE payment_type = ? AND cust_id = ? AND active = 1';
-            $result = payload_deliver($conn, $query, "si", $params = array($data_array["payment_type"], $data_array["user_id"]));
+            $query = 'SELECT owner, account_no, expiry FROM Customer_Payment WHERE id = ? AND cust_id = ? AND active = 1';
+            $result = payload_deliver($conn, $query, "ii", $params = array($data_array["payment_id"], $data_array["user_id"]));
 
             if ($result->num_rows != 1) {
                 $conn->close();
@@ -95,18 +93,16 @@ function handle_potential_updates($operation, $data_array) {
 
             // User made changes to payment fields
             if ($row["owner"] != $data_array["owner"] || $row["account_no"] != $data_array["account_no"] || $row["expiry"] != $data_array["expiry"]) {
-                //Store data for future use
-                $payment_id = $row["payment_id"];
 
                 // 2. Check if [Orders] table has the payment id for any of its rows
                 $query = 'SELECT id FROM SMart.Order WHERE payment_id = ?';
-                $result = payload_deliver($conn, $query, "i", $params = array($payment_id));
+                $result = payload_deliver($conn, $query, "i", $params = array($data_array["payment_id"]));
 
                 // No rows returned, no entries for this payment in [Orders], just update the payment
                 if ($result->num_rows == 0) {
                     // 3.1. Make updates to corresponding [Customer_Payment] row
                     $query = 'UPDATE Customer_Payment SET owner = ?, account_no = ?, expiry = ? WHERE id = ?';
-                    payload_deliver($conn, $query, "sisi", $params = array($data_array["address"], $data_array["unit_no"], $data_array["postal_code"], $address_id));
+                    payload_deliver($conn, $query, "sisi", $params = array($data_array["owner"], $data_array["account_no"], $data_array["expiry"], $data_array["payment_id"]));
 
                     $conn->close();
                     return "Payment method updated!";
@@ -114,8 +110,8 @@ function handle_potential_updates($operation, $data_array) {
                 // Rows returned, there exist entries for this payment in [Orders], set the payment to be inactive and add a new payment
                 else {
                     // 3.2.1. Set old [Customer_Payment] row active = 0
-                    $query = 'UPDATE Customer_Payment SET active = 0 WHERE payment_type = ? AND cust_id = ?';
-                    payload_deliver($conn, $query, "si", $params = array($data_array["payment_type"], $data_array["user_id"]));
+                    $query = 'UPDATE Customer_Payment SET active = 0 WHERE id = ? AND cust_id = ?';
+                    payload_deliver($conn, $query, "ii", $params = array($data_array["payment_id"], $data_array["user_id"]));
 
                     // 3.2.2. Create new [Customer_Payment] row
                     $query = 'INSERT INTO Customer_Payment (cust_id, payment_type, owner, account_no, expiry, active) VALUES (?,?,?,?,?,true)';
@@ -141,7 +137,7 @@ function handle_potential_updates($operation, $data_array) {
     return;
 }
 
-function checkout($cust_id, $address_alias, $payment_type) {
+function checkout($cust_id, $address_id, $payment_id) {
     $delivery_charge = 5;
     $staff_id = 1;
     $status_id = 1;
@@ -152,14 +148,14 @@ function checkout($cust_id, $address_alias, $payment_type) {
     $query = 'INSERT INTO SMart.Order(cust_id, address_id, payment_id, created_at, subtotal, service_charge, delivery_charge) 
             VALUES 
             (?, 
-            (SELECT id FROM Customer_Address WHERE alias = ? AND cust_id = ? AND active = 1), 
-            (SELECT id FROM Customer_Payment WHERE payment_type = ? AND cust_id = ? AND active = 1), 
+            (SELECT id FROM Customer_Address WHERE id = ? AND cust_id = ? AND active = 1), 
+            (SELECT id FROM Customer_Payment WHERE id = ? AND cust_id = ? AND active = 1), 
             NOW(), 
             (SELECT SUM(c.quantity * p.price) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?), 
             ?,
             (SELECT ROUND(0.05*SUM(c.quantity * p.price), 2) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?)
             )';
-    payload_deliver($conn, $query, "isisiiii", $params = array($cust_id, $address_alias, $cust_id, $payment_type, $cust_id, $cust_id, $delivery_charge, $cust_id));
+    payload_deliver($conn, $query, "iiiiiiii", $params = array($cust_id, $address_id, $cust_id, $payment_id, $cust_id, $cust_id, $delivery_charge, $cust_id));
 
     // Store ID of newly created [Order] entry
     $order_id = $conn->insert_id;
@@ -169,7 +165,7 @@ function checkout($cust_id, $address_alias, $payment_type) {
     payload_deliver($conn, $query, "iii", $params = array($order_id, $status_id, $staff_id));
 
     // 3. Get data needed for insertion into [Order_Items] from [Cart] and [Product]
-    $query = 'SELECT p.id AS product_id, c.quantity, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
+    $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
     $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
 
     // Store data into array
@@ -293,15 +289,17 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET')) {
 }
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if (isset($_SESSION["id"], $_POST["address_alias"], $_POST["address_address"], $_POST["address_unit_number"], $_POST["address_postal_code"],
-                    $_POST["payment_type"], $_POST["payment_owner"], $_POST["payment_account_no"], $_POST["payment_expiry_date"], $_POST["payment_cvv"])) {
+    if (isset($_SESSION["id"], $_POST["address_id"], $_POST["address_alias"], $_POST["address_address"], $_POST["address_unit_number"], $_POST["address_postal_code"],
+                    $_POST["payment_id"], $_POST["payment_type"], $_POST["payment_owner"], $_POST["payment_account_no"], $_POST["payment_expiry_date"], $_POST["payment_cvv"])) {
         $address_array = array("user_id" => sanitize_input($_SESSION["id"]),
+            "address_id" => sanitize_input($_POST["address_id"]),
             "alias" => sanitize_input($_POST["address_alias"]),
             "address" => sanitize_input($_POST["address_address"]),
             "unit_no" => sanitize_input($_POST["address_unit_number"]),
             "postal_code" => sanitize_input($_POST["address_postal_code"])
         );
         $payment_array = array("user_id" => sanitize_input($_SESSION["id"]),
+            "payment_id" => sanitize_input($_POST["payment_id"]),
             "payment_type" => sanitize_input($_POST["payment_type"]),
             "owner" => sanitize_input($_POST["payment_owner"]),
             "account_no" => sanitize_input($_POST["payment_account_no"]),
@@ -326,8 +324,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     }
 
     if (isset($_SESSION["id"], $_POST["address_alias"], $_POST["payment_type"]) && !is_cart_empty()) {
-
-        $temp = checkout(sanitize_input($_SESSION["id"]), sanitize_input($_POST["address_alias"]), sanitize_input($_POST["payment_type"]));
+        $temp = checkout(sanitize_input($_SESSION["id"]), sanitize_input($_POST["address_id"]), sanitize_input($_POST["payment_id"]));
         $checkoutMsg .= $temp[0];
         $order_id = $temp[1];
     } else {

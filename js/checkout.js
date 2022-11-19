@@ -18,14 +18,16 @@ function load_aliases() {
 }
 
 // After value selected from "Select A Saved Address Profile:" dropdown, populate corresponding fields
-function load_address_details(alias_string) {
+function load_address_details(address_id) {
     $.ajax({
         type: 'POST',
         url: 'checkout-process.php',
-        data: {operation: "load-address", alias_string: alias_string},
+        data: {operation: "load-address", address_id: address_id},
         success: function (data) {
             var details = JSON.parse(data);
 
+            $("#address-id").html(address_id);
+            $("#address-id").val(address_id);
             $("#address-field").html(details.address);
             $("#address-field").val(details.address);
             $("#unit-no-field").html(details.unit_no);
@@ -49,14 +51,16 @@ function load_card_profiles() {
 }
 
 // After value selected from "Select An Existing Card Profile:" dropdown, populate corresponding fields
-function load_card_details(card_type) {
+function load_card_details(payment_id) {
     $.ajax({
         type: 'POST',
         url: 'checkout-process.php',
-        data: {operation: "load-card-details", card_type: card_type},
+        data: {operation: "load-card-details", payment_id: payment_id},
         success: function (data) {
             var details = JSON.parse(data);
 
+            $("#payment-id").html(payment_id);
+            $("#payment-id").val(payment_id);
             $("#owner-field").html(details.owner);
             $("#owner-field").val(details.owner);
             $("#account-no-field").html(details.account_no);
@@ -82,6 +86,8 @@ $(document).ready(function () {
     // When "Select A Saved Address Profile:" dropdown changes
     $(document).on('change', '#alias-dropdown', function () {
         if ($(this).val() === "empty") {
+            $("#address-id").html("");
+            $("#address-id").val("");
             $("#address-field").html("- Select an Address -");
             $("#address-field").val("");
             $("#unit-no-field").html("");
@@ -89,13 +95,15 @@ $(document).ready(function () {
             $("#postal-code-field").html("");
             $("#postal-code-field").val("");
         } else {
-            load_address_details($(this).val());
+            load_address_details($('option:selected', this).attr('identifier'));
         }
     });
 
     // When "Select An Existing Card Profile:" dropdown changes
     $(document).on('change', '#credit-dropdown', function () {
         if ($(this).val() === "empty") {
+            $("#payment-id").html("");
+            $("#payment-id").val("");
             $("#owner-field").html("- Select a Card -");
             $("#owner-field").val("");
             $("#account-no-field").html("");
@@ -103,7 +111,7 @@ $(document).ready(function () {
             $("#expiry-date-field").html("");
             $("#expiry-date-field").val("");
         } else {
-            load_card_details($(this).val());
+            load_card_details($('option:selected', this).attr('identifier'));
         }
     });
 });

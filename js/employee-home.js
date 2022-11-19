@@ -225,8 +225,7 @@ function do_something(operation, args) {
 
             pureOperation = operation;
             pureOperation = pureOperation.replaceArray(extraTerms, "");
-            console.log(pureOperation);
-            
+
             refresh_tables(pureOperation);
         }
     });
@@ -328,6 +327,9 @@ function refresh_tables(pageType) {
             if ($('#orderinformation').length > 0) {
                 render_table("order_all", 1, "", 0);
             }
+            if ($('#deliveryinformation').length > 0) {
+                render_table("delivery", 1, "");
+            }
             break;
 
         case "packed":
@@ -335,6 +337,9 @@ function refresh_tables(pageType) {
 
             if ($('#orderinformation').length > 0) {
                 render_table("order_all", 1, "", 0);
+            }
+            if ($('#deliveryinformation').length > 0) {
+                render_table("delivery", 1, "");
             }
             break;
 
@@ -564,7 +569,7 @@ $(document).ready(function () {
         checkboxes.each(function () {
             args.push($(this).attr('value'));
         });
-        console.log(args);
+
         do_something(operation, args);
 
         remove_popup();
