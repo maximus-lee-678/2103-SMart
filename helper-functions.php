@@ -48,4 +48,31 @@ function payload_deliver($conn, $query, $types = null, $params = null) {
     return $result;
 }
 
+function payload_deliver_verbose($conn, $query, $types = null, $params = null) {
+    
+    $errorMsg = "";
+    
+    // Prepare the statement:
+    $stmt = $conn->prepare($query);
+
+    // Bind the query statement:
+    if ($types != null && $params != null) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    // Execute the query statement:
+    if (!$stmt->execute()) {
+        $errorMsg .= "Failed while executing query: Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        $stmt->close();
+        $conn->close();
+        return array("success" => false, "data" => $errorMsg);
+    } 
+
+    // Get Result
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    return array("success" => true, "data" => $result);
+}
+
 ?>

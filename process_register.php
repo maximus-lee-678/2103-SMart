@@ -139,7 +139,7 @@ function saveMemberToDB() {
     $conn = new mysqli($config['servername'], $config['username'],
             $config['password'], $config['dbname']);
 
-    // Check connection                        
+    // Check connection
     if ($conn->connect_error) {
         $errorMsg .= "Connection failed: " . $conn->connect_error;
         $success = false;

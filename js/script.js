@@ -1,20 +1,26 @@
 let searchForm = document.querySelector('.search-form');
 
-document.querySelector('#search-btn').onclick = () => {
-    searchForm.classList.toggle('active');
-    cart.classList.remove('active');
-    loginForm.classList.remove('active');
-    navbar.classList.remove('active');
-}
+let searchBtn = document.querySelector('#search-btn');
+if (searchBtn)
+    searchBtn.onclick = () => {
+        searchForm.classList.toggle('active');
+        cart.classList.remove('active');
+        loginForm.classList.remove('active');
+        navbar.classList.remove('active');
+    };
+
+
 
 let cart = document.querySelector('.shopping-cart');
+let cartBtn = document.querySelector('#cart-btn');
+if (cartBtn)
+    cartBtn.onclick = () => {
+        cart.classList.toggle('active');
+        searchForm.classList.remove('active');
+        loginForm.classList.remove('active');
+        navbar.classList.remove('active');
+    };
 
-document.querySelector('#cart-btn').onclick = () => {
-    cart.classList.toggle('active');
-    searchForm.classList.remove('active');
-    loginForm.classList.remove('active');
-    navbar.classList.remove('active');
-}
 
 let loginForm = document.querySelector('.login-form');
 
@@ -26,13 +32,6 @@ document.querySelector('#login-btn').onclick = () => {
 }
 
 let navbar = document.querySelector('.navbar');
-
-document.querySelector('#menu-btn').onclick = () => {
-    navbar.classList.toggle('active');
-    searchForm.classList.remove('active');
-    cart.classList.remove('active');
-    loginForm.classList.remove('active');
-}
 
 window.onscroll = () => {
     searchForm.classList.remove('active');
@@ -75,7 +74,7 @@ function openCity(evt, cityName) {
 }
 
 $(document).ready(function () {
-    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") || (window.location.href).includes("orderHistory.php")){
+    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") || (window.location.href).includes("orderHistory.php")) {
         document.getElementById("defaultOpen").click();
     }
 });

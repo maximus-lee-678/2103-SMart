@@ -9,6 +9,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true) {
     $lname = $_SESSION["lname"];
     //Reset all session var
     unset($_SESSION["loggedin"]);
+    unset($_SESSION["staff"]);
     unset($_SESSION["fname"]);
     unset($_SESSION["lname"]);
     unset($_SESSION["id"]);

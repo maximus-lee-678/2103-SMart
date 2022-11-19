@@ -3,18 +3,16 @@
 include "helper-functions.php";
 
 if (isset($_GET['lastId'])) {
-    $config = parse_ini_file('../../private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'],
-            $config['password'], $config['dbname']);
-
     $lastId = sanitize_input($_GET['lastId']);
     $category = sanitize_input($_GET['category']);
-    $fetchData = fetch_data($lastId, $category);
+    $filter = sanitize_input($_GET['filter']);
+    $filterWild = "%{$filter}%";
+    $fetchData = fetch_data($lastId, $category, $filterWild);
     $displayData = display_data($fetchData);
     echo $displayData;
 }
 
-function fetch_data($lastId, $category) {
+function fetch_data($lastId, $category, $filter) {
     $config = parse_ini_file('../../private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'],
             $config['password'], $config['dbname']);
@@ -23,11 +21,11 @@ function fetch_data($lastId, $category) {
         return "Connection failed: " . $conn->connect_error;
     } else {
         if (!$category) {
-            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 ORDER BY id LIMIT 20");
-            $stmt->bind_param("i", $lastId);
+            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 and name LIKE ? ORDER BY id LIMIT 20");
+            $stmt->bind_param("is", $lastId, $filter);
         } else {
-            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 and cat_id = ? ORDER BY id LIMIT 20");
-            $stmt->bind_param("is", $lastId, $category);
+            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 and cat_id = ? and name LIKE ? ORDER BY id LIMIT 20");
+            $stmt->bind_param("iss", $lastId, $category, $filter);
         }
         $stmt->execute();
         $result = $stmt->get_result();

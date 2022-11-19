@@ -48,11 +48,13 @@ $(document).ready(function () {
     $('#updatemyprofileBtn').click(() => {
 
         let payload = {
+            "staff": document.getElementById("myaddress") ? 0 : 1,
             "fname": $('#user_firstname').val(),
             "lname": $('#user_lastname').val(),
             "phone": $('#user_phonenum').val(),
             "email": $('#user_email').val()
         };
+        
         update_profile(payload);
     });
 
@@ -94,6 +96,7 @@ $(document).ready(function () {
     $('#changepasswordBtn').click(() => {
 
         let payload = {
+            "staff": document.getElementById("myaddress") ? 0 : 1,
             "old_password": $('#user_old_password').val(),
             "new_password": $('#user_new_password').val(),
             "confirm_password": $('#user_confirm_password').val()
@@ -162,7 +165,6 @@ $(document).ready(function () {
             data: {type: 'profile', mode: "update", data: data},
             success: function (response) {
                 let resObj = $.parseJSON(response);
-                console.log(resObj);
                 if (resObj["success"]) {
                     $('#submission_feedback1').removeAttr('hidden');
                     $('#submission_feedback1').html("Success!");
@@ -181,7 +183,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback1, 3000);
                 } else {
                     $('#submission_feedback1').removeAttr('hidden');
-                    $('#submission_feedback1').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback1').html("Failed!<br>" + resObj["data"]);
                 }
             }
         });
@@ -208,6 +210,8 @@ $(document).ready(function () {
     }
 
     function update_address(payload) {
+        
+        console.log(payload);
 
         $.ajax({
             type: 'POST',
@@ -224,11 +228,14 @@ $(document).ready(function () {
                     $(`#address_${payload['id']} .address_data`).text(newData['address']);
                     $(`#address_${payload['id']} .unitno_data`).text(newData['unitno']);
                     $(`#address_${payload['id']} .postal_data`).text(newData['postal']);
+                    
+                    $(`#address_${payload['id']}`).attr('id', `address_${newData['id']}`);  
+                    $('#user_addressid1').val(newData['id']);
 
                     setTimeout(clearFeedback2, 3000);
                 } else {
                     $('#submission_feedback2').removeAttr('hidden');
-                    $('#submission_feedback2').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback2').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback2, 3000);
                 }
             }
@@ -244,7 +251,6 @@ $(document).ready(function () {
             data: {type: 'address', mode: "add", data: payload},
             success: function (response) {
                 let resObj = $.parseJSON(response);
-                console.log(resObj);
                 if (resObj["success"]) {
                     let newData = resObj["data"];
                     $('#submission_feedback2').removeAttr('hidden');
@@ -272,7 +278,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback2, 3000);
                 } else {
                     $('#submission_feedback2').removeAttr('hidden');
-                    $('#submission_feedback2').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback2').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback2, 3000);
                 }
             }
@@ -302,7 +308,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback2, 3000);
                 } else {
                     $('#submission_feedback2').removeAttr('hidden');
-                    $('#submission_feedback2').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback2').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback2, 3000);
                 }
             }
@@ -324,7 +330,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback3, 3000);
                 } else {
                     $('#submission_feedback3').removeAttr('hidden');
-                    $('#submission_feedback3').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback3').html("Failed!<br>" + resObj["data"]);
 
                     setTimeout(clearFeedback3, 3000);
                 }
@@ -368,7 +374,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback4, 3000);
                 } else {
                     $('#submission_feedback4').removeAttr('hidden');
-                    $('#submission_feedback4').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback4').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback4, 3000);
                 }
             }
@@ -393,11 +399,14 @@ $(document).ready(function () {
                     $(`#payment_${payload['id']} .owner_data`).text(newData['owner']);
                     $(`#payment_${payload['id']} .acc_data`).text(newData['accno']);
                     $(`#payment_${payload['id']} .expiry_data`).text(newData['expiry']);
+                    
+                    $(`#payment_${payload['id']}`).attr('id', `payment_${newData['id']}`);  
+                    $('#user_payid').val(newData['id']);
 
                     setTimeout(clearFeedback4, 3000);
                 } else {
                     $('#submission_feedback4').removeAttr('hidden');
-                    $('#submission_feedback4').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback4').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback4, 3000);
                 }
             }
@@ -426,7 +435,7 @@ $(document).ready(function () {
                     setTimeout(clearFeedback4, 3000);
                 } else {
                     $('#submission_feedback4').removeAttr('hidden');
-                    $('#submission_feedback4').html("Failed!<br>" + resObj["message"]);
+                    $('#submission_feedback4').html("Failed!<br>" + resObj["data"]);
                     setTimeout(clearFeedback4, 3000);
                 }
             }

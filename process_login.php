@@ -60,17 +60,44 @@ function authenticateUser() {
         if (!password_verify($_POST["user_password"], $pwd_hashed)) {
             // Don't be too specific with the error message - hackers don't                
             // need to know which one they got right or wrong. :)                
-            $errorMsg .= "Email not found or password doesn't match...\n";
+            $errorMsg .= "Password doesn't match...\n";
             $success = false;
         } else {
             $_SESSION["loggedin"] = true;
+            $_SESSION["staff"] = false;
             $_SESSION["id"] = $row["id"];
             $_SESSION["fname"] = $row["first_name"];
             $_SESSION["lname"] = $row["last_name"];
         }
     } else {
-        $errorMsg .= "Email not found or password doesn't match...";
-        $success = false;
+
+        $stmt->close();
+
+        // Prepare the statement:        
+        $stmt = $conn->prepare("SELECT * FROM Staff WHERE email=?");
+        // Bind & execute the query statement:        
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $fname = $row["first_name"];
+            $lname = $row["last_name"];
+            $pwd_hashed = $row["password"];
+            if (!password_verify($_POST["user_password"], $pwd_hashed)) {
+                $errorMsg .= "Password doesn't match...\n";
+                $success = false;
+            } else {
+                $_SESSION["loggedin"] = true;
+                $_SESSION["staff"] = true;
+                $_SESSION["id"] = $row["id"];
+                $_SESSION["fname"] = $row["first_name"];
+                $_SESSION["lname"] = $row["last_name"];
+            }
+        } else {
+            $errorMsg .= "Email not found ...";
+            $success = false;
+        }
     }
     $stmt->close();
 
@@ -87,9 +114,15 @@ function authenticateUser() {
             <div class ="content">
                 <?php
                 if ($success) {
-                    echo "<h2>Login successful!</h2>";
-                    echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";
-                    echo "<meta http-equiv=\"refresh\" content=\"3;URL=home.php\">";
+                    if ($_SESSION["staff"]) {
+                        echo "<h2>Login successful!</h2>";
+                        echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";
+                        echo "<meta http-equiv=\"refresh\" content=\"3;URL=Employee_Home.php\">";
+                    } else {
+                        echo "<h2>Login successful!</h2>";
+                        echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";
+                        echo "<meta http-equiv=\"refresh\" content=\"3;URL=home.php\">";
+                    }
                 } else {
                     echo "<h2>Oops!</h2>";
                     echo "<h4>The following errors were detected:</h4>";

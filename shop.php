@@ -49,6 +49,13 @@
         <section class="products">
             <h1 class="title"> All <span>products</span> </h1>
 
+            <div class="inputBox">
+                <input required style="width: 75%" id="product_search" name="product_search" type="text" placeholder="Search for products" class="box" maxlength="250">
+                <input type="button" style="width: 12%" id="product_searchBtn" name="product_searchBtn" value="Search" class="btn">
+                <input type="button" style="width: 12%" id="product_clearBtn" name="product_clearBtn" value="Clear" class="btn">
+            </div>
+            <br>
+
             <div class="box-container" id = "product-list"></div>
             <div class = "product-list-tail" id = "0" style='display: none;'></div>
 
