@@ -48,4 +48,20 @@ function payload_deliver($conn, $query, $types = null, $params = null) {
     return $result;
 }
 
+// Print Page Selector
+function print_page($page, $total_pages) {
+    if ($total_pages == 0) {
+        echo '<span>Page 0 of 0</span>';
+    } else {
+        echo '<span>Page ';
+        if ($page > 1) {
+            echo '<span><a class="prev-page" href="#" style="color: #0000ff;"><-</a></span>';
+        }
+        echo '<span class="current-page">' . $page . '</span> of <span class="pages">' . $total_pages . '</span>';
+        if ($page < $total_pages) {
+            echo '<span><a class="next-page" href="#" style="color: #0000ff;">-></a></span>';
+        }
+        echo '</span>';
+    }
+}
 ?>

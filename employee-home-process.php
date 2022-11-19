@@ -14,27 +14,10 @@ function print_search($boxText, $search, $printAdd) {
         </div>';
     } else {
         echo '<div class="inputBox">
-            <input type="text" class="box type-search" style="width: 40%;" name="search-field" placeholder="Enter ' . $boxText . '..." value=' . $search . '>
+            <input type="text" class="box type-search" style="width: 48%;" name="search-field" placeholder="Enter ' . $boxText . '..." value=' . $search . '>
             <input type="button" class="btn" style="width: 22%;" name="search-button" value="Search">
             <input type="button" class="btn" style="width: 22%;" name="clear-button" value="Clear">
         </div>';
-    }
-}
-
-// Print Page Selector
-function print_page($page, $total_pages) {
-    if ($total_pages == 0) {
-        echo '<span>Page 0 of 0</span>';
-    } else {
-        echo '<span>Page ';
-        if ($page > 1) {
-            echo '<span><a class="prev-page" href="#" style="color: #0000ff;"><-</a></span>';
-        }
-        echo '<span class="current-page">' . $page . '</span> of <span class="pages">' . $total_pages . '</span>';
-        if ($page < $total_pages) {
-            echo '<span><a class="next-page" href="#" style="color: #0000ff;">-></a></span>';
-        }
-        echo '</span>';
     }
 }
 
@@ -349,7 +332,7 @@ switch ($operation) {
                 </div>
             </div>';
 
-        print_search('Product Name', $search, $printAdd = true);
+        print_search('Product Name', $search, $printAdd = false);
 
         // 1. Get product count, convert to number of pages
         $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Product WHERE active = 1 AND name LIKE ?';
@@ -484,7 +467,7 @@ switch ($operation) {
             </div>';
         } else {
 
-            print_search('Customer Address', $search, $printAdd = true);
+            print_search('Customer Address', $search, $printAdd = false);
 
             // 2.2.1. Get pack available count, convert to number of pages
             $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
@@ -631,7 +614,7 @@ switch ($operation) {
             </div>';
         } else {
 
-            print_search('Customer Address', $search, $printAdd = true);
+            print_search('Customer Address', $search, $printAdd = false);
 
             // 2.2.1. Get delivery available count, convert to number of pages
             $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
@@ -713,7 +696,7 @@ switch ($operation) {
                 </div>
             </div>';
 
-        print_search('Customer Address', $search, $printAdd = true);
+        print_search('Customer Address', $search, $printAdd = false);
 
         // 1. Get order status count, convert to number of pages
         $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os

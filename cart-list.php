@@ -155,26 +155,26 @@ switch ($_POST["operation"]) {
             }
 
             echo '<tr>
-                                     <td colspan="3" style="text-align: right;">Total: </td>
-                                     <td>$' . number_format($total_cost, 2, '.', '') . '</td>
-                                     <td>' . $total_quantity . '</td>
-                                </tr>
-                            </table>
-                            <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
-                                <tr style="text-align: center; background: white;">
-                                    <td colspan="2">Delivery Fee (' . $service_charge_percent * 100 . '%): </td>
-                                    <td colspan="2">$' . number_format($total_cost * $service_charge_percent, 2, '.', '') . '</td>
-                                </tr>
-                                <tr style="text-align: center; background: white;">
-                                    <td colspan="2">Service Fee: </td>
-                                    <td colspan="2">$' . number_format($delivery_charge, 2, '.', '') . '</td>
-                                </tr>
-                                <tr style="text-align: center; background: white;">
-                                    <td colspan="2">Final Cost: </td>
-                                    <td colspan="2">$' . number_format(($total_cost * (1 + $service_charge_percent)) + $delivery_charge, 2, '.', '') . '</td>
-                                </tr>
-                            </table>
-                            </div>';
+                    <td colspan="3" style="text-align: right;">Total: </td>
+                    <td>$' . number_format($total_cost, 2, '.', '') . '</td>
+                    <td>' . $total_quantity . '</td>
+               </tr>
+           </table>
+           <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
+               <tr style="text-align: center; background: white;">
+                   <td colspan="2">Delivery Fee (' . $service_charge_percent * 100 . '%): </td>
+                   <td colspan="2">$' . number_format($total_cost * $service_charge_percent, 2, '.', '') . '</td>
+               </tr>
+               <tr style="text-align: center; background: white;">
+                   <td colspan="2">Service Fee: </td>
+                   <td colspan="2">$' . number_format($delivery_charge, 2, '.', '') . '</td>
+               </tr>
+               <tr style="text-align: center; background: white;">
+                   <td colspan="2">Final Cost: </td>
+                   <td colspan="2">$' . number_format(($total_cost * (1 + $service_charge_percent)) + $delivery_charge, 2, '.', '') . '</td>
+               </tr>
+           </table>
+           </div>';
         } else {
             echo "<caption>Cart is empty!</caption>";
         }
