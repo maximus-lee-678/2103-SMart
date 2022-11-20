@@ -334,13 +334,19 @@ function validatePassword($data) {
     $uppercase = preg_match('@[A-Z]@', $data["new_password"]);      //Check if there are uppercase
     $lowercase = preg_match('@[a-z]@', $data["new_password"]);      //Check if there are lowercase
     $special = preg_match('/[\'^£$%&!*()}{@#~?><>,|=_+¬-]/', $data["new_password"]);
-    if (empty($data["new_password"]) || empty($data["confirm_password"])) {
+
+    if (array_key_exists("confirm_password", $data)) {
+        return array("success" => $success, "data" => $data);
+    }
+
+
+    if (empty($data["new_password"])) {
         $errorMsg .= "Password is required.<br>";
         $success = false;
     } elseif (!$number || !$uppercase || !$lowercase || !$special || strlen($data["new_password"]) < 8) {  //Check if contain at least one number, uppercase and lowercase letter, and at least 8 characters.
         $errorMsg .= "Password must contain at least one number, uppercase and lowercase letter, and at least 8 characters.<br>";
         $success = false;
-    } elseif ($data["new_password"] != $data["confirm_password"]) {     //Check if password confirmation matches password
+    } elseif (array_key_exists("confirm_password", $data) && $data["new_password"] != $data["confirm_password"]) {     //Check if password confirmation matches password
         $errorMsg .= "Password do not match.<br>";
         $success = false;
     } else {
@@ -432,6 +438,11 @@ function validateUserByPassword($data) {
 
     $errorMsg = "";
     $success = true;
+
+    if (array_key_exists("old_password", $data)) {
+        return array("success" => $success);
+    }
+
     $conn = make_connection();
 
     $query = "SELECT password FROM Customer WHERE id = ?";
