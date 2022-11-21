@@ -53,7 +53,7 @@ $staff_roles = get_staff_role();
             <h1>Employee Dashboard</h1>
         </div>
 
-        <section class="contact" style="margin-bottom: 1350px; margin-top: 50px; font-size: 1.4rem; color: #666;">
+        <section class="contact" style="display: flex; margin-top: 50px; font-size: 1.4rem; color: #666; padding-left:2%;">
 
             <div class="tab">
                 <?php
@@ -87,7 +87,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(1, $staff_roles, true)) {
-                echo '<div id="myStaff" class="tabcontent">
+                echo '<div id="myStaff" class="tabcontent" style="width: 5%;">
                         <div class="row">
                             <form action="#" class="register-form" method="post" name="mystaffroleform">
 
@@ -104,7 +104,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(2, $staff_roles, true)) {
-                echo '<div id="myProducts" class="tabcontent">
+                echo '<div id="myProducts" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="myproductform">
@@ -119,7 +119,7 @@ $staff_roles = get_staff_role();
                         </div>
                     </div>
 
-                    <div id="editsupermarkettable" class="tabcontent">
+                    <div id="editsupermarkettable" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="editsupermarketform">
@@ -133,7 +133,7 @@ $staff_roles = get_staff_role();
                         </div>
                     </div>
 
-                    <div id="editCategory" class="tabcontent">
+                    <div id="editCategory" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="editcategoryform">
@@ -148,7 +148,7 @@ $staff_roles = get_staff_role();
                         </div>
                     </div>
 
-                    <div id="editbrand" class="tabcontent">
+                    <div id="editbrand" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="editbrandform">
@@ -167,7 +167,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(3, $staff_roles, true)) {
-                echo '<div id="viewproductstock" class="tabcontent">
+                echo '<div id="viewproductstock" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="viewallstocks">
@@ -186,7 +186,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(4, $staff_roles, true)) {
-                echo '<div id="viewpacking" class="tabcontent">
+                echo '<div id="viewpacking" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="viewallorders">
@@ -205,7 +205,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(5, $staff_roles, true)) {
-                echo '<div id="deliveryinformation" class="tabcontent">
+                echo '<div id="deliveryinformation" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="deliveryinformation">
@@ -224,7 +224,7 @@ $staff_roles = get_staff_role();
 
             <?php
             if (in_array(6, $staff_roles, true)) {
-                echo '<div id="orderinformation" class="tabcontent">
+                echo '<div id="orderinformation" class="tabcontent" style="width: 5%;">
                         <div class="row">
 
                             <form action="#" class="register-form" method="post" name="viewallorderinformatio ">

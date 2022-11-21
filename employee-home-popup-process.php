@@ -6,24 +6,24 @@ include "helper-functions.php";
 // Print Close Button
 function print_close_button() {
     echo '<div style="float:right;">
-        <a style="font-size:30px;" href="#" id="close-view">[X]</a>
+        <a style="font-size:15px;" href="#" id="close-view">X</a>
     </div>';
 }
 
 // Print Header
 function print_header($msg, $args = null) {
     if ($args != null) {
-        echo '<h4 style="margin-top: 50px; font-size: 2.4rem;">' . $msg . ' [ <span class="popup-id">' . $args . '</span> ]</h4>';
+        echo '<h4 style="margin-top: 15px; font-size: 2.4rem;">' . $msg . ' [ <span class="popup-id">' . $args . '</span> ]</h4>';
     } else {
-        echo '<h4 style="margin-top: 50px; font-size: 2.4rem;">' . $msg . '</span></h4>';
+        echo '<h4 style="margin-top: 15px; font-size: 2.4rem;">' . $msg . '</span></h4>';
     }
 }
 
 // Print Confirmation Button
 function print_confirmation($operation, $text) {
     echo '</div>
-            <div class="inputBox" style="margin-top: 40px;">
-                <input type="button" style="width: 100%" operation="' . $operation . '" class="btn" name="confirm-button" value="' . $text . '">
+            <div class="inputBox" style="margin-top: 20px;">
+                <input type="button" style="padding: 12px 20px; margin-left: 50%; transform: translate(-50%, 0%);" operation="' . $operation . '" class="btn" name="confirm-button" value="' . $text . '">
         </div>';
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

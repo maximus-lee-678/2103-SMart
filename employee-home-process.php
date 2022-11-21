@@ -8,9 +8,9 @@ function print_search($boxText, $search, $printAdd) {
     if ($printAdd) {
         echo '<div class="inputBox">
             <input type="text" class="box type-search" style="width: 40%;" name="search-field" placeholder="Enter ' . $boxText . '..." value=' . $search . '>
-            <input type="button" class="btn" style="width: 22%;" name="search-button" value="Search">
-            <input type="button" class="btn" style="width: 22%;" name="clear-button" value="Clear">
-            <input type="button" class="btn" style="width: 10%;" name="add-button" value="Add">
+            <input type="button" class="btn" style="width: 20%;" name="search-button" value="Search">
+            <input type="button" class="btn" style="width: 20%;" name="clear-button" value="Clear">
+            <input type="button" class="btn" style="width: 15%;" name="add-button" value="Add">
         </div>';
     } else {
         echo '<div class="inputBox">
@@ -66,7 +66,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print table headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>ID</th>
                     <th>Name</th>
@@ -94,7 +94,7 @@ switch ($operation) {
                 echo '<tr style="text-align: center;" operation="staff" staff_id="' . $row["staff_id"] . '">
                     <td>' . $row["staff_id"] . '</td>
                     <td>' . $row["first_name"] . ' ' . $row["last_name"] . '</td>
-                    <td>' . $row["email"] . '</td>
+                    <td style="text-transform: none;">' . $row["email"] . '</td>
                     <td>' . $row["telephone"] . '</td>
                     <td>' . str_replace(",", "<br>", $row["roles"]) . '</td>
                     <td><a href="#" class="edit" style="color: #bac34e;">Edit</a></td>
@@ -129,7 +129,7 @@ switch ($operation) {
                     <th>Brand</th>
                     <th>Unit</th>
                     <th>Price</th>
-                    <th>Quantity</th>
+                    <th>Qty</th>
                     <th>Supermarket</th>
                     <th>Category</th>
                     <th colspan="2">Last Restocked</th>
@@ -187,7 +187,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print Table Headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>ID</th>
                     <th>Name</th>
@@ -234,7 +234,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print Table Headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>ID</th>
                     <th>Name</th>
@@ -283,7 +283,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print Table Headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>ID</th>
                     <th>Name</th>
@@ -344,7 +344,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print Table Headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>ID</th>
                     <th colspan="2">Product</th>
@@ -412,7 +412,7 @@ switch ($operation) {
 
             // Print Table Headers (1)
             echo '<h4>Your Task (ID <span class="popup-id">' . $order_id . '</span>): </h4>
-                <table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+                <table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>Order ID</th>
                     <th>Customer Address</th>
@@ -431,7 +431,7 @@ switch ($operation) {
             // Print Table Headers (2)
             echo '<br>
                 <h4>Items to Pack: </h4>
-                    <table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+                    <table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                     <tr style="text-align: center; background: #6D6875; color: white;">
                         <th>Product ID</th>
                         <th colspan="2">Product</th>
@@ -486,7 +486,7 @@ switch ($operation) {
             print_page($page, $total_pages);
 
             // Print Table Headers
-            echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+            echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>Order ID</th>
                     <th>Customer Address</th>
@@ -559,7 +559,7 @@ switch ($operation) {
 
             // Print Table Headers (1)
             echo '<h4>Your Task (ID <span class="popup-id">' . $order_id . '</span>): </h4>
-                <table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+                <table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>Order ID</th>
                     <th>Customer Address</th>
@@ -578,7 +578,7 @@ switch ($operation) {
             // Print Table Headers (2)
             echo '<br>
                 <h4>Items to Deliver: </h4>
-                    <table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+                    <table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                     <tr style="text-align: center; background: #6D6875; color: white;">
                         <th>Product ID</th>
                         <th colspan="2">Product</th>
@@ -630,7 +630,7 @@ switch ($operation) {
             print_page($page, $total_pages);
 
             // Print Table Headers
-            echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+            echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>Order ID</th>
                     <th>Customer Address</th>
@@ -716,7 +716,7 @@ switch ($operation) {
         print_page($page, $total_pages);
 
         // Print Table Headers
-        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
+        echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px; width: 800px">
                 <tr style="text-align: center; background: #6D6875; color: white;">
                     <th>Status ID</th>
                     <th>Order ID</th>
