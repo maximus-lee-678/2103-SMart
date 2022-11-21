@@ -335,11 +335,6 @@ function validatePassword($data) {
     $lowercase = preg_match('@[a-z]@', $data["new_password"]);      //Check if there are lowercase
     $special = preg_match('/[\'^£$%&!*()}{@#~?><>,|=_+¬-]/', $data["new_password"]);
 
-    if (array_key_exists("confirm_password", $data)) {
-        return array("success" => $success, "data" => $data);
-    }
-
-
     if (empty($data["new_password"])) {
         $errorMsg .= "Password is required.<br>";
         $success = false;
@@ -439,7 +434,7 @@ function validateUserByPassword($data) {
     $errorMsg = "";
     $success = true;
 
-    if (array_key_exists("old_password", $data)) {
+    if (!array_key_exists("old_password", $data)) {
         return array("success" => $success);
     }
 
@@ -598,8 +593,15 @@ function deleteAddress($data) {
 function updatePassword($data) {
     $conn = make_connection();
 
-    $query = "UPDATE Customer SET password = ?, modified_at = NOW() WHERE id = ?";
-    $result = payload_deliver_verbose($conn, $query, "si", $params = array($data["new_password"], sanitize_input($_SESSION['id'])));
+    if ($data["staff"]) {
+        $query = "UPDATE Staff SET password = ?, modified_at = NOW() WHERE id = ?";
+        $result = payload_deliver_verbose($conn, $query, "si", $params = array($data["new_password"], $data["staff_id"]));
+    } else {
+        $query = "UPDATE Customer SET password = ?, modified_at = NOW() WHERE id = ?";
+        $result = payload_deliver_verbose($conn, $query, "si", $params = array($data["new_password"], sanitize_input($_SESSION['id'])));
+    }
+
+
 
     $conn->close();
 

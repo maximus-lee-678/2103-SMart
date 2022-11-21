@@ -27,7 +27,8 @@ function is_cart_empty() {
 }
 
 function checkout($cust_id, $address_id, $payment_id) {
-    $delivery_charge = 5;
+    global $delivery_charge_actual;
+    global $service_charge_multiplier;
     $staff_id = 1;
     $status_id = 1;
 
@@ -40,11 +41,11 @@ function checkout($cust_id, $address_id, $payment_id) {
             (SELECT id FROM Customer_Address WHERE id = ? AND cust_id = ? AND active = 1), 
             (SELECT id FROM Customer_Payment WHERE id = ? AND cust_id = ? AND active = 1), 
             NOW(), 
-            (SELECT SUM(c.quantity * p.price) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?), 
-            ?,
-            (SELECT ROUND(0.05*SUM(c.quantity * p.price), 2) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?)
+            (SELECT SUM(c.quantity * p.price) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
+            (SELECT ROUND(?*SUM(c.quantity * p.price), 2) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
+            ?
             )';
-    payload_deliver($conn, $query, "iiiiiiii", $params = array($cust_id, $address_id, $cust_id, $payment_id, $cust_id, $cust_id, $delivery_charge, $cust_id));
+    payload_deliver($conn, $query, "iiiiiidii", $params = array($cust_id, $address_id, $cust_id, $payment_id, $cust_id, $cust_id, $service_charge_multiplier, $cust_id, $delivery_charge_actual));
 
     // Store ID of newly created [Order] entry
     $order_id = $conn->insert_id;
@@ -79,7 +80,7 @@ function checkout($cust_id, $address_id, $payment_id) {
 }
 
 function print_eReceipt($order_id) {
-    $service_charge_percent = 5;
+    global $service_charge_multiplier;
 
     $cust_id = sanitize_input($_SESSION["id"]);
     $order_id = sanitize_input($order_id);
@@ -144,7 +145,7 @@ function print_eReceipt($order_id) {
        </table>
        <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
            <tr style="text-align: center; background: white;">
-               <td colspan="2">Delivery Fee (' . $service_charge_percent . '%): </td>
+               <td colspan="2">Delivery Fee (' . $service_charge_multiplier*100 . '%): </td>
                <td colspan="2">$' . number_format($row["service_charge"], 2, '.', '') . '</td>
            </tr>
            <tr style="text-align: center; background: white;">
@@ -199,7 +200,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
 
         $updateMsg = $checkoutMsg = "";
         $updateMsgBool = $checkoutMsgBool = true;
-
+        
         $result = addressOperation("update", $address_array);
         if (!$result['success']) {
             $resultText = $result['data'];
@@ -228,6 +229,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
 
     if ($updateMsgBool) {
         if (isset($_SESSION["id"], $_POST["address_alias"], $_POST["payment_type"]) && !is_cart_empty()) {
+            echo "3";
             $temp = checkout(sanitize_input($_SESSION["id"]), sanitize_input($_POST["address_id"]), sanitize_input($_POST["payment_id"]));
             $checkoutMsg .= $temp[0];
             $order_id = $temp[1];
@@ -240,6 +242,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $checkoutMsgBool = false;
     }
 }
+
 ?>
 
 <html lang="en">
