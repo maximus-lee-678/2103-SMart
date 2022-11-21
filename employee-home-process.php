@@ -49,7 +49,7 @@ if (isset($_POST["addit_args"])) {
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-$staff_id = 5;
+global $staff_id;
 
 switch ($operation) {
     case "staff":

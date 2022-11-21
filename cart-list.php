@@ -14,6 +14,9 @@ if (!(isset($_SESSION["id"]) && isset($_POST["operation"]))) {
     exit();
 }
 
+global $delivery_charge_actual;
+global $service_charge_multiplier;
+
 $conn = make_connection();
 
 switch ($_POST["operation"]) {
@@ -129,8 +132,6 @@ switch ($_POST["operation"]) {
 
         $total_cost = 0;
         $total_quantity = 0;
-        $service_charge_percent = 0.05;
-        $delivery_charge = 5;
 
         if ($result->num_rows > 0) {
             echo '<table class="carttable" style="font-size: 1.4rem;">
@@ -162,16 +163,16 @@ switch ($_POST["operation"]) {
            </table>
            <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
                <tr style="text-align: center; background: white;">
-                   <td colspan="2">Delivery Fee (' . $service_charge_percent * 100 . '%): </td>
-                   <td colspan="2">$' . number_format($total_cost * $service_charge_percent, 2, '.', '') . '</td>
+                   <td colspan="2">Delivery Fee: </td>
+                   <td colspan="2">$' . number_format($delivery_charge_actual, 2, '.', '') . '</td>
                </tr>
                <tr style="text-align: center; background: white;">
-                   <td colspan="2">Service Fee: </td>
-                   <td colspan="2">$' . number_format($delivery_charge, 2, '.', '') . '</td>
+                   <td colspan="2">Service Fee: (' . $service_charge_multiplier*100 . '%)</td>
+                   <td colspan="2">$' . number_format($total_cost * $service_charge_multiplier, 2, '.', '') . '</td>
                </tr>
                <tr style="text-align: center; background: white;">
                    <td colspan="2">Final Cost: </td>
-                   <td colspan="2">$' . number_format(($total_cost * (1 + $service_charge_percent)) + $delivery_charge, 2, '.', '') . '</td>
+                   <td colspan="2">$' . number_format(($total_cost * (1 + $service_charge_multiplier)) + $delivery_charge_actual, 2, '.', '') . '</td>
                </tr>
            </table>
            </div>';

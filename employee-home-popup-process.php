@@ -1,6 +1,7 @@
 <?php
 
 include "helper-functions.php";
+include "helper-profile.php";
 
 //[FUNCTIONS]///////////////////////////////////////////////////////////////////////////////////////
 // Print Close Button
@@ -26,6 +27,7 @@ function print_confirmation($operation, $text) {
                 <input type="button" style="padding: 12px 20px; margin-left: 50%; transform: translate(-50%, 0%);" operation="' . $operation . '" class="btn" name="confirm-button" value="' . $text . '">
         </div>';
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
@@ -39,7 +41,7 @@ if (!isset($_POST["operation"])) {
 
 $operation = sanitize_input($_POST["operation"]);
 
-$staff_id = 5;
+global $staff_id;
 
 $conn = make_connection();
 
@@ -115,14 +117,25 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
-        // 1. Update staff details
+        // Update password
+        if ($args[4] != "") {
+            $password_op = passwordOperation("update", array("staff" => 1, "staff_id" => $args[0], "new_password" => $args[4]));
+
+            if (!$password_op["success"]) {
+                echo "Password update failed: " . $password_op["data"];
+                $conn->close();
+                exit();
+            }
+        }
+
+        // 1. Update rest of staff details
         $query = 'UPDATE Staff
-                SET first_name = ?, last_name = ?, email = ?, password = ?, telephone = ?, modified_at = NOW()
+                SET first_name = ?, last_name = ?, email = ?, telephone = ?, modified_at = NOW()
                 WHERE id = ?';
-        payload_deliver($conn, $query, "ssssii", array($args[1], $args[2], $args[3], $args[4], $args[5], $args[0]));
+        payload_deliver($conn, $query, "sssii", array($args[1], $args[2], $args[3], $args[5], $args[0]));
 
         $query = 'DELETE FROM RoleAssignment WHERE staff_id = ?';
         payload_deliver($conn, $query, "i", array($args[0]));
@@ -211,9 +224,17 @@ switch ($operation) {
             array_push($args, $x);
         }
 
+        $password_op = validatePassword(array("new_password" => $args[4]));
+
+        if (!$password_op["success"]) {
+            echo "Account Creation failed: " . $password_op["data"];
+            $conn->close();
+            exit();
+        }
+
         // 1. Add Staff
         $query = 'INSERT INTO Staff(first_name, last_name, email, password, telephone, created_at, modified_at) VALUES(?, ?, ?, ?, ?, NOW(), NOW())';
-        $result = payload_deliver($conn, $query, "ssssi", $params = array($args[1], $args[2], $args[3], $args[4], $args[5]));
+        $result = payload_deliver($conn, $query, "ssssi", $params = array($args[1], $args[2], $args[3], $password_op["data"]["new_password"], $args[5]));
 
         $id = $conn->insert_id;
 
@@ -348,7 +369,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Update brand details
@@ -486,7 +507,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Product(name, display_unit, price, image_url, active, quantity, sm_id, cat_id, brand_id, created_at, modified_at, modified_by) 
@@ -527,7 +548,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Update supermarket details
@@ -575,7 +596,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Supermarket(name, created_at, modified_at, modified_by) VALUES(?, NOW(), NOW(), ?)';
@@ -623,7 +644,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Update supermarket details
@@ -687,7 +708,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Add Category
@@ -728,7 +749,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Update brand details
@@ -776,7 +797,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         // 1. Add Brand
@@ -855,7 +876,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'UPDATE Product SET quantity = quantity + ?, last_restocked_at = NOW(), last_restocked_by = ? WHERE id = ?';
@@ -936,7 +957,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, 2, NOW(), ?)';
@@ -949,7 +970,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, 3, NOW(), ?)';
@@ -1030,7 +1051,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, 4, NOW(), ?)';
@@ -1043,7 +1064,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, 5, NOW(), ?)';
@@ -1125,7 +1146,7 @@ switch ($operation) {
         // Form Parameters
         $args = array();
         foreach ($_POST["args"] as $x) {
-            array_push($args, $x);
+            array_push($args, sanitize_input($x));
         }
 
         $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, 6, NOW(), ?)';

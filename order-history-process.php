@@ -14,7 +14,7 @@ $status_strings = array(
     'complete' => '(os.status_id = 6)'
 );
 
-$service_charge_percent = 0.05;
+global $service_charge_multiplier;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
@@ -142,11 +142,11 @@ foreach ($cust_orders as $cust_orders_row) {
     // Print Order Summary
     echo '<table class="historyPayTable" style="font-size: 1.4rem; margin-top: 40px;">
                <tr style="text-align: center; background: white;">
-                   <td colspan="2">Delivery Fee (' . $service_charge_percent * 100 . '%): </td>
+                   <td colspan="2">Delivery Fee: </td>
                    <td colspan="2">$' . number_format($cust_orders_row["delivery_charge"], 2, '.', '') . '</td>
                </tr>
                <tr style="text-align: center; background: white;">
-                   <td colspan="2">Service Fee: </td>
+                   <td colspan="2">Service Fee: (' . $service_charge_multiplier * 100 . '%)</td>
                    <td colspan="2">$' . number_format($cust_orders_row["service_charge"], 2, '.', '') . '</td>
                </tr>
                <tr style="text-align: center; background: white;">

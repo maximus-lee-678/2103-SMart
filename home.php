@@ -7,8 +7,6 @@
         <!-- header section starts -->
         <?php include "nav.php"; ?>
         <!-- header section ends -->
-
-        
         
         <section class="home">
             <div class="slides-container">
@@ -47,8 +45,8 @@
 
                 <div class="slide">
                     <div class="content">
-                        <span>The saavy mart</span>
-                        <h3>Sheng Shiong</h3>
+                        <span>The savvy mart</span>
+                        <h3>Sheng Siong</h3>
                         <a href="shop.php" class="btn">shop now</a>
                     </div>
                     <div class="image">
@@ -61,12 +59,7 @@
             <div id="prev-slide" class="fas fa-angle-left" onclick="prev()"></div>
 
         </section>
-        
-        
-        <a href="Employee_Home.php" style="font-size: 3.4rem;">Employee_Home</a>
-        
 
-        
         <?php include "footer.php"; ?>
 
     </body>

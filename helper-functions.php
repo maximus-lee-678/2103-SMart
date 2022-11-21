@@ -92,4 +92,9 @@ function print_page($page, $total_pages) {
         echo '</span>';
     }
 }
+
+$delivery_charge_actual = 5;
+$service_charge_multiplier = 0.05;
+
+$staff_id = sanitize_input($_SESSION["id"]);
 ?>

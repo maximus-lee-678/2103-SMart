@@ -219,6 +219,11 @@ function do_something(operation, args) {
         url: 'employee-home-popup-process.php',
         data: {operation: operation, args: args},
         success: function (data) {
+            if(data.includes("failed")){
+                console.log(data);
+                 alert(data);
+            }
+            
             if (operation.includes("delete")) {
                 alert(JSON.parse(data).response);
             }
