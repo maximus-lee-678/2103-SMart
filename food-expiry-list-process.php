@@ -62,23 +62,31 @@ foreach ($cust_orders as $cust_orders_row) {
                         <tr style="text-align: center; background: #6D6875; color: white;">
                             <th colspan="2">Product</th>
                             <th>Quantity</th>
-                            <th>Expiry Date</th>
-                            <th colspan="2"></th>
+                            <th colspan="3">Expiry Date</th>
                         </tr>';
 
     // Print Table Rows
     while ($row = mysqli_fetch_assoc($result)) {
-        $expiry_date = date('Y-m-d', strtotime(substr($cust_orders_row["created_at"], 0, 10) . ' + ' . $row["expiry_duration"] . ' days'));
-        $expires_in = (strtotime($expiry_date) - strtotime($current_date))/(24*60*60);
-        
-        echo '<tr>
+        if ($row["expiry_duration"] != null) {
+            $expiry_date = date('Y-m-d', strtotime(substr($cust_orders_row["created_at"], 0, 10) . ' + ' . $row["expiry_duration"] . ' days'));
+            $expires_in = (strtotime($expiry_date) - strtotime($current_date)) / (24 * 60 * 60);
+
+            echo '<tr>
                 <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
                 <td>' . $row["name"] . '</td>
                 <td>' . $row["quantity"] . '</td>
                 <td>' . $expiry_date . '<br> Expires after: ' . $row["expiry_duration"] . ' days from order</td>
-                <td style=' . ($expires_in > 0 ? '"color: green;">Expiring in ' . $expires_in . ' days':'"color: red;">Expired ' . -$expires_in . ' days ago!'). '</td>
+                <td style=' . ($expires_in > 0 ? '"color: green;">Expiring in ' . $expires_in . ' days' : '"color: red;">Expired ' . -$expires_in . ' days ago!') . '</td>
                 <td><button class="btn">Acknowledge</button></td>
             </tr>';
+        } else {
+            echo '<tr>
+                <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" class="imagesize"></td>
+                <td>' . $row["name"] . '</td>
+                <td>' . $row["quantity"] . '</td>
+                <td colspan="3">No Expiry</td>
+            </tr>';
+        }
     }
 
     echo '</table>
