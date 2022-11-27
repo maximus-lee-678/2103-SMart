@@ -60,13 +60,28 @@
             <h1>My Food List</h1>
         </div>
 
-        <section class="products">
-            <!--if got purchase history-->
-            <div class="wrapper" style="margin-bottom: 30px;">  
 
+
+        <section class="products">
+            <div class="tab2" style="float: none;">
+                <button class="tablinks" onclick="openCity(event, 'all')" id="defaultOpen">All</button>
+                <button class="tablinks" onclick="openCity(event, 'expiring')">Expiring & Unacknowledged</button>
+            </div>
+            
+            <div id="all" class="tabcontent2">
+                <div class="wrapper" type="all" style="margin-bottom: 30px;">  
+
+                </div>
             </div>
 
+            <div id="expiring" class="tabcontent2">
+                <div class="wrapper" type="expiring" style="margin-bottom: 30px;">  
+
+                </div>
+            </div>
         </section>
+
+
         <?php include "footer.php"; ?>
     </body>
 </html>
