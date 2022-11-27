@@ -2,6 +2,15 @@
 
 session_start();
 
+if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
+    header("refresh: 0; url=shop.php");
+    exit();
+}
+
+if (!(isset($_SESSION["id"]))) {
+    exit();
+}
+
 include "helper-functions.php";
 
 $cust_id = sanitize_input($_SESSION["id"]);

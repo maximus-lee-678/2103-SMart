@@ -33,8 +33,19 @@ function checkout($cust_id, $address_id, $payment_id) {
     $status_id = 1;
 
     $conn = make_connection();
-   
-    // 1. Create row in [Order]
+    
+    // 1. Check if sufficient product stock (cart > product quantity)
+    $query = 'SELECT c.prod_id, c.quantity, p.quantity AS p_quantity FROM Cart AS c
+            LEFT JOIN Product AS p ON p.id=c.prod_id
+            WHERE (c.quantity > p.quantity) AND cust_id = ?';
+    $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
+    
+    if(mysqli_num_rows($result) != 0){
+        $conn->close();
+        return array("Some products are out of stock. Please try again later.", -1);
+    }
+
+    // 2. Create row in [Order]
     $query = 'INSERT INTO SMart.Order(cust_id, address_id, payment_id, created_at, subtotal, service_charge, delivery_charge) 
             VALUES 
             (?, 
@@ -50,11 +61,11 @@ function checkout($cust_id, $address_id, $payment_id) {
     // Store ID of newly created [Order] entry
     $order_id = $conn->insert_id;
 
-    // 2. Create row in [Order_Status]
+    // 3. Create row in [Order_Status]
     $query = 'INSERT INTO Order_Status(order_id, status_id, created_at, created_by) VALUES (?, ?, NOW(), ?)';
     payload_deliver($conn, $query, "iii", $params = array($order_id, $status_id, $staff_id));
 
-    // 3. Get data needed for insertion into [Order_Items] from [Cart] and [Product]
+    // 4. Get data needed for insertion into [Order_Items] from [Cart] and [Product]
     $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price, IF(ISNULL(p.expiry_duration), -1, 0) AS expiry_ack_initial FROM Cart as c 
             INNER JOIN Product as p ON c.prod_id = p.id
             WHERE c.cust_id = ?';
@@ -68,12 +79,16 @@ function checkout($cust_id, $address_id, $payment_id) {
     }
 
     foreach ($cart_items as $cart_row) {
-        // 4. Insert data into [Order_Items]
+        // 5. Insert data into [Order_Items]
         $query = 'INSERT INTO Order_Items(order_id, prod_id, quantity, price, expiry_ack) VALUES(?, ?, ?, ?, ?)';
         payload_deliver($conn, $query, "iiidi", $params = array($order_id, $cart_row["product_id"], $cart_row["quantity"], $cart_row["price"], $cart_row["expiry_ack_initial"]));
+        
+        // 6. Update [Product] quantity
+        $query = 'UPDATE Product SET quantity = quantity - ? WHERE id = ?';
+        payload_deliver($conn, $query, "ii", $params = array($cart_row["quantity"], $cart_row["product_id"]));
     }
 
-    // 5. Remove corresponding [Cart] rows
+    // 7. Remove corresponding [Cart] rows
     $query = 'DELETE FROM Cart WHERE cust_id = ?';
     payload_deliver($conn, $query, "i", $params = array($cust_id));
 
@@ -147,7 +162,7 @@ function print_eReceipt($order_id) {
        </table>
        <table class="carttable" style="font-size: 1.4rem; margin-top: 40px;">
            <tr style="text-align: center; background: white;">
-               <td colspan="2">Delivery Fee (' . $service_charge_multiplier*100 . '%): </td>
+               <td colspan="2">Delivery Fee (' . $service_charge_multiplier * 100 . '%): </td>
                <td colspan="2">$' . number_format($row["service_charge"], 2, '.', '') . '</td>
            </tr>
            <tr style="text-align: center; background: white;">
@@ -202,7 +217,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
 
         $updateMsg = $checkoutMsg = "";
         $updateMsgBool = $checkoutMsgBool = true;
-        
+
         $result = addressOperation("update", $address_array);
         if (!$result['success']) {
             $resultText = $result['data'];
@@ -228,14 +243,19 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $updateMsg .= "Something went wrong when updating address/payment. Please Try Again.";
         $updateMsgBool = false;
     }
-    
+
 
     if ($updateMsgBool) {
         if (isset($_SESSION["id"], $_POST["address_alias"], $_POST["payment_type"]) && !is_cart_empty()) {
             echo "3";
             $temp = checkout(sanitize_input($_SESSION["id"]), sanitize_input($_POST["address_id"]), sanitize_input($_POST["payment_id"]));
             $checkoutMsg .= $temp[0];
-            $order_id = $temp[1];
+            if($checkoutMsg != "Purchase Successful!"){
+                $checkoutMsgBool = false;
+            }
+            else{
+               $order_id = $temp[1];
+            }
         } else {
             $checkoutMsg .= "Something went wrong when checking out. Please Try Again.";
             $checkoutMsgBool = false;
@@ -245,7 +265,6 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $checkoutMsgBool = false;
     }
 }
-
 ?>
 
 <html lang="en">
