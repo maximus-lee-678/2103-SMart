@@ -16,7 +16,7 @@ echo $is_Staff;
             ?>
             <a href="home.php">home</a>
             <a href="shop.php">shop</a>
-            <a href="MyRecipe.php">My Recipe</a>
+            <a href="recipe.php">My Recipe</a>
             <?php
         }
         ?>
