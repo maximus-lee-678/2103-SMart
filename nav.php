@@ -4,7 +4,6 @@ $is_Staff = isset($_SESSION["staff"]) && $_SESSION["staff"];
 
 echo $is_LoggedIn;
 echo $is_Staff;
-
 ?>
 
 <header class="header">
@@ -17,7 +16,6 @@ echo $is_Staff;
             ?>
             <a href="home.php">home</a>
             <a href="shop.php">shop</a>
-            <a href="FoodExpiryList.php">My Food List</a>
             <a href="MyRecipe.php">My Recipe</a>
             <?php
         }
@@ -65,7 +63,7 @@ echo $is_Staff;
             if ($is_LoggedIn && !$is_Staff) {
                 ?>
                 <div class = "inputBox">
-                    <a href = "FoodExpiryList.php" class = "btn">My Food List <span style = "border-radius: 50%; background-color: red; color: white; padding: 5px; top: -10px; right: -10px; margin-left: 5px;">4</span></a>
+                    <a href = "FoodExpiryList.php" class = "btn">My Food List <span name="nav-expire-count" style="border-radius: 50%; background-color: red; color: white; padding: 5px; top: -10px; right: -10px; margin-left: 5px;">0</span></a>
                 </div>
 
                 <div class = "inputBox">

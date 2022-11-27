@@ -6,7 +6,7 @@ include "helper-functions.php";
 //[FUNCTIONS]///////////////////////////////////////////////////////////////////////////////////////
 function get_staff_role() {
 
-    global $staff_id;
+    $staff_id = sanitize_input($_SESSION["id"]);
     $role_ids = array();
 
     $conn = make_connection();

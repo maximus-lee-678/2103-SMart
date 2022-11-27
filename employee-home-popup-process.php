@@ -41,7 +41,7 @@ if (!isset($_POST["operation"])) {
 
 $operation = sanitize_input($_POST["operation"]);
 
-global $staff_id;
+$staff_id = sanitize_input($_SESSION["id"]);
 
 $conn = make_connection();
 

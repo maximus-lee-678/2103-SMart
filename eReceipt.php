@@ -55,7 +55,7 @@ function checkout($cust_id, $address_id, $payment_id) {
     payload_deliver($conn, $query, "iii", $params = array($order_id, $status_id, $staff_id));
 
     // 3. Get data needed for insertion into [Order_Items] from [Cart] and [Product]
-    $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price, p.expiry_duration, IF(ISNULL(p.expiry_duration), -1, 0) AS expiry_ack_initial FROM Cart as c 
+    $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price, IF(ISNULL(p.expiry_duration), -1, 0) AS expiry_ack_initial FROM Cart as c 
             INNER JOIN Product as p ON c.prod_id = p.id
             WHERE c.cust_id = ?';
     $result = payload_deliver($conn, $query, "i", $params = array($cust_id));

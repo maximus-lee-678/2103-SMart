@@ -93,7 +93,7 @@
                         <br>
                         Brand: <?php echo $brand_name; ?> <!--Brand-->
                     </h4> <!--Brand-->
-                    <a href="#"><i class="fas fa-shopping-cart add-to-cart"></i>Add to cart</a>
+                    <a href="#" class="add-to-cart"><i class="fas fa-shopping-cart"></i>Add to cart</a>
                     <!--if got purchase history-->
                     
                 </div>

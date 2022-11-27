@@ -5,6 +5,18 @@
 //        console.log(e);
 //    });
 
+// Loads number of expiring products
+function load_expiring() {
+    $.ajax({
+        type: 'POST',
+        url: 'food-expiry-list-process.php',
+        data: {type: "expire_summary"},
+        success: function (data) {
+            $('.expire_summary').html(data);
+        }
+    });
+}
+
 // Loads order details
 function load_history(type, page) {
     $.ajax({
@@ -17,16 +29,30 @@ function load_history(type, page) {
     });
 }
 
-$(document).ready(function () {
+// Updates acknowledgement status
+function update_acknowledgement(id) {
+    $.ajax({
+        type: 'POST',
+        url: 'food-expiry-list-process.php',
+        data: {type: "update", id: id},
+        success: function () {
+            load_all();
+        }
+    });
+}
+
+function load_all() {
+    load_expiring();
     load_history("all", 1);
     load_history("expiring", 1);
+}
+
+$(document).ready(function () {
+    load_all();
 
     // Accordion open/close capability
     $(document).on("click", ".accordion", function () {
         var table = $(this).next().find($("table"));
-        var scrollHeight = $('.panel').prop('padding') + "px";
-        console.log(scrollHeight);
-//        var tableHeight = (table.height() + 2 * $('.panel').prop('scrollHeight')) + "px";
         var tableHeight = (table.height() + 2 * parseInt(table.css("margin-top").replace("px", ""))) + "px";
 
         $(this).toggleClass('active');
@@ -37,9 +63,9 @@ $(document).ready(function () {
     $(document).on("click", '.prev-page', function (e) {
         e.preventDefault();
 
-        var type = $($(this).closest('div')).attr('type'); 
+        var type = $($(this).closest('div')).attr('type');
         var page = parseInt($(this).parent().parent().find($(".current-page")).text()) - 1;
-        
+
         load_history(type, page);
     });
 
@@ -53,4 +79,16 @@ $(document).ready(function () {
         load_history(type, page);
     });
 
+    // Acknowledge Button handler
+    $(document).on("click", '.acknowledge', function (e) {
+        e.preventDefault();
+
+        var answer = confirm('Acknowledge this product?');
+
+        if (!answer) {
+            return;
+        }
+
+        update_acknowledgement($(this).attr("order_item_id"));
+    });
 });

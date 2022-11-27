@@ -60,14 +60,16 @@
             <h1>My Food List</h1>
         </div>
 
-
-
         <section class="products">
+            <div>
+                <p class="expire_summary" style="font-size: 1.4rem; background-color: greenyellow; border: 1px solid grey; padding: 10px;">You have 4 food item that is Expiring in 3 Days!</p>
+            </div>
+            <br>
             <div class="tab2" style="float: none;">
                 <button class="tablinks" onclick="openCity(event, 'all')" id="defaultOpen">All</button>
                 <button class="tablinks" onclick="openCity(event, 'expiring')">Expiring & Unacknowledged</button>
             </div>
-            
+
             <div id="all" class="tabcontent2">
                 <div class="wrapper" type="all" style="margin-bottom: 30px;">  
 
@@ -80,7 +82,6 @@
                 </div>
             </div>
         </section>
-
 
         <?php include "footer.php"; ?>
     </body>

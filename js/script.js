@@ -73,11 +73,24 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
+function populateFoodListNumber(){
+        $.ajax({
+        type: 'POST',
+        url: 'food-expiry-list-process.php',
+        data: {type: "expire_number"},
+        success: function (data) {
+            $('span[name="nav-expire-count"]').html(data);
+        }
+    });
+}
+
 $(document).ready(function () {
     if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") 
             || (window.location.href).includes("orderHistory.php") || (window.location.href).includes("FoodExpiryList.php")) {
         document.getElementById("defaultOpen").click();
     }
+    
+    populateFoodListNumber();
 });
 
 // Get the element with id="defaultOpen" and click on it

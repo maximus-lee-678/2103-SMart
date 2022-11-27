@@ -52,22 +52,22 @@ $conn = make_connection();
 
 switch ($_POST["operation"]) {
     case "add-new":
-
+        
         //form parameters
         $cust_id = sanitize_input($_SESSION["id"]);
         $prod_id = sanitize_input($_POST['prod_id']);
-
+        
         // 1. Check if row exists in db
         $query = 'SELECT p.name, c.quantity FROM Cart as c
                 LEFT JOIN Product AS p ON c.prod_id=p.id
                 WHERE cust_id = ? AND prod_id = ?';
         $result = payload_deliver($conn, $query, "ii", $params = array($cust_id, $prod_id));
-
+        
         if ($result->num_rows == 0) {
             // 2.1. No rows, add new
             $query = 'INSERT INTO Cart (cust_id, prod_id, quantity) VALUES (?,?,1)';
             $result = payload_deliver($conn, $query, "ii", $params = array($cust_id, $prod_id));
-
+            
             echo '<caption>Added to cart!</caption>';
         } else {
             // Row found, add 1
