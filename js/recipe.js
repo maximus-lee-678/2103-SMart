@@ -13,6 +13,6 @@ $(document).ready(function () {
 //        var tableHeight = (table.height() + 2 * parseInt(table.css("margin-top").replace("px", ""))) + "px";
 
         $(this).toggleClass('active');
-        $(this).next().css("max-height", (_, attr) => attr === "400px" ? "0px" : "400px"); // change later
+        $(this).next().css("max-height", (_, attr) => attr === "500px" ? "0px" : "500px"); // change later
     });
 });

@@ -44,7 +44,7 @@
 
                 $stmt->close();
 
-                $stmt = $conn->prepare("SELECT * FROM Product_Test WHERE MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? ORDER BY RAND() LIMIT 5;");
+                $stmt = $conn->prepare("SELECT p.*, b.name as brand FROM Product_Test p LEFT JOIN Brand b on p.brand_id = b.id WHERE MATCH(p.name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? ORDER BY RAND() LIMIT 4;");
 
                 $stmt->bind_param("ss", $product_name, $category_id);
 
@@ -95,8 +95,34 @@
                     </h4> <!--Brand-->
                     <a href="#" class="add-to-cart"><i class="fas fa-shopping-cart"></i>Add to cart</a>
                     <!--if got purchase history-->
-                    
+
                 </div>
+            </div>
+        </section>
+
+        <!--related products-->
+        <section class="products">
+            <h1 class="title">You May Also Like</h1>
+
+            <div class="compare">
+                <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        ?>
+                        <div class="columns">
+                            <ul class="price">
+                                <li class="top"><img src="<?= $row["image_url"] ?>"></li>
+                                <li class="grey"><?= $row["name"] ?></li>
+                                <li>$<?= $row["price"] ?></li>
+                                <li><?= $row["display_unit"] ?></li>
+                                <li><?= $row["brand"] ?></li>
+                                <li class="grey"><a href="#" class="button">add to cart</a></li>
+                            </ul>
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
             </div>
         </section>
 
@@ -107,105 +133,48 @@
 
             <!--BOX-1-------------->
             <div class="rateReview-box-container">
-                <!--BOX-1-------------->
-                <div class="rateReview-box">
-                    <!--top------------------------->
-                    <div class="box-top">
-                        <!--profile----->
-                        <div class="profile">
-                            <!--img---->
-                            <div class="profile-img">
-                                <img src="images/c-1.jpg" />
-                            </div>
-                            <!--name-and-username-->
-                            <div class="name-user">
-                                <strong>name</strong>
-                            </div>
-                        </div>
-                        <!--reviews------>
-                        <div class="reviews">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i><!--Empty star-->
-                        </div>
-                    </div>
-                    <!--Comments---------------------------------------->
-                    <div class="userComment">
-                        <p>HI</p>
-                    </div>
-                </div>
-                <!--BOX-2-------------->
-                <div class="rateReview-box">
-                    <!--top------------------------->
-                    <div class="box-top">
-                        <!--profile----->
-                        <div class="profile">
-                            <!--img---->
-                            <div class="profile-img">
-                                <img src="images/c-2.jpg" />
-                            </div>
-                            <!--name-and-username-->
-                            <div class="name-user">
-                                <strong>name</strong>
-                            </div>
-                        </div>
-                        <!--reviews------>
-                        <div class="reviews">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i><!--Empty star-->
-                        </div>
-                    </div>
-                    <!--Comments---------------------------------------->
-                    <div class="userComment">
-                        <p>bye</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!--related products-->
-        <section class ="products">
-
-            <h1 class="title">You May Also Like</h1>
-
-            <div class="box-container" id = "product-list">
                 <?php
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <div class="box" id="<?= $row["id"] ?>">
-                            <div class="icons">
-                                <a href="#" class="fas fa-shopping-cart add-to-cart"></a>
-                                <a href="#" class="fas fa-heart"></a>
-                                <a href="productPage.php?id=<?= $row["id"] ?>" class="fas fa-eye"></a>
-                            </div>
-                            <div class="image">
-                                <img src="<?= $row["image_url"] ?>" alt="">
-                            </div>
-                            <div class="content">
-                                <h3><?= $row["name"] ?></h3>
-                                <div class="price">$<?= $row["price"] ?></div>
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="far fa-star"></i>
+                $db = make_mongo_connection();
+
+                $queryMatch = array('$match' => array("prod_id" => (int) $product_id));
+                $queryLookup = array('$lookup' => array("from" => "Customer", "localField" => "cust_id", "foreignField" => "id", "as" => "cust"));
+                $result = $db->Review->aggregate(array($queryMatch, $queryLookup))->toArray();
+
+                foreach ($result as $row) {
+                    ?>
+                    <div class="rateReview-box">
+                        <!--top------------------------->
+                        <div class="box-top">
+                            <!--profile----->
+                            <div class="profile">
+                                <div class="name-user">
+                                    <strong><?= $row["cust"][0]["first_name"] . " " . $row["cust"][0]["last_name"] ?></strong>
                                 </div>
                             </div>
+                            <!--reviews------>
+                            <div class="reviews">
+                                <?php
+                                for ($i = 0; $i < $row["rating"]; $i++) {
+                                    echo "<i class='fas fa-star'></i>";
+                                }
+                                for ($i = 0; $i < (5 - $row["rating"]); $i++) {
+                                    echo "<i class='far fa-star'></i>";
+                                }
+                                ?>
+                            </div>
                         </div>
-                        <?php
-                    }
+                        <!--Comments---------------------------------------->
+                        <div class="userComment">
+                            <p><?= $row["review"] ?></p>
+                        </div>
+                    </div><?php
                 }
                 ?>
 
             </div>
         </section>
+
+
 
 
         <?php include "footer.php"; ?>
