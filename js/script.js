@@ -74,7 +74,8 @@ function openCity(evt, cityName) {
 }
 
 $(document).ready(function () {
-    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") || (window.location.href).includes("orderHistory.php")) {
+    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") 
+            || (window.location.href).includes("orderHistory.php") || (window.location.href).includes("FoodExpiryList.php")) {
         document.getElementById("defaultOpen").click();
     }
 });

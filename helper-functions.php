@@ -79,9 +79,9 @@ function payload_deliver_verbose($conn, $query, $types = null, $params = null) {
 // Print Page Selector
 function print_page($page, $total_pages) {
     if ($total_pages == 0) {
-        echo '<span>Page 0 of 0</span>';
+        echo '<span style="font-size:1.4rem;">Page 0 of 0</span>';
     } else {
-        echo '<span>Page ';
+        echo '<span style="font-size:1.4rem;">Page ';
         if ($page > 1) {
             echo '<span><a class="prev-page" href="#" style="color: #0000ff;"><-</a></span>';
         }

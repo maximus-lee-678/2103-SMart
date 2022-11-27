@@ -55,7 +55,9 @@ function checkout($cust_id, $address_id, $payment_id) {
     payload_deliver($conn, $query, "iii", $params = array($order_id, $status_id, $staff_id));
 
     // 3. Get data needed for insertion into [Order_Items] from [Cart] and [Product]
-    $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?';
+    $query = 'SELECT c.prod_id AS product_id, c.quantity, p.price, p.expiry_duration, IF(ISNULL(p.expiry_duration), -1, 0) AS expiry_ack_initial FROM Cart as c 
+            INNER JOIN Product as p ON c.prod_id = p.id
+            WHERE c.cust_id = ?';
     $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
 
     // Store data into array
@@ -67,8 +69,8 @@ function checkout($cust_id, $address_id, $payment_id) {
 
     foreach ($cart_items as $cart_row) {
         // 4. Insert data into [Order_Items]
-        $query = 'INSERT INTO Order_Items(order_id, prod_id, quantity, price) VALUES(?, ?, ?, ?)';
-        payload_deliver($conn, $query, "iiid", $params = array($order_id, $cart_row["product_id"], $cart_row["quantity"], $cart_row["price"]));
+        $query = 'INSERT INTO Order_Items(order_id, prod_id, quantity, price, expiry_ack) VALUES(?, ?, ?, ?, ?)';
+        payload_deliver($conn, $query, "iiidi", $params = array($order_id, $cart_row["product_id"], $cart_row["quantity"], $cart_row["price"], $cart_row["expiry_ack_initial"]));
     }
 
     // 5. Remove corresponding [Cart] rows
