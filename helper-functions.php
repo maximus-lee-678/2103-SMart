@@ -1,5 +1,5 @@
 <?php
-
+require 'vendor/autoload.php';
 // Function to sanitize inputs
 function sanitize_input($data) {
     $data = trim($data);
@@ -97,4 +97,13 @@ $delivery_charge_actual = 5;
 $service_charge_multiplier = 0.05;
 
 $staff_id = sanitize_input($_SESSION["id"]);
+
+function make_mongo_connection() {
+    $config = parse_ini_file('../../private/mongo-config.ini');
+    $client = new MongoDB\Client("mongodb://" . $config['username'] . ":" . $config['password'] . "@localhost:27017");
+    $db = $client->SMart;
+    
+    return $db;
+}
 ?>
+

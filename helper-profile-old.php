@@ -1,7 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
-
 ////////////////////////////////////////////
 // PROFILE
 // --------------
@@ -28,7 +26,7 @@ function profileOperation($operation, $data) {
                     "phone" => $data["phone"],
                     "email" => $data["email"]
                 );
-                return array("success" => true, "data" => $newData, "extra" => $result["data"]);
+                return array("success" => true, "data" => $newData);
             }
             break;
         default:
@@ -415,15 +413,18 @@ function validateUserByAddress($data) {
 
     $errorMsg = "";
     $success = true;
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array('id' => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) sanitize_input($data['id']));
-    $result = $db->Customer->count($query);
+    $query = "SELECT COUNT(*) as count FROM Customer_Address WHERE id = ? and cust_id = ?";
+    $result = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($data['id']), sanitize_input($_SESSION['id'])));
 
-    if ($result == 0) {
+    $row = $result->fetch_assoc();
+    if (!$row["count"]) {
         $errorMsg .= "Invalid customer id or address id!";
         $success = false;
     }
+
+    $conn->close();
 
     return $success ? array("success" => $success) : array("success" => $success, "data" => $errorMsg);
 }
@@ -437,13 +438,13 @@ function validateUserByPassword($data) {
         return array("success" => $success);
     }
 
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array("id" => (int) sanitize_input($_SESSION['id']));
-    $result = $db->Customer->find($query);
+    $query = "SELECT password FROM Customer WHERE id = ?";
+    $result = payload_deliver($conn, $query, "i", $params = array(sanitize_input($_SESSION['id'])));
 
-    if ($result != null) {
-        $row = $result->toArray()[0];
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
         $pwd_hashed = $row["password"];
         if (!password_verify($data["old_password"], $pwd_hashed)) {
             $errorMsg .= "Current password is incorrect!\n";
@@ -454,6 +455,8 @@ function validateUserByPassword($data) {
         $success = false;
     }
 
+    $conn->close();
+
     return $success ? array("success" => $success) : array("success" => $success, "data" => $errorMsg);
 }
 
@@ -461,15 +464,18 @@ function validateUserByPayment($data) {
 
     $errorMsg = "";
     $success = true;
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array('id' => (int) sanitize_input($_SESSION['id']), "payment_info.payment_id" => (int) sanitize_input($data['id']));
-    $result = $db->Customer->count($query);
+    $query = "SELECT COUNT(*) as count FROM Customer_Payment WHERE id = ? and cust_id = ?";
+    $result = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($data['id']), sanitize_input($_SESSION['id'])));
 
-    if ($result == 0) {
+    $row = $result->fetch_assoc();
+    if (!$row["count"]) {
         $errorMsg .= "Invalid customer id or payment id!";
         $success = false;
     }
+
+    $conn->close();
 
     return $success ? array("success" => $success) : array("success" => $success, "data" => $errorMsg);
 }
@@ -477,19 +483,19 @@ function validateUserByPayment($data) {
 function checkIfUnique($data) {
     $errorMsg = "";
     $success = true;
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $queryCust = array("email" => $data['email']);
-    $resultCust = $db->Customer->find($queryCust)->toArray()[0];
-
-    if ($resultCust != null) {
-        if ($resultCust['id'] != $_SESSION['id']) {
+    $queryCust = "SELECT id FROM Customer WHERE email=?";
+    $resultCust = payload_deliver($conn, $queryCust, "s", $params = array($data['email']));
+    $rowCountCust = $resultCust->num_rows;
+    if ($rowCountCust > 0) {
+        $row = $resultCust->fetch_assoc();
+        if ($row['id'] != $_SESSION['id']) {
             $errorMsg .= "This email is already registered";
             $success = false;
         }
     }
 
-    $conn = make_connection();
     $queryStaff = "SELECT id FROM Staff WHERE email=?";
     $resultStaff = payload_deliver($conn, $queryStaff, "s", $params = array($data['email']));
     $rowCountStaff = $resultStaff->num_rows;
@@ -507,22 +513,18 @@ function checkIfUnique($data) {
 }
 
 function updateProfile($data) {
-    // Create database connection.        
+    // Create database connection.    
+    $conn = make_connection();
 
     if ($data['staff']) {
-        $conn = make_connection();
         $query = "UPDATE Staff SET first_name = ?, last_name = ?, email = ?, telephone = ?, modified_at = NOW() WHERE id = ?";
         $result = payload_deliver_verbose($conn, $query, "ssssi", $params = array($data['fname'], $data['lname'], $data['email'], $data['phone'], sanitize_input($_SESSION['id'])));
-        $conn->close();
     } else {
-        $db = make_mongo_connection();
-        $queryFind = array("id" => (int) sanitize_input($_SESSION['id']));
-        $queryUpdate = array('$set' => array("first_name" => $data['fname'], "last_name" => $data['lname'], "email" => $data['email'], "telephone" => $data['phone'], "modified_at" => date("Y-m-d h:i:s")));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-        $result = array("success" => true, "data" => null);
+        $query = "UPDATE Customer SET first_name = ?, last_name = ?, email = ?, telephone = ?, modified_at = NOW() WHERE id = ?";
+        $result = payload_deliver_verbose($conn, $query, "ssssi", $params = array($data['fname'], $data['lname'], $data['email'], $data['phone'], sanitize_input($_SESSION['id'])));
     }
 
+    $conn->close();
 
     return $result;
 }
@@ -532,101 +534,77 @@ function updateAddress($data) {
     $conn = make_connection();
 
     // 1. Check if [Orders] table has the address id for any of its rows
-    $query = 'SELECT id FROM SMart.Order WHERE cust_id = ? AND address_id = ?';
-    $resultSQL = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($_SESSION['id']), $data["id"]));
-    $conn->close();
+    $query = 'SELECT id FROM SMart.Order WHERE address_id = ?';
+    $result = payload_deliver($conn, $query, "i", $params = array($data["id"]));
 
-    $db = make_mongo_connection();
-
-    if ($resultSQL->num_rows == 0) {
+    if ($result->num_rows == 0) {
         // 2.1. Make updates to corresponding [Customer_Address] row
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array('address_info.$.alias' => $data["alias"], 'address_info.$.address' => $data["address"], 'address_info.$.unit_no' => $data["unitno"], 'address_info.$.postal_code' => $data["postal"]));
+        $query = 'UPDATE Customer_Address SET alias = ?, address = ?, unit_no = ?, postal_code = ? WHERE id = ?';
+        payload_deliver($conn, $query, "sssii", $params = array($data["alias"], $data["address"], $data["unitno"], $data["postal"], $data["id"]));
 
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-
+        $conn->close();
         return array("success" => true, "data" => $data['id']);
     }
     // Rows returned, there exist entries for this address in [Orders], set the address to be inactive and add a new address
     else {
         // 2.2.1. Set old [Customer_Address] row active = 0
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array("address_info.$.active" => false));
-        $db->Customer->updateOne($queryFind, $queryUpdate);
+        $query = 'UPDATE Customer_Address SET active = 0 WHERE id = ? AND cust_id = ?';
+        payload_deliver($conn, $query, "ii", $params = array($data["id"], sanitize_input($_SESSION['id'])));
 
-        // 2.2.2. Create new [Customer_Address] row   
-        $result = addAddress($data);
+        // 2.2.2. Create new [Customer_Address] row
+        $query = 'INSERT INTO Customer_Address (cust_id, alias, address, unit_no, postal_code, active) VALUES (?,?,?,?,?,true)';
+        payload_deliver($conn, $query, "issss", $params = array(sanitize_input($_SESSION['id']), $data["alias"], $data["address"], $data["unitno"], $data["postal"]));
 
-        return array("success" => true, "data" => $result["data"]);
+        $addId = $conn->insert_id;
+        $conn->close();
+        return array("success" => true, "data" => $addId);
     }
 }
 
 function addAddress($data) {
 
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array("id" => (int) sanitize_input($_SESSION['id']));
-    $queryProject = array('projection' => array("address_info" => array('$slice' => -1)));
+    $query = "INSERT INTO Customer_Address (cust_id, alias, address, unit_no, postal_code, active) "
+            . "VALUES (?, ?, ?, ?, ?, true)";
+    $result = payload_deliver_verbose($conn, $query, "sssss", $params = array(sanitize_input($_SESSION['id']), $data['alias'], $data['address'], $data['unitno'], $data['postal']));
 
-    $result = $db->Customer->find($query, $queryProject)->toArray()[0];
-    $newAddressId = $result["address_info"][0]["address_id"] + 1;
+    if ($result['success']) {
+        $addId = $conn->insert_id;
+        $conn->close();
+        return array("success" => true, "data" => $addId);
+    }
 
-    $queryInsert = array('$push' => array("address_info" => array("address_id" => $newAddressId, "alias" => $data["alias"], "address" => $data["address"], "unit_no" => $data["unitno"], "postal_code" => $data["postal"], "active" => true)));
-    $db->Customer->updateOne($query, $queryInsert);
-
-    return array("success" => true, "data" => $newAddressId);
+    $conn->close();
+    return $result;
 }
 
 function deleteAddress($data) {
-
     $conn = make_connection();
 
-    // 1. Check if [Orders] table has the address id for any of its rows
-    $query = 'SELECT id FROM SMart.Order WHERE cust_id = ? AND address_id = ?';
-    $resultSQL = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($_SESSION['id']), $data["id"]));
+    $query = "DELETE FROM Customer_Address WHERE id = ? and cust_id = ?";
+    $result = payload_deliver_verbose($conn, $query, "ii", $params = array(sanitize_input($data['id']), sanitize_input($_SESSION['id'])));
+
     $conn->close();
 
-    $db = make_mongo_connection();
-
-    if ($resultSQL->num_rows == 0) {
-        // 2.1. Delete corresponding [Customer_Address] row
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']));
-        $queryUpdate = array('$pull' => array("address_info" => array("address_id" => (int) $data["id"])));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-    }
-    // Rows returned, there exist entries for this address in [Orders], set the address to be inactive
-    else {
-        // 2.2.1. Set old [Customer_Address] row active = 0
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array("address_info.$.active" => false));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-    }
-
-    return array("success" => true, "data" => null);
+    return $result;
 }
 
 function updatePassword($data) {
-
+    $conn = make_connection();
 
     if ($data["staff"]) {
-        $conn = make_connection();
         $query = "UPDATE Staff SET password = ?, modified_at = NOW() WHERE id = ?";
         $result = payload_deliver_verbose($conn, $query, "si", $params = array($data["new_password"], $data["staff_id"]));
-        $conn->close();
-
-        return $result;
     } else {
-        $db = make_mongo_connection();
-
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']));
-        $queryUpdate = array('$set' => array("password" => $data["new_password"]));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-
-        return array("success" => true, "data" => null);
+        $query = "UPDATE Customer SET password = ?, modified_at = NOW() WHERE id = ?";
+        $result = payload_deliver_verbose($conn, $query, "si", $params = array($data["new_password"], sanitize_input($_SESSION['id'])));
     }
+
+
+    $conn->close();
+
+    return $result;
 }
 
 function updateCard($data) {
@@ -634,97 +612,80 @@ function updateCard($data) {
     $conn = make_connection();
 
     // 1. Check if [Orders] table has the payment id for any of its rows
-    $query = 'SELECT id FROM SMart.Order WHERE cust_id = ? AND payment_id = ?';
-    $resultSQL = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($_SESSION['id']), $data["id"]));
-
-    $db = make_mongo_connection();
+    $query = 'SELECT id FROM SMart.Order WHERE payment_id = ?';
+    $result = payload_deliver($conn, $query, "i", $params = array($data["id"]));
 
     // No rows returned, no entries for this payment in [Orders], just update the payment
-    if ($resultSQL->num_rows == 0) {
+    if ($result->num_rows == 0) {
         // 2.1. Make updates to corresponding [Customer_Payment] row
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "payment_info.payment_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array('payment_info.$.type' => $data["paytype"], 'payment_info.$.owner' => $data["owner"], 'payment_info.$.account_no' => $data["accno"], 'payment_info.$.expiry' => $data["expiry"]));
+        $query = 'UPDATE Customer_Payment SET payment_type = ?, owner = ?, account_no = ?, expiry = ? WHERE id = ?';
+        payload_deliver($conn, $query, "ssisi", $params = array($data["paytype"], $data["owner"], $data["accno"], $data["expiry"], $data["id"]));
 
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-
+        $conn->close();
         return array("success" => true, "data" => $data['id']);
     }
     // Rows returned, there exist entries for this payment in [Orders], set the payment to be inactive and add a new payment
     else {
         // 2.2.1. Set old [Customer_Payment] row active = 0
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "payment_info.payment_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array("payment_info.$.active" => false));
-        $db->Customer->updateOne($queryFind, $queryUpdate);
+        $query = 'UPDATE Customer_Payment SET payment_type = ?, active = 0 WHERE id = ? AND cust_id = ?';
+        payload_deliver($conn, $query, "sii", $params = array($data["paytype"], $data["id"], sanitize_input($_SESSION['id'])));
 
-        // 2.2.2. Create new [Customer_Payment] row   
-        $result = addCard($data);
+        // 2.2.2. Create new [Customer_Payment] row
+        $query = 'INSERT INTO Customer_Payment (cust_id, payment_type, owner, account_no, expiry, active) VALUES (?,?,?,?,?,true)';
+        payload_deliver($conn, $query, "issis", $params = array(sanitize_input($_SESSION['id']), $data["paytype"], $data["owner"], $data["accno"], $data["expiry"]));
 
-        return array("success" => true, "data" => $result["data"]);
+        $payId = $conn->insert_id;
+        $conn->close();
+        return array("success" => true, "data" => $payId);
     }
 }
 
 function addCard($data) {
 
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array("id" => (int) sanitize_input($_SESSION['id']));
-    $queryProject = array('projection' => array("payment_info" => array('$slice' => -1)));
+    $query = "INSERT INTO Customer_Payment (cust_id, payment_type, owner, account_no, expiry, active) "
+            . "VALUES (?, ?, ?, ?, ?, true)";
+    $result = payload_deliver_verbose($conn, $query, "issss", $params = array(sanitize_input($_SESSION['id']), $data['paytype'], $data['owner'], $data['accno'], $data['expiry']));
 
-    $result = $db->Customer->find($query, $queryProject)->toArray()[0];
-    $newPaymentId = $result["payment_info"][0]["payment_id"] + 1;
+    if ($result['success']) {
+        $payId = $conn->insert_id;
+        $conn->close();
+        return array("success" => true, "data" => $payId);
+    }
 
-    $queryInsert = array('$push' => array("payment_info" => array("payment_id" => $newPaymentId, "type" => $data["paytype"], "owner" => $data["owner"], "account_no" => $data["accno"], "expiry" => $data["expiry"], "active" => true)));
-    $db->Customer->updateOne($query, $queryInsert);
-
-    return array("success" => true, "data" => $newPaymentId);
+    $conn->close();
+    return $result;
 }
 
 function deleteCard($data) {
-
     $conn = make_connection();
 
-    // 1. Check if [Orders] table has the payment id for any of its rows
-    $query = 'SELECT id FROM SMart.Order WHERE cust_id = ? AND payment_id = ?';
-    $resultSQL = payload_deliver($conn, $query, "ii", $params = array(sanitize_input($_SESSION['id']), $data["id"]));
+    $query = "DELETE FROM Customer_Payment WHERE id = ? and cust_id = ?";
+    $result = payload_deliver_verbose($conn, $query, "ii", $params = array(sanitize_input($data['id']), sanitize_input($_SESSION['id'])));
+
     $conn->close();
 
-    $db = make_mongo_connection();
-
-    if ($resultSQL->num_rows == 0) {
-        // 2.1. Delete corresponding [Customer_Payment] row
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']));
-        $queryUpdate = array('$pull' => array("payment_info" => array("payment_id" => (int) $data["id"])));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-    }
-    // Rows returned, there exist entries for this address in [Orders], set the address to be inactive
-    else {
-        // 2.2.1. Set old [Customer_Payment] row active = 0
-        $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "payment_info.payment_id" => (int) $data["id"]);
-        $queryUpdate = array('$set' => array("payment_info.$.active" => false));
-
-        $db->Customer->updateOne($queryFind, $queryUpdate);
-    }
-
-    return array("success" => true, "data" => null);
+    return $result;
 }
 
 function ifChangeAddress($data) {
-    $db = make_mongo_connection();
+    $conn = make_connection();
 
-    $query = array("id" => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) $data["id"]);
-    $result = $db->Customer->find($query)->toArray()[0];
+    $query = 'SELECT alias, address, unit_no, postal_code FROM Customer_Address WHERE id = ? AND cust_id = ? AND active = 1';
+    $result = payload_deliver_verbose($conn, $query, "ii", $params = array($data["id"], sanitize_input($_SESSION['id'])));
+    $conn->close();
 
-    if (empty($result)) {
-        return array("success" => false, "data" => "Incorrect rows received");
+    if (!$result['success']) {
+        return array("success" => false, "data" => $result['data']);
     }
 
-    foreach ($result["address_info"] as $row){
-        if($row["address_id"] == $data["id"]) {
-            break;
-        }
+    if ($result['data']->num_rows != 1) {
+        return array("success" => false, "data" => "Incorrect rows received: " . $result['data']->num_rows);
     }
-    
+
+    $row = mysqli_fetch_assoc($result['data']);
+
     if ($row["address"] == $data["address"] && $row["unit_no"] == $data["unitno"] && $row["postal_code"] == $data["postal"] && $row["alias"] == $data["alias"]) {
         return array("success" => false, "data" => "No changes made");
     }
@@ -733,23 +694,23 @@ function ifChangeAddress($data) {
 }
 
 function ifChangePayment($data) {
+    $conn = make_connection();
 
-    $db = make_mongo_connection();
+    $query = 'SELECT owner, account_no, expiry, payment_type FROM Customer_Payment WHERE id = ? AND cust_id = ? AND active = 1';
+    $result = payload_deliver_verbose($conn, $query, "ii", $params = array($data["id"], sanitize_input($_SESSION['id'])));
+    $conn->close();
 
-    $query = array("id" => (int) sanitize_input($_SESSION['id']), "payment_info.payment_id" => (int) $data["id"]);
-    $result = $db->Customer->find($query)->toArray()[0];
-
-    if (empty($result)) {
-        return array("success" => false, "data" => "Incorrect rows received");
+    if (!$result['success']) {
+        return array("success" => false, "data" => $result['data']);
     }
 
-    foreach ($result["payment_info"] as $row){
-        if($row["payment_id"] == $data["id"]) {
-            break;
-        }
+    if ($result['data']->num_rows != 1) {
+        return array("success" => false, "data" => "Incorrect rows received: " . $result['data']->num_rows);
     }
 
-    if ($row["owner"] == $data["owner"] && $row["account_no"] == $data["accno"] && $row["expiry"] == $data["expiry"] && $row["type"] == $data["paytype"]) {
+    $row = mysqli_fetch_assoc($result['data']);
+
+    if ($row["owner"] == $data["owner"] && $row["account_no"] == $data["accno"] && $row["expiry"] == $data["expiry"] && $row["payment_type"] == $data["paytype"]) {
         return array("success" => false, "data" => "No changes made");
     }
 

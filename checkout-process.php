@@ -40,71 +40,80 @@ switch ($_POST["operation"]) {
 }
 
 $conn = make_connection();
+$db = make_mongo_connection();
 
 switch ($_POST["operation"]) {
     case "address_alias":
         //form parameters
-        $cust_id = sanitize_input($_SESSION["id"]);
+        $cust_id = (int) sanitize_input($_SESSION["id"]);
 
         // Prepare the statement:
-        $query = 'SELECT id, alias FROM Customer_Address WHERE cust_id = ? AND active = 1';
-        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
+        $query = array("id" => $cust_id, "address_info.active" => true);
+        $result = $db->Customer->find($query)->toArray()[0];
 
-        if ($result->num_rows > 0) {
+        if (!empty($result["address_info"])) {
             echo '<option value="empty">- Select an Address -</option>';
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo '<option identifier="' . $row["id"] . '" value="' . $row["alias"] . '">' . $row["alias"] . '</option>';
+            foreach ($result["address_info"] as $row) {
+                if(!$row["active"]) continue;
+                echo '<option identifier="' . $row["address_id"] . '" value="' . $row["alias"] . '">' . $row["alias"] . '</option>';
             }
-        } else {
-            
-        }
+        } 
 
         break;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     case "load-address":
         //form parameters
-        $cust_id = sanitize_input($_SESSION["id"]);
-        $address_id = sanitize_input($_POST["address_id"]);
+        $cust_id = (int) sanitize_input($_SESSION["id"]);
+        $address_id = (int) sanitize_input($_POST["address_id"]);
 
         // Prepare the statement:
-        $query = 'SELECT address, unit_no, postal_code FROM Customer_Address WHERE cust_id = ? AND id = ? AND active = 1';
-        $result = payload_deliver($conn, $query, "is", $params = array($cust_id, $address_id));
+        $query = array("id" => $cust_id, "address_info.address_id" => $address_id);
+        $result = $db->Customer->find($query)->toArray()[0];
 
-        $row = mysqli_fetch_assoc($result);
-        echo '{"address": "' . $row["address"] . '", "unit_no": "' . $row["unit_no"] . '", "postal_code": ' . $row["postal_code"] . '}';
+        foreach ($result["address_info"] as $row) {
+            if ($row["address_id"] == $address_id){
+                echo '{"address": "' . $row["address"] . '", "unit_no": "' . $row["unit_no"] . '", "postal_code": ' . $row["postal_code"] . '}';
+                break;
+            }
+        }
+
+//        echo '{"address": "' . $row["address"] . '", "unit_no": "' . $row["unit_no"] . '", "postal_code": ' . $row["postal_code"] . '}';
 
         break;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     case "credit_owner":
         //form parameters
-        $cust_id = sanitize_input($_SESSION["id"]);
-
+        $cust_id = (int) sanitize_input($_SESSION["id"]);
+        
         // Prepare the statement:
-        $query = 'SELECT id, payment_type FROM Customer_Payment WHERE cust_id = ? AND active = 1';
-        $result = payload_deliver($conn, $query, "i", $params = array($cust_id));
+        $query = array("id" => $cust_id, "payment_info.active" => true);
+        $result = $db->Customer->find($query)->toArray()[0];
 
-        if ($result->num_rows > 0) {
+        if (!empty($result["payment_info"])) {
             echo '<option value="empty">- Select a Card -</option>';
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo '<option identifier="' . $row["id"] . '" value="' . $row["payment_type"] . '">' . $row["payment_type"] . '</option>';
+            foreach ($result["payment_info"] as $row) {
+                if(!$row["active"]) continue;
+                echo '<option identifier="' . $row["payment_id"] . '" value="' . $row["type"] . '">' . $row["type"] . '</option>';
             }
-        } else {
-            
         }
 
         break;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     case "load-card-details":
         //form parameters
-        $cust_id = sanitize_input($_SESSION["id"]);
-        $payment_id = sanitize_input($_POST["payment_id"]);
+        $cust_id = (int) sanitize_input($_SESSION["id"]);
+        $payment_id = (int) sanitize_input($_POST["payment_id"]);
 
         // Prepare the statement:
-        $query = 'SELECT owner, account_no, expiry FROM Customer_Payment WHERE cust_id = ? AND id = ? AND active = 1';
-        $result = payload_deliver($conn, $query, "is", $params = array($cust_id, $payment_id));
-
-        $row = mysqli_fetch_assoc($result);
-        echo '{"owner": "' . $row["owner"] . '", "account_no": ' . $row["account_no"] . ', "expiry": "' . $row["expiry"] . '"}';
+        $query = array("id" => $cust_id, "payment_info.payment_id" => $payment_id);
+        $result = $db->Customer->find($query)->toArray()[0];
+        
+        foreach ($result["payment_info"] as $row) {
+            if ($row["payment_id"] == $payment_id){
+                echo '{"owner": "' . $row["owner"] . '", "account_no": ' . $row["account_no"] . ', "expiry": "' . $row["expiry"] . '"}';
+                break;
+            }
+        }
 
         break;
 ////////////////////////////////////////////////////////////////////////////////////////////////////

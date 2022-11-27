@@ -1,5 +1,7 @@
 <?php
 session_start();
+require 'vendor/autoload.php';
+
 $email = $fname = $lname = $errorMsg = $pwd_hashed = "";
 $success = true;
 
@@ -43,19 +45,22 @@ function authenticateUser() {
         $conn->close();
         return;
     }
+    
+    $config = parse_ini_file('../../private/mongo-config.ini');
+    $client = new MongoDB\Client("mongodb://" . $config['username'] . ":" . $config['password'] . "@localhost:27017");
+    $db = $client->SMart;
+    
+    
     // Prepare the statement:        
-    $stmt = $conn->prepare("SELECT * FROM Customer WHERE email=?");
-    // Bind & execute the query statement:        
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
+    $query = array("email" => $email);
+    $result = $db->Customer->find($query)->toArray()[0];
+    
+    if (!empty($result)) {
         // Note that email field is unique, so should only have            
-        // one row in the result set.            
-        $row = $result->fetch_assoc();
-        $fname = $row["first_name"];
-        $lname = $row["last_name"];
-        $pwd_hashed = $row["password"];
+        // one row in the result set.   
+        $fname = $result["first_name"];
+        $lname = $result["last_name"];
+        $pwd_hashed = $result["password"];
         // Check if the password matches:            
         if (!password_verify($_POST["user_password"], $pwd_hashed)) {
             // Don't be too specific with the error message - hackers don't                
@@ -65,20 +70,18 @@ function authenticateUser() {
         } else {
             $_SESSION["loggedin"] = true;
             $_SESSION["staff"] = false;
-            $_SESSION["id"] = $row["id"];
-            $_SESSION["fname"] = $row["first_name"];
-            $_SESSION["lname"] = $row["last_name"];
+            $_SESSION["id"] = $result["id"];
+            $_SESSION["fname"] = $result["first_name"];
+            $_SESSION["lname"] = $result["last_name"];
         }
     } else {
-
-        $stmt->close();
-
         // Prepare the statement:        
         $stmt = $conn->prepare("SELECT * FROM Staff WHERE email=?");
         // Bind & execute the query statement:        
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
+        $stmt->close();
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $fname = $row["first_name"];
@@ -99,7 +102,7 @@ function authenticateUser() {
             $success = false;
         }
     }
-    $stmt->close();
+    
 
     $conn->close();
 }

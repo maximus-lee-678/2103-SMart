@@ -33,19 +33,19 @@ function checkout($cust_id, $address_id, $payment_id) {
     $status_id = 1;
 
     $conn = make_connection();
-
+   
     // 1. Create row in [Order]
     $query = 'INSERT INTO SMart.Order(cust_id, address_id, payment_id, created_at, subtotal, service_charge, delivery_charge) 
             VALUES 
             (?, 
-            (SELECT id FROM Customer_Address WHERE id = ? AND cust_id = ? AND active = 1), 
-            (SELECT id FROM Customer_Payment WHERE id = ? AND cust_id = ? AND active = 1), 
+            ?, 
+            ?, 
             NOW(), 
             (SELECT SUM(c.quantity * p.price) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
             (SELECT ROUND(?*SUM(c.quantity * p.price), 2) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
             ?
             )';
-    payload_deliver($conn, $query, "iiiiiidii", $params = array($cust_id, $address_id, $cust_id, $payment_id, $cust_id, $cust_id, $service_charge_multiplier, $cust_id, $delivery_charge_actual));
+    payload_deliver($conn, $query, "iiiidii", $params = array($cust_id, $address_id, $payment_id, $cust_id, $service_charge_multiplier, $cust_id, $delivery_charge_actual));
 
     // Store ID of newly created [Order] entry
     $order_id = $conn->insert_id;
@@ -67,7 +67,7 @@ function checkout($cust_id, $address_id, $payment_id) {
 
     foreach ($cart_items as $cart_row) {
         // 4. Insert data into [Order_Items]
-        $query = 'INSERT INTO Order_Items(order_id, prod_id, quantity, price) VALUES(?, ?, ?, ?)';
+        $query = 'INSERT INTO Order_Items(order_id, prod_id, quantity, price, expiry_ack) VALUES(?, ?, ?, ?, 0)';
         payload_deliver($conn, $query, "iiid", $params = array($order_id, $cart_row["product_id"], $cart_row["quantity"], $cart_row["price"]));
     }
 
@@ -226,6 +226,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $updateMsg .= "Something went wrong when updating address/payment. Please Try Again.";
         $updateMsgBool = false;
     }
+    
 
     if ($updateMsgBool) {
         if (isset($_SESSION["id"], $_POST["address_alias"], $_POST["payment_type"]) && !is_cart_empty()) {

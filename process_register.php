@@ -1,5 +1,7 @@
 <?php
 session_start();
+include "helper-functions.php";
+
 $fname = $lname = $phone = $email = $address = $unitno = $postal = $errorMsg = $pwd_hashed = "";
 $success = true;
 
@@ -68,7 +70,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     } else {
         $address = sanitize_input($_POST["user_address1"]);
     }
-    
+
     //Unit No
     if (empty($_POST["user_unitno"])) {       //Check if unit no exists
         $errorMsg .= "Unit number is required.<br>";
@@ -79,7 +81,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     } else {
         $unitno = sanitize_input($_POST["user_unitno"]);
     }
-    
+
     //Postal
     if (empty($_POST["user_postalcode1"])) {       //Check if postal exists
         $errorMsg .= "Postal code is required.<br>";
@@ -125,90 +127,57 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
     exit;
 }
 
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
 function saveMemberToDB() {
     global $fname, $lname, $phone, $email, $unitno, $address, $postal, $pwd_hashed, $errorMsg, $success;
     // Create database connection.    
-    $config = parse_ini_file('../../private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'],
-            $config['password'], $config['dbname']);
+    $conn = make_connection();
 
-    // Check connection
-    if ($conn->connect_error) {
-        $errorMsg .= "Connection failed: " . $conn->connect_error;
-        $success = false;
-        $conn->close();
-        return;
-    }
-    // Prepare the statement:        
-    $stmtCustomer = $conn->prepare(
-            "INSERT INTO Customer (first_name, last_name, email, password, telephone, is_member, created_at, modified_at) "
-            . "VALUES (?, ?, ?, ?, ?, false, NOW(), NOW())"
+    $db = make_mongo_connection();
+    // Prepare the statement:
+    $queryFilter = array("sort" => array("id" => -1), "limit" => 1);
+    $result = $db->Customer->find(array(), $queryFilter)->toArray()[0];
+    $newId = $result["id"] + 1;
+
+    $queryInsert = array(
+        "id" => $newId,
+        "first_name" => $fname,
+        "last_name" => $lname,
+        "email" => $email,
+        "password" => $pwd_hashed,
+        "telephone" => $phone,
+        "is_member" => false,
+        "created_at" => date("Y-m-d h:i:s"),
+        "modified_at" => date("Y-m-d h:i:s"),
+        "address_info" => array(
+            array(
+                "address_id" => 1,
+                "alias" => "Home",
+                "address" => $address,
+                "unit_no" => $unitno,
+                "postal_code" => $postal,
+                "active" => true
+            )
+        ),
+        "payment_info" => array()
     );
-    // Bind & execute the query statement:        
-    $stmtCustomer->bind_param("sssss", $fname, $lname, $email, $pwd_hashed, $phone);
-    if (!$stmtCustomer->execute()) {
-        $errorMsg .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-        $success = false;
-    } else {
-        $lastid = (int) $conn->insert_id;
-        // Prepare the statement:        
-        $stmtAddress = $conn->prepare(
-                "INSERT INTO Customer_Address (cust_id, alias, address, unit_no, postal_code, active) "
-                . "VALUES (?, 'Home', ?, ?, ?, true)"
-        );
-        // Bind & execute the query statement:        
-        $stmtAddress->bind_param("isss", $lastid, $address, $unitno, $postal);
-        if (!$stmtAddress->execute()) {
-            $errorMsg .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-            $success = false;
-        }
-        $stmtAddress->close();
-    }
-    $stmtCustomer->close();
 
-    $conn->close();
+    $db->Customer->insertOne($queryInsert);
 }
 
 function checkIfUnique() {
     global $email, $errorMsg, $success;
-    // Create database connection.    
-    $config = parse_ini_file('../../private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'],
-            $config['password'], $config['dbname']);
 
-    // Check connection                        
-    if ($conn->connect_error) {
-        $errorMsg .= "Connection failed: " . $conn->connect_error;
-        $success = false;
-        $conn->close();
-        return;
-    }
+    $db = make_mongo_connection();
     // Prepare the statement: 
-    $stmt = $conn->prepare("SELECT * FROM Customer WHERE email=?");
+    $query = array("email" => $email);
     // Bind & execute the query statement:        
-    $stmt->bind_param("s", $email);
+    $result = $db->Customer->countDocuments($query);
 
-    if (!$stmt->execute()) {
-        $errorMsg .= "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+    if ($result != 0) {
+        $errorMsg .= "Email already exist";
         $success = false;
-    } else {
-        $result = $stmt->get_result();
-        $stmt->close();
-        //Check if customer is empty
-        if ($result->num_rows > 0) {
-            $errorMsg .= "Email already exist";
-            $success = false;
-        }
     }
 
-    $conn->close();
 }
 ?>
 
