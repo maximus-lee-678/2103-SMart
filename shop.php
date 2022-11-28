@@ -58,7 +58,7 @@
 
             <div class="box-container" id = "product-list"></div>
             <div class = "product-list-tail" id = "999999" style='display: none;'></div>
-
+            <div class = "product-list-offset" id = "0" style='display: none;'></div>
         </section>
         <?php include "footer.php"; ?>
     </body>

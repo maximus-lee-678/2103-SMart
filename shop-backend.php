@@ -2,17 +2,17 @@
 
 include "helper-functions.php";
 
-if (isset($_GET['lastId'])) {
-    $lastId = sanitize_input($_GET['lastId']);
+if (isset($_GET['offset'])) {
+    $offset = sanitize_input($_GET['offset']);
     $category = sanitize_input($_GET['category']);
     $filter = sanitize_input($_GET['filter']);
     $filterWild = "%{$filter}%";
-    $fetchData = fetch_data($lastId, $category, $filterWild);
+    $fetchData = fetch_data($offset, $category, $filterWild);
     $displayData = display_data($fetchData);
     echo $displayData;
 }
 
-function fetch_data($lastId, $category, $filter) {
+function fetch_data($offset, $category, $filter) {
     $config = parse_ini_file('../../private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'],
             $config['password'], $config['dbname']);
@@ -21,13 +21,14 @@ function fetch_data($lastId, $category, $filter) {
         return "Connection failed: " . $conn->connect_error;
     } else {
         if (!$category) {
-            $stmt = $conn->prepare("SELECT * FROM Product WHERE id < ? and active = 1 and name LIKE ? ORDER BY id DESC LIMIT 20");
-            $stmt->bind_param("is", $lastId, $filter);
+            $stmt = $conn->prepare("SELECT * FROM Product WHERE name LIKE ? and active = 1 and quantity <> 0 ORDER BY id DESC LIMIT 20 OFFSET ?");
+            $stmt->bind_param("si", $filter, $offset);
         } else {
             $stmt = $conn->prepare("SELECT * FROM Product "
-                    . "WHERE id < ? and active = 1 and cat_id = ? and name LIKE ? "
-                    . "ORDER BY id DESC LIMIT 20");
-            $stmt->bind_param("iss", $lastId, $category, $filter);
+                    . "WHERE cat_id = ? and name LIKE ? and active = 1 and quantity <> 0"
+                    . "ORDER BY id DESC LIMIT 20"
+                    . "OFFSET ?");
+            $stmt->bind_param("ssi", $category, $filter, $offset);
         }
         $stmt->execute();
         $result = $stmt->get_result();
@@ -44,6 +45,7 @@ function display_data($displayData) {
     if (is_array($displayData)) {
         $output = "";
         $lastId = $displayData[0]['id'];
+        $offset = sizeof($displayData);
         foreach ($displayData as $data) {
             $output .= '<div class="box" id="' . $data['id'] . '">
                             <div class="icons">
@@ -61,7 +63,7 @@ function display_data($displayData) {
                     </div>';
         }
 
-        return json_encode(array("data" => $output, "lastId" => $lastId));
+        return json_encode(array("data" => $output, "lastId" => $lastId, "offset" => $offset));
     }
     return;
 }
