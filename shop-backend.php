@@ -25,8 +25,8 @@ function fetch_data($offset, $category, $filter) {
             $stmt->bind_param("si", $filter, $offset);
         } else {
             $stmt = $conn->prepare("SELECT * FROM Product "
-                    . "WHERE cat_id = ? and name LIKE ? and active = 1 and quantity <> 0"
-                    . "ORDER BY id DESC LIMIT 20"
+                    . "WHERE cat_id = ? and name LIKE ? and active = 1 and quantity <> 0 "
+                    . "ORDER BY id DESC LIMIT 20 "
                     . "OFFSET ?");
             $stmt->bind_param("ssi", $category, $filter, $offset);
         }
