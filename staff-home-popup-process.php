@@ -31,7 +31,7 @@ function print_confirmation($operation, $text) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
-    header("refresh: 0; url=Employee_Home.php");
+    header("refresh: 0; url=staff-home.php");
     exit;
 }
 

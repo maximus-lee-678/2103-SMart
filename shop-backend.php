@@ -55,13 +55,6 @@ function display_data($displayData) {
                         <div class="content">
                             <h3>' . $data['name'] . '</h3>
                             <div class="price">$' . $data['price'] . '</div>
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
                         </div>
                     </div>';
             $lastId = $data['id'];

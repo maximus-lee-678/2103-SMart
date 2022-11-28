@@ -15,4 +15,7 @@ $(document).ready(function () {
         $(this).toggleClass('active');
         $(this).next().css("max-height", (_, attr) => attr === "500px" ? "0px" : "500px"); // change later
     });
+
+
 });
+

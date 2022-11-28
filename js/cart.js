@@ -19,7 +19,7 @@ function load_cart(operation) {
                 }
             });
             break;
-        // Cart in MyShoppingCart.php
+        // Cart in cart.php
         case "cart-page":
             $.ajax({
                 type: 'POST',
@@ -63,12 +63,12 @@ function render_carts() {
     load_cart("toolbar");
 
     // Function only runs on MyShoppingCart.php
-    if ((window.location.href).includes("MyShoppingCart.php")) {
+    if ((window.location.href).includes("cart.php")) {
         load_cart("cart-page");
     }
     
     // Function only runs on ordersummary.php
-    if ((window.location.href).includes("ordersummary.php")) {
+    if ((window.location.href).includes("order-summary.php")) {
         load_cart("summary-page");
     }
 }
@@ -86,6 +86,9 @@ $(document).ready(function () {
                 if ((window.location.href).includes("shop.php"))
                     update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
                 
+                if ((window.location.href).includes("recipe_details.php"))
+                    update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
+                
                 if ((window.location.href).includes("productPage.php"))
                     update_cart({operation: "add-new", prod_id: $(document).find('.title').attr('id')});
             }
@@ -94,7 +97,7 @@ $(document).ready(function () {
         }
     });
     
-    // cross icon in cart on nav bar, trash icon on MyShoppingCart.php
+    // cross icon in cart on nav bar, trash icon on cart.php
     $(document).on("click", '.remove-from-cart', function (e) {
         if (loggedIn) {
             e.preventDefault();
@@ -111,7 +114,7 @@ $(document).ready(function () {
         }
     });
 
-    // minus button in cart on nav bar and on MyShoppingCart.php
+    // minus button in cart on nav bar and on cart.php
     $(document).on("click", '.minus-button', function (e) {
         e.preventDefault();
 

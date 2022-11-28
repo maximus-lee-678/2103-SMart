@@ -15,7 +15,7 @@ session_start();
 
         <div class="heading">
             <h1>Cart</h1>
-            <p> <a href="MyShoppingCart.php">My Shopping Cart >></a> Order Summary</p>
+            <p> <a href="cart.php">My Shopping Cart >></a> Order Summary</p>
         </div>
 
         <section class="myShoppingCart cartcontainer">

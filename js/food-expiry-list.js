@@ -9,7 +9,7 @@
 function load_expiring() {
     $.ajax({
         type: 'POST',
-        url: 'food-expiry-list-process.php',
+        url: 'expiry-list-process.php',
         data: {type: "expire_summary"},
         success: function (data) {
             $('.expire_summary').html(data);
@@ -21,7 +21,7 @@ function load_expiring() {
 function load_history(type, page) {
     $.ajax({
         type: 'POST',
-        url: 'food-expiry-list-process.php',
+        url: 'expiry-list-process.php',
         data: {type: type, page: page},
         success: function (data) {
             $('.wrapper[type="' + type + '"]').html(data);
@@ -33,7 +33,7 @@ function load_history(type, page) {
 function update_acknowledgement(id) {
     $.ajax({
         type: 'POST',
-        url: 'food-expiry-list-process.php',
+        url: 'expiry-list-process.php',
         data: {type: "update", id: id},
         success: function () {
             load_all();

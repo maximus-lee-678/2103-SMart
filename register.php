@@ -14,7 +14,7 @@
 
                 <img src="image/registerimage1.webp" alt="Login and register Image" class="img2">
 
-                <form action="process_register.php" class="register-form" method="post" name="myRegisterForm">
+                <form action="register-process.php" class="register-form" method="post" name="myRegisterForm">
                     <h3>REGISTRATION FORM</h3>
 
                     <!--first and last name-->

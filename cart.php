@@ -27,7 +27,7 @@ session_start();
                 </div>               
                 
                 <!--<input type="submit" style="width: 100%; margin-top: 30px;" name="proceedtocheckout" value="Proceed to Checkout" class="btn">-->
-                <a href="ordersummary.php" style="width: 100%; margin-top: 30px; text-align: center;" class="btn">Proceed to Checkout</a>
+                <a href="order-summary.php" style="width: 100%; margin-top: 30px; text-align: center;" class="btn">Proceed to Checkout</a>
             </section>
 
             <!-- footer section starts  -->

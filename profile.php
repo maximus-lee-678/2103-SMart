@@ -1,44 +1,27 @@
 <?php
-include "helper-functions.php";
-
 session_start();
+require 'vendor/autoload.php';
+
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
 
-    $conn = make_connection();
-    $id = (int) sanitize_input($_SESSION["id"]);
-    $is_Staff = isset($_SESSION["staff"]) && $_SESSION["staff"];
+    $config = parse_ini_file('../../private/mongo-config.ini');
+    $client = new MongoDB\Client("mongodb://" . $config['username'] . ":" . $config['password'] . "@localhost:27017");
+    $collection = $client->SMart->Customer;
 
-    if ($is_Staff) {
+    $custId = (int) sanitize_input($_SESSION["id"]);
 
-        $queryProfile = "SELECT * FROM Staff WHERE id = ?";
-        $resultProfile = payload_deliver($conn, $queryProfile, "i", $params = array($id));
-
-        if ($resultProfile->num_rows > 0) {
-            $rowProfile = $resultProfile->fetch_assoc();
-        } else {
-            echo "Staff information not found!" . $id;
-            exit();
-        }
-    } else {
-        // Prepare the statement:        
-        $queryProfile = "SELECT * FROM Customer WHERE id = ?";
-        $queryAddress = "SELECT * FROM Customer_Address WHERE cust_id = ? and active = true";
-        $queryPayment = "SELECT * FROM Customer_Payment WHERE cust_id = ? and active = true";
-
-        $resultProfile = payload_deliver($conn, $queryProfile, "i", $params = array($id));
-        $resultAddress = payload_deliver($conn, $queryAddress, "i", $params = array($id));
-        $resultPayment = payload_deliver($conn, $queryPayment, "i", $params = array($id));
-
-        if ($resultProfile->num_rows > 0) {
-            $rowProfile = $resultProfile->fetch_assoc();
-        } else {
-            echo "Customer information not found!";
-            exit();
-        }
-    }
+    $custQuery = array('id' => $custId);
+    $result = $collection->find($custQuery)->toArray()[0];
 } else {
     header("Location: login.php");
     exit;
+}
+
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
 ?>
 <html lang="en">
@@ -77,18 +60,14 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
                     <form action="" class="register-form" method="post" name="myUserProfileForm" style="">
                         <h3>My User Profile</h3>
 
-<!--                        <div style="margin-bottom: 15px;">
-                            <img src="image/pic-6.png" alt="Girl in a jacket" width="200" height="200" style="margin-top: 20px; margin-bottom: 20px;">
-                        </div>-->
-
                         <div style="margin-bottom: 15px;">
                             <div class="inputBox" style="font-size: 1.4rem; color: #666;">
                                 <label style="width: 49%">First Name: </label>
                                 <label style="width: 49%">Last Name: </label>
                             </div>
                             <div class="inputBox">
-                                <input readonly=false style="width: 49%" id="user_firstname" name="user_firstname" type="text" class="box" value="<?php echo $rowProfile['first_name'] ?>">
-                                <input readonly=false style="width: 49%" id="user_lastname" name="user_lastname" type="text" class="box" value="<?php echo $rowProfile['last_name'] ?>">
+                                <input readonly=false style="width: 49%" id="user_firstname" name="user_firstname" type="text" class="box" value="<?php echo $result['first_name'] ?>">
+                                <input readonly=false style="width: 49%" id="user_lastname" name="user_lastname" type="text" class="box" value="<?php echo $result['last_name'] ?>">
                             </div>
                         </div>
 
@@ -98,8 +77,8 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
                                 <label style="width: 49%">Email: </label>
                             </div>
                             <div class="inputBox">
-                                <input readonly=false style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" class="box" value="<?php echo $rowProfile['telephone'] ?>">
-                                <input readonly=false style="width: 49%" id="user_email" name="user_email" type="email" class="box" value="<?php echo $rowProfile['email'] ?>">
+                                <input readonly=false style="width: 49%" id="user_phonenum" name="user_phonenum" type="text" class="box" value="<?php echo $result['telephone'] ?>">
+                                <input readonly=false style="width: 49%" id="user_email" name="user_email" type="email" class="box" value="<?php echo $result['email'] ?>">
                             </div>
                         </div>
 
@@ -118,6 +97,87 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
                         <div class="inputBox">
                             <input type="hidden" style="width: 98%" id="cancelBtn" name="cancel" value="Cancel" class="btn">
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="myaddress" class="tabcontent">
+                <div class="row">
+                    <form action="#" class="register-form" method="post" name="myaddressForm">
+
+                        <h3>My Address</h3>
+
+                        <table id="myaddresstable" border="1" width="100%">
+                            <tr id="tHeader" style="background: #6D6875; color: white;">
+                                <th>Alias</th>
+                                <th>Address</th>
+                                <th>Unit Number</th>
+                                <th>Postal Code</th>
+                            </tr>
+                            <tbody id="myaddressdata">
+                                <?php
+                                foreach ($result['address_info'] as $address) {
+                                    if ($address["active"]) {
+                                        ?>
+                                        <tr id = "address_<?php echo $address['address_id'] ?>" class="addressRow">
+                                            <td class ="alias_data"><?php echo $address['alias'] ?></td>    
+                                            <td class ="address_data"><?php echo $address['address'] ?></td>
+                                            <td class ="unitno_data"><?php echo $address['unit_no'] ?></td>
+                                            <td class ="postal_data"><?php echo $address['postal_code'] ?></td>                                            
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 98%">Alias: </label>                                
+                            </div>
+                            <div class="inputBox">
+                                <input required style="width: 98%" id="user_alias" name="user_alias" type="text" placeholder="Enter your Alias (Eg: Home)" class="box" maxlength="250">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 98%">Address: </label>                                
+                            </div>
+                            <div class="inputBox">
+                                <input id="user_addressid1" name="user_addressid1" type="hidden">
+                                <input required style="width: 98%" id="user_address1" name="user_address1" type="text" placeholder="Enter your Address" class="box" maxlength="250">
+                            </div>
+                        </div>
+
+
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 49%">Unit Number: </label>
+                                <label style="width: 49%">Postal Code: </label>                                
+                            </div>
+                            <div class="inputBox">
+                                <input required style="width: 49%" id="user_unitno" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="10">
+                                <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
+                            </div>
+                        </div>
+
+
+                        <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
+                            <p hidden id="submission_feedback2"></p>
+                        </div>
+
+                        <div class="inputBox">
+                            <input type="button" style="width: 32%" id="updateaddressBtn" name="updateaddressBtn" value="Update" class="btn">
+                            <input type="button" style="width: 32%" id="addaddressBtn" name="addaddressBtn" value="Add" class="btn">
+                            <input type="button" style="width: 32%" id="deleteaddressBtn" name="deleteaddressBtn" value="Delete" class="btn">
+                        </div>
+
+
                     </form>
                 </div>
             </div>
@@ -175,180 +235,113 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
                 </div>
             </div>
 
-            <?php
-            if (!$is_Staff) {
-                ?>
-                <div id="myaddress" class="tabcontent">
-                    <div class="row">
-                        <form action="#" class="register-form" method="post" name="myaddressForm">
+            <div id="mypayment" class="tabcontent">
+                <div class="row">
+                    <form action="" class="register-form" method="post" name="mynewcardForm">
 
-                            <h3>My Address</h3>
+                        <h3>My Card</h3>
 
-                            <table id="myaddresstable" border="1" width="100%">
-                                <tr id="tHeader" style="background: #6D6875; color: white;">
-                                    <th>Alias</th>
-                                    <th>Address</th>
-                                    <th>Unit Number</th>
-                                    <th>Postal Code</th>
-                                </tr>
-                                <tbody id="myaddressdata">
-                                    <?php
-                                    if ($resultAddress->num_rows > 0) {
-                                        while ($rowAddress = $resultAddress->fetch_assoc()) {
-                                            ?>
-                                            <tr id = "address_<?php echo $rowAddress['id'] ?>" class="addressRow">
-                                                <td class ="alias_data"><?php echo $rowAddress['alias'] ?></td>    
-                                                <td class ="address_data"><?php echo $rowAddress['address'] ?></td>
-                                                <td class ="unitno_data"><?php echo $rowAddress['unit_no'] ?></td>
-                                                <td class ="postal_data"><?php echo $rowAddress['postal_code'] ?></td>                                            
-                                            </tr>
-                                            <?php
-                                        }
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
-
-                            <div style="margin-bottom: 20px; margin-top: 20px;">
-
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <label style="width: 98%">Alias: </label>                                
-                                </div>
-                                <div class="inputBox">
-                                    <input required style="width: 98%" id="user_alias" name="user_alias" type="text" placeholder="Enter your Alias (Eg: Home)" class="box" maxlength="250">
-                                </div>
-                            </div>
-
-                            <div style="margin-bottom: 20px; margin-top: 20px;">
-
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <label style="width: 98%">Address: </label>                                
-                                </div>
-                                <div class="inputBox">
-                                    <input id="user_addressid1" name="user_addressid1" type="hidden">
-                                    <input required style="width: 98%" id="user_address1" name="user_address1" type="text" placeholder="Enter your Address" class="box" maxlength="250">
-                                </div>
-                            </div>
-
-
-                            <div style="margin-bottom: 20px; margin-top: 20px;">
-
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <label style="width: 49%">Unit Number: </label>
-                                    <label style="width: 49%">Postal Code: </label>                                
-                                </div>
-                                <div class="inputBox">
-                                    <input id="user_addressid1" name="user_addressid1" type="hidden">
-                                    <input required style="width: 49%" id="user_unitno" name="user_unitno" type="text" placeholder="Enter Unit No" class="box" maxlength="10">
-                                    <input required style="width: 49%" id="user_postalcode1" name="user_postalcode1" type="text" placeholder="Enter Postal Code" class="box" maxlength="6" pattern="^[0-9]{6}$" >
-                                </div>
-                            </div>
-
-
-                            <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
-                                <p hidden id="submission_feedback2"></p>
-                            </div>
-
-                            <div class="inputBox">
-                                <input type="button" style="width: 32%" id="updateaddressBtn" name="updateaddressBtn" value="Update" class="btn">
-                                <input type="button" style="width: 32%" id="addaddressBtn" name="addaddressBtn" value="Add" class="btn">
-                                <input type="button" style="width: 32%" id="deleteaddressBtn" name="deleteaddressBtn" value="Delete" class="btn">
-                            </div>
-
-
-                        </form>
-                    </div>
-                </div>
-                <div id="mypayment" class="tabcontent">
-                    <div class="row">
-                        <form action="" class="register-form" method="post" name="mynewcardForm">
-
-                            <h3>My Card</h3>
-
-                            <table id="mycardtable" border="1" width="100%" style="margin-bottom: 30px;">
-                                <!--if got card-->
-                                <tr id="tHeader" style="background: #6D6875; color: white;">
-                                    <th>Payment Type</th>
-                                    <th>Owner</th>
-                                    <th>Account No.</th>
-                                    <th>Expiry Date</th>
-                                </tr>
-                                <!--if no card-->
+                        <table id="mycardtable" border="1" width="100%" style="margin-bottom: 30px;">
+                            <!--if got card-->
+                            <tr id="tHeader" style="background: #6D6875; color: white;">
+                                <th>Payment Type</th>
+                                <th>Owner</th>
+                                <th>Account No.</th>
+                                <th>Expiry Date</th>
+                            </tr>
+                            <!--if no card-->
+                            <?php
+                            if (empty($result['payment_info']->count())) {
+                                ?>
                                 <div class="resultContainer3">
                                     <h4>There is no card added currently! Please add a card.</h4>
                                 </div>
-                                <tbody id="mycarddata">
-                                    <?php
-                                    if ($resultPayment->num_rows > 0) {
-                                        while ($rowPayment = $resultPayment->fetch_assoc()) {
-                                            ?>
-                                            <tr id = "payment_<?php echo $rowPayment['id'] ?>" class="paymentRow">
-                                                <td class ="paytype_data"><?php echo $rowPayment['payment_type'] ?></td>
-                                                <td class ="owner_data"><?php echo $rowPayment['owner'] ?></td>
-                                                <td class ="acc_data"><?php echo $rowPayment['account_no'] ?></td>
-                                                <td class ="expiry_data"><?php echo $rowPayment['expiry'] ?></td>
-                                            </tr>
-                                            <?php
-                                        }
+                                <?php
+                            } 
+                            ?>
+
+                            <tbody id="mycarddata">
+                                <?php
+                                foreach ($result['payment_info'] as $payment) {
+                                    if ($payment["active"]) {
+                                        ?>
+                                        <tr id = "payment_<?php echo $payment['payment_id'] ?>" class="paymentRow">
+                                            <td class ="paytype_data"><?php echo $payment['type'] ?></td>
+                                            <td class ="owner_data"><?php echo $payment['owner'] ?></td>
+                                            <td class ="acc_data"><?php echo $payment['account_no'] ?></td>
+                                            <td class ="expiry_data"><?php echo $payment['expiry'] ?></td>
+                                        </tr>
+                                        <?php
                                     }
-                                    ?>
-                                </tbody>
-                            </table>
+                                }
+                                ?>
+                            </tbody>
+                        </table>
 
+                        <div class="inputBox">
+                            <input id="user_payid" name="user_payid" type="hidden">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <p>Payment Type: </p>
+                            </div>
+                            <select required style="width: 100%; color: #666;" name="user_payment_type" id="user_payment_type" class="box">
+                                <option value="">- Payment Type -</option>
+                                <option value="Visa">Visa</option>
+                                <option value="Master">Master</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">                            
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <p>Owner: </p>
+                            </div>
                             <div class="inputBox">
-                                <input id="user_payid" name="user_payid" type="hidden">
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <p>Payment Type: </p>
-                                </div>
-                                <select required style="width: 100%; color: #666;" name="user_payment_type" id="user_payment_type" class="box">
-                                    <option value="">- Payment Type -</option>
-                                    <option value="Visa">Visa</option>
-                                    <option value="Master">Master</option>                                    
-                                </select>
+                                <input required style="width: 100%" id="user_owner" name="user_owner" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
                             </div>
+                        </div>
 
-                            <div style="margin-bottom: 15px;">                            
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <p>Owner: </p>
-                                </div>
-                                <div class="inputBox">
-                                    <input required style="width: 100%" id="user_owner" name="user_owner" type="text" placeholder="Enter your Card Name" class="box" maxlength="250" pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+">
-                                </div>
+                        <div style="margin-bottom: 15px;">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <p>Account No: </p>
                             </div>
-
-                            <div style="margin-bottom: 15px;">
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <p>Account No: </p>
-                                </div>
-                                <div class="inputBox">
-                                    <input required style="width: 100%" id="user_accountno" name="user_accountno" type="text" placeholder="Enter your Account Number" class="box" maxlength="16" pattern="">
-                                </div>
-                            </div>
-
-                            <div style="margin-bottom: 15px;">
-                                <div class="inputBox" style="font-size: 1.4rem; color: #666;">
-                                    <label style="width: 98%">Expiry Date: </label>
-                                </div>
-                                <div class="inputBox">
-                                    <input required style="width: 98%; font-size: 1.4rem; color: #666;" id="user_cardexpirydate" name="user_cardexpirydate" type="date" placeholder="Enter your Expiry Date" class="box">
-                                </div>
-                            </div>
-
-                            <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
-                                <p hidden id="submission_feedback4"></p>
-                            </div>
-
                             <div class="inputBox">
-                                <input type="button" style="width: 32%" id="updatecardBtn" name="updatecardBtn" value="Update" class="btn">
-                                <input type="button" style="width: 32%" id="addcardBtn" name="addcardBtn" value="Add" class="btn">
-                                <input type="button" style="width: 32%" id="deletecardBtn" name="deletecardBtn" value="Delete" class="btn">
+                                <input required style="width: 100%" id="user_accountno" name="user_accountno" type="text" placeholder="Enter your Account Number" class="box" minlength="16" maxlength="16" pattern="">
                             </div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <div class="inputBox" style="font-size: 1.4rem; color: #666;">
+                                <label style="width: 98%">Expiry Date: </label>
+                            </div>
+                            <div class="inputBox">
+                                <input required style="width: 98%; font-size: 1.4rem; color: #666;" id="user_cardexpirydate" name="user_cardexpirydate" type="date" placeholder="Enter your Expiry Date" class="box">
+                            </div>
+                        </div>
+
+                        <div class="inputBox" style="font-size: 1.4rem; color: #666; margin:5px">
+                            <p hidden id="submission_feedback4"></p>
+                        </div>
+
+                        <div class="inputBox">
+                            <input type="button" style="width: 32%" id="updatecardBtn" name="updatecardBtn" value="Update" class="btn">
+                            <input type="button" style="width: 32%" id="addcardBtn" name="addcardBtn" value="Add" class="btn">
+                            <input type="button" style="width: 32%" id="deletecardBtn" name="deletecardBtn" value="Delete" class="btn">
+                        </div>
+                    </form>
                 </div>
-                <?php
-            }
-            ?>
+            </div>
+
+            <!--            <div id="deletemyaccount" class="tabcontent">
+                            <div class="row">
+                                <form action="process_deleteaccount.php" class="register-form" method="post" name="deleteaccountform">
+            
+                                    <h3>Delete My Account</h3>
+            
+                                    <div class="inputBox">
+                                        <input type="submit" style="width: 98%" name="deleteaccount" value="Delete" class="btn">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>-->
         </section>
 
 
@@ -357,3 +350,4 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
         <!-- footer section ends -->
     </body>
 </html>
+

@@ -322,7 +322,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
 
         <section class="myShoppingCart">
             <a href="home.php" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">Back to Home</a>
-            <a href="orderHistory.php" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">Order History</a>
+            <a href="order-history.php" style="width: 100%; margin-top: 40px; text-align: center;" class="btn">Order History</a>
         </section>
 
         <!-- footer section starts  -->

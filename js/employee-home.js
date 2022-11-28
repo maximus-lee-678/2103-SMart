@@ -54,7 +54,7 @@ function render_table(pageType, page, search, addit_args) {
         case "staff":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#staff-contents").html(data);
@@ -65,7 +65,7 @@ function render_table(pageType, page, search, addit_args) {
         case "product":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#product-contents").html(data);
@@ -76,7 +76,7 @@ function render_table(pageType, page, search, addit_args) {
         case "supermarket":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#supermarket-contents").html(data);
@@ -87,7 +87,7 @@ function render_table(pageType, page, search, addit_args) {
         case "category":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#category-contents").html(data);
@@ -98,7 +98,7 @@ function render_table(pageType, page, search, addit_args) {
         case "brand":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#brand-contents").html(data);
@@ -109,7 +109,7 @@ function render_table(pageType, page, search, addit_args) {
         case "stock":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search, addit_args: addit_args},
                 success: function (data) {
                     $("#stock-contents").html(data);
@@ -120,7 +120,7 @@ function render_table(pageType, page, search, addit_args) {
         case "pack":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#pack-contents").html(data);
@@ -131,7 +131,7 @@ function render_table(pageType, page, search, addit_args) {
         case "packed":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: "pack", page: page, search: search},
                 success: function (data) {
                     $("#pack-contents").html(data);
@@ -142,7 +142,7 @@ function render_table(pageType, page, search, addit_args) {
         case "delivery":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search},
                 success: function (data) {
                     $("#delivery-contents").html(data);
@@ -153,7 +153,7 @@ function render_table(pageType, page, search, addit_args) {
         case "delivered":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: "delivery", page: page, search: search},
                 success: function (data) {
                     $("#delivery-contents").html(data);
@@ -164,7 +164,7 @@ function render_table(pageType, page, search, addit_args) {
         case "order_all":
             $.ajax({
                 type: 'POST',
-                url: 'employee-home-process.php',
+                url: 'staff-home-process.php',
                 data: {operation: pageType, page: page, search: search, addit_args: addit_args},
                 success: function (data) {
                     $("#order_all-contents").html(data);
@@ -182,7 +182,7 @@ function render_popup(operation, args) {
 
     $.ajax({
         type: 'POST',
-        url: 'employee-home-popup-process.php',
+        url: 'staff-home-popup-process.php',
         data: {operation: operation, args: args},
         success: function (data) {
             $(".popup").html(data);
@@ -216,7 +216,7 @@ function do_something(operation, args) {
 
     $.ajax({
         type: 'POST',
-        url: 'employee-home-popup-process.php',
+        url: 'staff-home-popup-process.php',
         data: {operation: operation, args: args},
         success: function (data) {
             if(data.includes("failed")){

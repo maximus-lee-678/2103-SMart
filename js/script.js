@@ -76,7 +76,7 @@ function openCity(evt, cityName) {
 function populateFoodListNumber(){
         $.ajax({
         type: 'POST',
-        url: 'food-expiry-list-process.php',
+        url: 'expiry-list-process.php',
         data: {type: "expire_number"},
         success: function (data) {
             $('span[name="nav-expire-count"]').html(data);
@@ -85,16 +85,11 @@ function populateFoodListNumber(){
 }
 
 $(document).ready(function () {
-    if ((window.location.href).includes("ViewUserProfile.php") || (window.location.href).includes("Employee_Home.php") 
-            || (window.location.href).includes("orderHistory.php") || (window.location.href).includes("FoodExpiryList.php")) {
+    if ((window.location.href).includes("profile.php") || (window.location.href).includes("staff-home.php") 
+            || (window.location.href).includes("order-history.php") || (window.location.href).includes("expiry-list.php")) {
         document.getElementById("defaultOpen").click();
     }
     
     populateFoodListNumber();
 });
-
-// Get the element with id="defaultOpen" and click on it
-//if ((window.location.href).includes("Employee_Home.php")) {
-//     document.getElementById("defaultOpen").click();
-//}
 

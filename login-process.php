@@ -120,7 +120,7 @@ function authenticateUser() {
                     if ($_SESSION["staff"]) {
                         echo "<h2>Login successful!</h2>";
                         echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";
-                        echo "<meta http-equiv=\"refresh\" content=\"3;URL=Employee_Home.php\">";
+                        echo "<meta http-equiv=\"refresh\" content=\"3;URL=staff-home.php\">";
                     } else {
                         echo "<h2>Login successful!</h2>";
                         echo "<h4>Welcome back, ", $fname . " " . $lname . ".</h4>";

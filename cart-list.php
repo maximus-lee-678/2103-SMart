@@ -58,7 +58,7 @@ switch ($_POST["operation"]) {
             }
 
             echo '<h3 class="total"> total : <span>$' . number_format($total_cost, 2, '.', '') . '</span> </h3>
-                <a href="MyShoppingCart.php" class="btn">View My Cart</a>';
+                <a href="cart.php" class="btn">View My Cart</a>';
         } else {
             echo "<caption>Cart is empty!</caption>";
         }

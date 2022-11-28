@@ -16,12 +16,12 @@ session_start();
 
         <div class="heading">
             <h1>Cart</h1>
-            <p> <a href="ordersummary.php"> Order Summary >></a>Checkout</p>
+            <p> <a href="order-summary.php"> Order Summary >></a>Checkout</p>
         </div>
 
         <section class="myShoppingCart cartcontainer contact">                
             <div class="row">
-                <form action="eReceipt.php" class="register-form" method="post" name="myDeliveryDetails">
+                <form action="receipt.php" class="register-form" method="post" name="myDeliveryDetails">
                     <h3><img src="image/location.png" alt="location" class="iconsize">Delivery Address</h3>
                     <input type="hidden" id="address-id" name="address_id" value="">
                     <div style="margin-bottom: 20px; margin-top: 20px;">

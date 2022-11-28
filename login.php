@@ -16,7 +16,7 @@
 
                 <img src="image/loginpicture1.jpg" alt="Login and register Image" class="img1">
 
-                <form action="process_login.php" class="login-form" method="post" name="myLoginForm">
+                <form action="login-process.php" class="login-form" method="post" name="myLoginForm">
                     <h3>LOGIN FORM</h3>
 
                     <div class="inputBox" style="font-size: 1.4rem; color: #666;">

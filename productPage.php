@@ -44,7 +44,7 @@
 
                 $stmt->close();
 
-                $stmt = $conn->prepare("SELECT p.*, b.name as brand FROM Product_Test p LEFT JOIN Brand b on p.brand_id = b.id WHERE MATCH(p.name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? ORDER BY RAND() LIMIT 4;");
+                $stmt = $conn->prepare("SELECT p.*, b.name as brand FROM Product p LEFT JOIN Brand b on p.brand_id = b.id WHERE MATCH(p.name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? ORDER BY RAND() LIMIT 4;");
 
                 $stmt->bind_param("ss", $product_name, $category_id);
 
