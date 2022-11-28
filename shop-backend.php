@@ -21,10 +21,12 @@ function fetch_data($lastId, $category, $filter) {
         return "Connection failed: " . $conn->connect_error;
     } else {
         if (!$category) {
-            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 and name LIKE ? ORDER BY id LIMIT 20");
+            $stmt = $conn->prepare("SELECT * FROM Product WHERE id < ? and active = 1 and name LIKE ? ORDER BY id DESC LIMIT 20");
             $stmt->bind_param("is", $lastId, $filter);
         } else {
-            $stmt = $conn->prepare("SELECT * FROM Product WHERE id > ? and active = 1 and cat_id = ? and name LIKE ? ORDER BY id LIMIT 20");
+            $stmt = $conn->prepare("SELECT * FROM Product "
+                    . "WHERE id < ? and active = 1 and cat_id = ? and name LIKE ? "
+                    . "ORDER BY id DESC LIMIT 20");
             $stmt->bind_param("iss", $lastId, $category, $filter);
         }
         $stmt->execute();
@@ -41,7 +43,7 @@ function fetch_data($lastId, $category, $filter) {
 function display_data($displayData) {
     if (is_array($displayData)) {
         $output = "";
-        $lastId = 0;
+        $lastId = $displayData[0]['id'];
         foreach ($displayData as $data) {
             $output .= '<div class="box" id="' . $data['id'] . '">
                             <div class="icons">
@@ -57,7 +59,6 @@ function display_data($displayData) {
                             <div class="price">$' . $data['price'] . '</div>
                         </div>
                     </div>';
-            $lastId = $data['id'];
         }
 
         return json_encode(array("data" => $output, "lastId" => $lastId));

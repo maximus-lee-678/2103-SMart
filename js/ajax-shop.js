@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     let filter = "";
-    load_more_data(0);
+    load_more_data(999999);
 
     $(window).on('scroll', function () {
         let lastId = $('.product-list-tail').attr('id');
@@ -38,12 +38,13 @@ $(document).ready(function () {
             type: 'GET',
             url: 'shop-backend.php',
             data: {lastId: lastId, category: category, filter: filter},
-            success: function (response) {
+            success: function (response) {                
                 if(!response) 
-                    return console.log(response);                    
+                    return console.log(response);  
                 
+                console.log($.parseJSON(response)); 
                 var resObj = $.parseJSON(response);
-                if ($('.product-list-tail').attr('id') < resObj["lastId"]) {
+                if ($('.product-list-tail').attr('id') > resObj["lastId"]) {
                     $('#product-list').append(resObj["data"]);
                     $('.product-list-tail').attr('id', resObj["lastId"]);
                 }
