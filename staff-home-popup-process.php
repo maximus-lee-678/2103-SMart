@@ -879,7 +879,9 @@ switch ($operation) {
             array_push($args, sanitize_input($x));
         }
 
-        $query = 'UPDATE Product SET quantity = quantity + ?, last_restocked_at = NOW(), last_restocked_by = ? WHERE id = ?';
+        $query = 'UPDATE Product '
+                . 'SET quantity = quantity + ?, last_restocked_at = NOW(), last_restocked_by = ? '
+                . 'WHERE id = ?';
         $result = payload_deliver($conn, $query, "iii", $params = array($args[1], $staff_id, $args[0]));
 
         break;

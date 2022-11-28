@@ -617,7 +617,7 @@ switch ($operation) {
             print_search('Customer Address', $search, $printAdd = false);
 
             // 2.2.1. Get delivery available count, convert to number of pages
-            $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
+            $query1 = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
                     LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
@@ -643,7 +643,8 @@ switch ($operation) {
             $query = 'SELECT os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name, 
                     os.created_by AS staff_id, CONCAT(sta.first_name, " ", sta.last_name) AS staff_name, os.created_at, stat.name AS status_name
                     FROM Order_Status AS os
-                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
+                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) 
+                        AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
                     LEFT JOIN Customer AS c ON o.cust_id=c.id 
                     LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 

@@ -542,7 +542,6 @@ function updateAddress($data) {
         // 2.1. Make updates to corresponding [Customer_Address] row
         $queryFind = array('id' => (int) sanitize_input($_SESSION['id']), "address_info.address_id" => (int) $data["id"]);
         $queryUpdate = array('$set' => array('address_info.$.alias' => $data["alias"], 'address_info.$.address' => $data["address"], 'address_info.$.unit_no' => $data["unitno"], 'address_info.$.postal_code' => $data["postal"]));
-
         $db->Customer->updateOne($queryFind, $queryUpdate);
 
         return array("success" => true, "data" => $data['id']);

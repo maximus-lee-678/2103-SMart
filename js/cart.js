@@ -89,7 +89,7 @@ $(document).ready(function () {
                 if ((window.location.href).includes("recipe_details.php"))
                     update_cart({operation: "add-new", prod_id: $($(this).closest('.box')).attr('id')});
                 
-                if ((window.location.href).includes("productPage.php"))
+                if ((window.location.href).includes("product.php"))
                     update_cart({operation: "add-new", prod_id: $(document).find('.title').attr('id')});
             }
         } else {

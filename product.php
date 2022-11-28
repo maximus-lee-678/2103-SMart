@@ -44,8 +44,10 @@
 
                 $stmt->close();
 
-                $stmt = $conn->prepare("SELECT p.*, b.name as brand FROM Product p LEFT JOIN Brand b on p.brand_id = b.id WHERE MATCH(p.name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? ORDER BY RAND() LIMIT 4;");
-
+                $stmt = $conn->prepare("SELECT p.*, b.name as brand FROM Product p "
+                        . "LEFT JOIN Brand b on p.brand_id = b.id "
+                        . "WHERE MATCH(p.name) AGAINST (? IN NATURAL LANGUAGE MODE) AND cat_id = ? "
+                        . "ORDER BY RAND() LIMIT 4;");
                 $stmt->bind_param("ss", $product_name, $category_id);
 
                 if (!$stmt->execute()) {
@@ -58,6 +60,14 @@
         }
     }
     $conn->close();
+
+    $db = make_mongo_connection();
+    $queryMatch = array('$match' => array("prod_id" => (int) $product_id));
+    $queryGroup = array('$group' => array("_id" => null, "avg_rating" => array('$avg' => '$rating')));
+    $resultRate = $db->Review->aggregate(array($queryMatch, $queryGroup))->toArray()[0];
+
+    $rating = $resultRate["avg_rating"];
+    $ratingFlr = floor($rating)
     ?>    
     <body>
         <!-- header section starts  -->
@@ -78,12 +88,16 @@
                 <div class="infobox">
                     <h2><?php echo $category_name; ?></h2> <!--Category-->
                     <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
+                        <?php
+                        for ($i = 0; $i < $ratingFlr; $i++) {
+                            echo "<i class='fas fa-star'></i>";
+                        }
+                        for ($i = 0; $i < (5 - $ratingFlr); $i++) {
+                            echo "<i class='far fa-star'></i>";
+                        }
+                        ?>
                     </div>
+                    <h4><?= number_format((float) $rating, 1, '.', ''); ?> / 5</h4>
                     <h3>$<?php echo number_format($price, 2, '.', ''); ?></h3> <!--Price-->
                     <p class="mart"><?php echo $supermarket_name; ?></p> <!--Supermarket-->
                     <h4>
@@ -134,8 +148,6 @@
             <!--BOX-1-------------->
             <div class="rateReview-box-container">
                 <?php
-                $db = make_mongo_connection();
-
                 $queryMatch = array('$match' => array("prod_id" => (int) $product_id));
                 $queryLookup = array('$lookup' => array("from" => "Customer", "localField" => "cust_id", "foreignField" => "id", "as" => "cust"));
                 $result = $db->Review->aggregate(array($queryMatch, $queryLookup))->toArray();

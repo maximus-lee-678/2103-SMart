@@ -60,16 +60,24 @@ echo $is_Staff;
                 <a href="profile.php" class="btn">My Profile</a>
             </div>
             <?php
-            if ($is_LoggedIn && !$is_Staff) {
-                ?>
-                <div class = "inputBox">
-                    <a href = "expiry-list.php" class = "btn">My Food List <span name="nav-expire-count" style="border-radius: 50%; background-color: red; color: white; padding: 5px; top: -10px; right: -10px; margin-left: 5px;">0</span></a>
-                </div>
+            if ($is_LoggedIn) {
+                if ($is_Staff) {
+                    ?>
+                    <div class = "inputBox">
+                        <a href = "staff-home.php" class = "btn">Dashboard<span name="nav-expire-count" style="border-radius: 50%; background-color: red; color: white; padding: 5px; top: -10px; right: -10px; margin-left: 5px;">0</span></a>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class = "inputBox">
+                        <a href = "expiry-list.php" class = "btn">My Food List <span name="nav-expire-count" style="border-radius: 50%; background-color: red; color: white; padding: 5px; top: -10px; right: -10px; margin-left: 5px;">0</span></a>
+                    </div>
 
-                <div class = "inputBox">
-                    <a href = "order-history.php" class = "btn">Purchased History</a>
-                </div>
-                <?php
+                    <div class = "inputBox">
+                        <a href = "order-history.php" class = "btn">Purchased History</a>
+                    </div>
+                    <?php
+                }
             }
             ?>
 

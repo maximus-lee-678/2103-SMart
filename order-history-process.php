@@ -121,7 +121,7 @@ foreach ($cust_orders as $cust_orders_row) {
     while ($row = mysqli_fetch_assoc($result)) {
         echo '<tr id="cartid_' . $row["prod_id"] . '">
                         <td><img src="' . $row["image_url"] . '" alt="' . $row["name"] . '" width="64" height="64"></td>
-                        <td><a href="productPage.php?id=' . $row["prod_id"] . '">Product Page</a></td>
+                        <td><a href="product.php?id=' . $row["prod_id"] . '">Product Page</a></td>
                         <td>' . $row["name"] . '</td>
                         <td>' . $row["quantity"] . '</td>
                         <td>$' . $row["price"] . '</td>

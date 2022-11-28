@@ -177,6 +177,20 @@ function checkIfUnique() {
         $errorMsg .= "Email already exist";
         $success = false;
     }
+    
+    $conn = make_connection();
+    $queryStaff = "SELECT id FROM Staff WHERE email=?";
+    $resultStaff = payload_deliver($conn, $queryStaff, "s", $params = array($email));
+    $rowCountStaff = $resultStaff->num_rows;
+    if ($rowCountStaff > 0) {
+        $row = $resultStaff->fetch_assoc();
+        if ($row['id'] != $_SESSION['id']) {
+            $errorMsg .= "This email is already registered";
+            $success = false;
+        }
+    }
+
+    $conn->close();
 
 }
 ?>
