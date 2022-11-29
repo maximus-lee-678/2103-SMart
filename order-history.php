@@ -31,7 +31,7 @@ include "helper-functions.php";
                 <button class="tablinks" onclick="openCity(event, 'complete')">Complete</button>
             </div>
 
-            
+
             <div id="pack" class="tabcontent2">
                 <!--if got purchase history-->
                 <div class="wrapper">  
@@ -49,6 +49,7 @@ include "helper-functions.php";
                     <!-- Accordion Starts Here -->
                     <div class="acc-container">
                         <div class="accordion" type="deliver">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,11 +60,12 @@ include "helper-functions.php";
                     <!-- Accordion Starts Here -->
                     <div class="acc-container">
                         <div class="accordion" type="complete">
+                        </div>
                     </div>
                 </div>
-            </div>
-                
+
         </section>
+        
         <?php include "footer.php"; ?>
 
     </body>

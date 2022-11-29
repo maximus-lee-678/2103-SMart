@@ -8,7 +8,15 @@ echo $is_Staff;
 
 <header class="header">
 
-    <a href="" class="logo"> <i class="fas fa-shopping-basket"></i> S-Mart </a>
+    <?php
+    if (!$is_Staff) {
+        ?>
+        <a href="home.php" class="logo"> <i class="fas fa-shopping-basket"></i> S-Mart </a>
+        <?php
+    } else {
+        ?> <a href="staff-home.php"><i class="fas fa-shopping-basket"></i> S-Mart </a> <?php
+    }
+    ?>
 
     <nav class="navbar">
         <?php

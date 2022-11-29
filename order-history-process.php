@@ -54,7 +54,7 @@ $total_pages = $row["total_pages"];
 print_page($page, $total_pages);
 
 // 3. Get all orders for respective category
-$query = 'SELECT o.id, o.created_at, s.name AS status, o.subtotal, o.service_charge, o.delivery_charge FROM SMart.Order AS o
+$query = 'SELECT o.id, o.created_at, s.name AS status, o.subtotal, o.service_charge, o.delivery_charge, o.has_reviewed FROM SMart.Order AS o
         LEFT JOIN Order_Status AS os ON o.id=os.order_id
         INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id
         AND ' . $status_strings[$type] . '
@@ -93,7 +93,9 @@ foreach ($cust_orders as $cust_orders_row) {
                         <td>Order ID: ' . $cust_orders_row["id"] . '</td>
                         <td>Order Status: ' . $cust_orders_row["status"] . '</td>
                         <td>Purchased Date/Time: ' . $cust_orders_row["created_at"] . '</td>
-                        ' . ($type == 'complete'?'<td><span><a href="productReview.php">Review</a></span></td>':'') . '
+                        ' . ($type == 'complete' ? ($cust_orders_row["has_reviewed"] != 1 ?
+                        '<td><span><a href="#" class="review-button" order_id="' . $cust_orders_row["id"] . '">Review</a></span></td>' : '<td><span>Reviewed</span></td>') :
+                        '') . '
                     </tr>
                 </table>
                 <span></span>';

@@ -20,7 +20,6 @@
                 <a href="order-history.php"> <i class="fas fa-arrow-right"></i> order history </a>
                 <a href="cart.php"> <i class="fas fa-arrow-right"></i> my cart </a>
                 <a href="profile.php"> <i class="fas fa-arrow-right"></i> my account </a>
-                <a href="productReview.php"> <i class="fas fa-arrow-right"></i> product review </a>
             </div>
             <?php
         } else {
@@ -30,7 +29,6 @@
                 <a href="login.php"> <i class="fas fa-arrow-right"></i> order history </a>
                 <a href="login.php"> <i class="fas fa-arrow-right"></i> my favorite </a>
                 <a href="login.php"> <i class="fas fa-arrow-right"></i> my account </a>
-                <a href="productReview.php"> <i class="fas fa-arrow-right"></i> product review </a>
             </div>
             <?php
         }

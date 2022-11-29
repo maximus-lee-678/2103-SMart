@@ -3,6 +3,11 @@ session_start();
 
 include "helper-functions.php";
 
+if (!isset($_SESSION["id"])) {
+    header("refresh: 0; url=home.php");
+    exit();
+}
+
 //[FUNCTIONS]///////////////////////////////////////////////////////////////////////////////////////
 function get_staff_role() {
 

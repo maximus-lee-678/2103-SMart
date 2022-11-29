@@ -178,5 +178,3 @@ switch ($_POST["operation"]) {
 }
 
 $conn->close();
-
-echo "<caption>" . $captionText . "</caption>";

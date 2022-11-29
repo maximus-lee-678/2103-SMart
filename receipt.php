@@ -46,7 +46,7 @@ function checkout($cust_id, $address_id, $payment_id) {
     }
 
     // 2. Create row in [Order]
-    $query = 'INSERT INTO SMart.Order(cust_id, address_id, payment_id, created_at, subtotal, service_charge, delivery_charge) 
+    $query = 'INSERT INTO SMart.Order(cust_id, address_id, payment_id, created_at, subtotal, service_charge, delivery_charge, has_reviewed) 
             VALUES 
             (?, 
             ?, 
@@ -54,8 +54,8 @@ function checkout($cust_id, $address_id, $payment_id) {
             NOW(), 
             (SELECT SUM(c.quantity * p.price) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
             (SELECT ROUND(?*SUM(c.quantity * p.price), 2) AS subtotal FROM Cart as c INNER JOIN Product as p ON c.prod_id = p.id WHERE c.cust_id = ?),
-            ?
-            )';
+            ?,
+            0)';
     payload_deliver($conn, $query, "iiiidii", $params = array($cust_id, $address_id, $payment_id, $cust_id, $service_charge_multiplier, $cust_id, $delivery_charge_actual));
 
     // Store ID of newly created [Order] entry
