@@ -53,11 +53,12 @@ function authenticateUser() {
     
     // Prepare the statement:        
     $query = array("email" => $email);
-    $result = $db->Customer->find($query)->toArray()[0];
+    $result = $db->Customer->find($query)->toArray();
     
     if (!empty($result)) {
         // Note that email field is unique, so should only have            
-        // one row in the result set.   
+        // one row in the result set.  
+        $result = $result[0];
         $fname = $result["first_name"];
         $lname = $result["last_name"];
         $pwd_hashed = $result["password"];

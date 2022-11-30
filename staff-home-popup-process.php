@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 include "helper-functions.php";
 include "helper-profile.php";
 
@@ -44,6 +46,8 @@ $operation = sanitize_input($_POST["operation"]);
 $staff_id = sanitize_input($_SESSION["id"]);
 
 $conn = make_connection();
+
+$db = make_mongo_connection();
 
 switch ($operation) {
     case "staff-edit-staging":
@@ -895,11 +899,14 @@ switch ($operation) {
         print_header("Viewing Packing List for Order", $id);
 
         // 1. Get customer details for specified order id
-        $query = 'SELECT CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name FROM SMart.Order AS o
-                LEFT JOIN Customer AS c ON o.cust_id=c.id
-                LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id
-                WHERE o.id = ?';
+        $query = 'SELECT cust_id, address_id FROM SMart.Order WHERE id = ?';
         $result = payload_deliver($conn, $query, "i", $params = array($id));
+
+        $row = mysqli_fetch_assoc($result);
+
+        $queryFind = array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]);
+        $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+        $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray()[0];
 
         // Print Table Headers (1)
         echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
@@ -908,11 +915,9 @@ switch ($operation) {
                     <th>Customer Name</th>
                 </tr>';
 
-        $row = mysqli_fetch_assoc($result);
-
         echo '<tr style="text-align: center;"">
-            <td>' . $row["cust_address"] . '</td>
-            <td>' . $row["cust_name"] . '</td>
+            <td>' . $resultCust["address_info"][0]["address"] . ", " . $resultCust["address_info"][0]["unit_no"] . ", " . $resultCust["address_info"][0]["postal_code"] . '</td>
+            <td>' . $resultCust["first_name"] . " " . $resultCust["last_name"] . '</td>
         </tr>';
 
         echo '</table>
@@ -989,11 +994,14 @@ switch ($operation) {
         print_header("Viewing Delivery List for Order", $id);
 
         // 1. Get customer details for specified order id
-        $query = 'SELECT CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name FROM SMart.Order AS o
-                LEFT JOIN Customer AS c ON o.cust_id=c.id
-                LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id
-                WHERE o.id = ?';
+        $query = 'SELECT cust_id, address_id FROM SMart.Order WHERE id = ?';
         $result = payload_deliver($conn, $query, "i", $params = array($id));
+
+        $row = mysqli_fetch_assoc($result);
+
+        $queryFind = array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]);
+        $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+        $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray()[0];
 
         // Print Table Headers (1)
         echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
@@ -1005,8 +1013,8 @@ switch ($operation) {
         $row = mysqli_fetch_assoc($result);
 
         echo '<tr style="text-align: center;"">
-            <td>' . $row["cust_address"] . '</td>
-            <td>' . $row["cust_name"] . '</td>
+            <td>' . $resultCust["address_info"][0]["address"] . ", " . $resultCust["address_info"][0]["unit_no"] . ", " . $resultCust["address_info"][0]["postal_code"] . '</td>
+            <td>' . $resultCust["first_name"] . " " . $resultCust["last_name"] . '</td>
         </tr>';
 
         echo '</table>
@@ -1084,12 +1092,14 @@ switch ($operation) {
         print_header("Viewing ALL Statuses for Order", $id);
 
         // 1. Get customer details for specified order id
-        $query = 'SELECT CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name FROM SMart.Order AS o
-                LEFT JOIN Customer AS c ON o.cust_id=c.id
-                LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id
-                WHERE o.id = ?';
+        $query = 'SELECT cust_id, address_id FROM SMart.Order WHERE id = ?';
         $result = payload_deliver($conn, $query, "i", $params = array($id));
 
+        $row = mysqli_fetch_assoc($result);
+
+        $queryFind = array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]);
+        $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+        $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray()[0];
         // Print Table Headers (1)
         echo '<table class="carttable" style="font-size: 1.4rem; margin-top: 30px;">
                 <tr style="text-align: center; background: #6D6875; color: white;">
@@ -1100,8 +1110,8 @@ switch ($operation) {
         $row = mysqli_fetch_assoc($result);
 
         echo '<tr style="text-align: center;"">
-            <td>' . $row["cust_address"] . '</td>
-            <td>' . $row["cust_name"] . '</td>
+            <td>' . $resultCust["address_info"][0]["address"] . ", " . $resultCust["address_info"][0]["unit_no"] . ", " . $resultCust["address_info"][0]["postal_code"] . '</td>
+            <td>' . $resultCust["first_name"] . " " . $resultCust["last_name"] . '</td>
         </tr>';
 
         echo '</table>
@@ -1166,13 +1176,14 @@ switch ($operation) {
         print_header("Viewing Order Details for Order", $id);
 
         // 1. Get customer details for specified order id
-        $query = 'SELECT CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name,
-                o.created_at, cp.payment_type, o.subtotal, o.service_charge, o.delivery_charge, (o.subtotal + o.service_charge + o.delivery_charge) AS total_charge FROM SMart.Order AS o
-                LEFT JOIN Customer AS c ON o.cust_id=c.id
-                LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id
-                LEFT JOIN Customer_Payment AS cp ON o.payment_id=cp.id
-                WHERE o.id = ?';
+        $query = 'SELECT * FROM SMart.Order WHERE id = ?';
         $result = payload_deliver($conn, $query, "i", $params = array($id));
+
+        $row = mysqli_fetch_assoc($result);
+
+        $queryFind = array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]);
+        $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+        $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray()[0];
 
         // Print Table Headers (1)
         echo '<h4>Customer Details: </h4>
@@ -1186,8 +1197,8 @@ switch ($operation) {
         $row = mysqli_fetch_assoc($result);
 
         echo '<tr style="text-align: center;"">
-            <td>' . $row["cust_address"] . '</td>
-            <td>' . $row["cust_name"] . '</td>
+            <td>' . $resultCust["address_info"][0]["address"] . ", " . $resultCust["address_info"][0]["unit_no"] . ", " . $resultCust["address_info"][0]["postal_code"] . '</td>
+            <td>' . $resultCust["first_name"] . " " . $resultCust["last_name"] . '</td>
             <td>' . $row["created_at"] . '</td>
         </tr>';
 

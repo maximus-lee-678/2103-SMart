@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 include "helper-functions.php";
 
 //[FUNCTIONS]///////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ if (!isset($_POST["operation"])) {
 $operation = sanitize_input($_POST["operation"]);
 
 $conn = make_connection();
+$db = make_mongo_connection();
 
 // Form Parameters
 $page = sanitize_input($_POST["page"]);
@@ -398,17 +400,18 @@ switch ($operation) {
 
         if ($result->num_rows == 1) {
             // 2.1.1. Found claimed packing task, load info
-            $query = 'SELECT os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name FROM Order_Status AS os 
+            $query = 'SELECT os.order_id, o.cust_id, o.address_id FROM Order_Status AS os 
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 2 AND os.created_by = ?
-                    LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer AS c ON o.cust_id=c.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id';
+                    LEFT JOIN SMart.Order AS o ON os.order_id=o.id';
             $result = payload_deliver($conn, $query, "i", $params = array($staff_id));
 
             $row = mysqli_fetch_assoc($result);
 
             //Store order ID
             $order_id = $row["order_id"];
+
+            // Get Customer
+            $mongo = $db->Customer->find(array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]))->toArray()[0];
 
             // Print Table Headers (1)
             echo '<h4>Your Task (ID <span class="popup-id">' . $order_id . '</span>): </h4>
@@ -422,8 +425,8 @@ switch ($operation) {
             // Print table rows (1)
             echo '<tr style="text-align: center; operation="pack" pack_id="' . $row["order_id"] . '"">
                   <td>' . $row["order_id"] . '</td>
-                    <td>' . $row["cust_address"] . '</td>
-                    <td>' . $row["cust_name"] . '</td>  
+                    <td>' . $mongo["address_info"][0]["address"] . ", " . $mongo["address_info"][0]["unit_no"] . ", " . $mongo["address_info"][0]["postal_code"] . '</td>
+                    <td>' . $mongo["first_name"] . " " . $mongo["last_name"] . '</td>  
                 </tr>';
 
             echo '</table>';
@@ -460,8 +463,7 @@ switch ($operation) {
                         <td>' . $row["quantity"] . '</td>
                     </tr>';
             }
-            echo '</table>
-                
+            echo '</table>                
             <div class="inputBox" style="margin-top: 40px;">
                 <input type="button" style="width: 100%" operation="packed-edit-commit" class="btn" name="confirm-button" value="Complete Packing Task">
             </div>';
@@ -469,16 +471,24 @@ switch ($operation) {
 
             print_search('Customer Address', $search, $printAdd = false);
 
+            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+            $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+            $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
+
+            $custArr = array();
+            foreach ($resultCust as $rs) {
+                array_push($custArr, "'" . $rs["id"] . "-" . $rs["address_info"][0]["address_id"] . "'");
+            }
+            $custStr = join(",", $custArr);
+
             // 2.2.1. Get pack available count, convert to number of pages
-            $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
+            $query = "SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 1
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
-                    AND CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ?';
+                    WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ")";
 
-            // Prepare the statement:
-            $stmt = $conn->prepare($query);
-            $result = payload_deliver($conn, $query, "is", $params = array($limit, $search_with_wildcard));
+            // Prepare the statement:            
+            $result = payload_deliver($conn, $query, "i", $params = array($limit));
 
             $row = mysqli_fetch_assoc($result);
             $total_pages = $row["total_pages"];
@@ -496,40 +506,46 @@ switch ($operation) {
                 </tr>';
 
             // 2.2.2 Load available tasks
-            $query = 'SELECT os.id, os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name, 
-                    os.created_by AS staff_id, CONCAT(sta.first_name, " ", sta.last_name) AS staff_name, os.created_at, stat.name AS status_name
+            $query = "SELECT os.id, os.order_id, o.cust_id, o.address_id,
+                    os.created_by AS staff_id, CONCAT(sta.first_name, ' ', sta.last_name) AS staff_name, os.created_at, stat.name AS status_name
                     FROM Order_Status AS os
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 1
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer AS c ON o.cust_id=c.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
                     LEFT JOIN Status AS stat ON os.status_id=stat.id 
                     LEFT JOIN Staff AS sta ON os.created_by=sta.id
-                    WHERE CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ? LIMIT ? OFFSET ?';
+                    WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ") LIMIT ? OFFSET ?";
 
-            // Prepare the statement:
-            $stmt = $conn->prepare($query);
-            $result = payload_deliver($conn, $query, "sii", $params = array($search_with_wildcard, $limit, $offset));
+            // Prepare the statement:            
+            $result1 = payload_deliver($conn, $query, "ii", $params = array($limit, $offset));
 
             // No rows
-            if ($result->num_rows == 0) {
+            if ($result1->num_rows == 0) {
                 echo '<tr style="text-align: center;">
-                <td colspan="11">No results!</td>
+                <td colspan="11">No results! </td>
                 </tr>';
             }
             // Print table rows
             else {
-                while ($row = mysqli_fetch_assoc($result)) {
+                while ($row = mysqli_fetch_assoc($result1)) {
+                    $custAddress = "";
+                    $custName = "";
+                    foreach ($resultCust as $rs) {
+
+                        if ($row["cust_id"] == $rs["id"] && $row["address_id"] == $rs["address_info"][0]["address_id"]) {
+                            $custAddress = $rs["address_info"][0]["address"] . ", " . $rs["address_info"][0]["unit_no"] . ", " . $rs["address_info"][0]["postal_code"];
+                            $custName = $rs["first_name"] . " " . $rs["last_name"];
+                            break;
+                        }
+                    }
                     echo '<tr style="text-align: center;" operation="pack" pack_id="' . $row["order_id"] . '">
                     <td>' . $row["order_id"] . '</td>
-                    <td>' . $row["cust_address"] . '</td>
-                    <td>' . $row["cust_name"] . '</td>
+                    <td>' . $custAddress . '</td>
+                    <td>' . $custName . '</td>
                     <td>' . $row["status_name"] . '</td> 
                     <td><a href="#" class="edit" style="color: #bac34e;">View Details</a></td>
                 </tr>';
                 }
             }
-
             echo '</table>';
         }
 
@@ -545,17 +561,18 @@ switch ($operation) {
 
         if ($result->num_rows == 1) {
             // 2.1.1. Found claimed delivery task, load info
-            $query = 'SELECT os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name FROM Order_Status AS os 
+            $query = 'SELECT os.order_id, o.cust_id, o.address_id FROM Order_Status AS os 
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 4 AND os.created_by = ?
-                    LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer AS c ON o.cust_id=c.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id';
+                    LEFT JOIN SMart.Order AS o ON os.order_id=o.id';
             $result = payload_deliver($conn, $query, "i", $params = array($staff_id));
 
             $row = mysqli_fetch_assoc($result);
 
             //Store order ID
             $order_id = $row["order_id"];
+
+            // Get Customer
+            $mongo = $db->Customer->find(array("id" => (int) $row["cust_id"], "address_info.address_id" => (int) $row["address_id"]))->toArray()[0];
 
             // Print Table Headers (1)
             echo '<h4>Your Task (ID <span class="popup-id">' . $order_id . '</span>): </h4>
@@ -569,8 +586,8 @@ switch ($operation) {
             // Print table rows (1)
             echo '<tr style="text-align: center; operation="pack" pack_id="' . $row["order_id"] . '"">
                   <td>' . $row["order_id"] . '</td>
-                    <td>' . $row["cust_address"] . '</td>
-                    <td>' . $row["cust_name"] . '</td>  
+                    <td>' . $mongo["address_info"][0]["address"] . ", " . $mongo["address_info"][0]["unit_no"] . ", " . $mongo["address_info"][0]["postal_code"] . '</td>
+                    <td>' . $mongo["first_name"] . " " . $mongo["last_name"] . '</td>  
                 </tr>';
 
             echo '</table>';
@@ -616,13 +633,22 @@ switch ($operation) {
 
             print_search('Customer Address', $search, $printAdd = false);
 
+            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+            $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+            $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
+
+            $custArr = array();
+            foreach ($resultCust as $rs) {
+                array_push($custArr, "'" . $rs["id"] . "-" . $rs["address_info"][0]["address_id"] . "'");
+            }
+            $custStr = join(",", $custArr);
+
             // 2.2.1. Get delivery available count, convert to number of pages
-            $query1 = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
+            $query = "SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
                     INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
-                    AND CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ?';
-            $result = payload_deliver($conn, $query, "is", $params = array($limit, $search_with_wildcard));
+                    WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ")";
+            $result = payload_deliver($conn, $query, "i", $params = array($limit));
 
             $row = mysqli_fetch_assoc($result);
             $total_pages = $row["total_pages"];
@@ -640,18 +666,15 @@ switch ($operation) {
                 </tr>';
 
             // 2.2.2 Load available tasks
-            $query = 'SELECT os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name, 
-                    os.created_by AS staff_id, CONCAT(sta.first_name, " ", sta.last_name) AS staff_name, os.created_at, stat.name AS status_name
+            $query = "SELECT os.id, os.order_id, o.cust_id, o.address_id,
+                    os.created_by AS staff_id, CONCAT(sta.first_name, ' ', sta.last_name) AS staff_name, os.created_at, stat.name AS status_name
                     FROM Order_Status AS os
-                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) 
-                        AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
+                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id AND os.status_id = 3
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer AS c ON o.cust_id=c.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
                     LEFT JOIN Status AS stat ON os.status_id=stat.id 
                     LEFT JOIN Staff AS sta ON os.created_by=sta.id
-                    WHERE CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ? LIMIT ? OFFSET ?';
-            $result = payload_deliver($conn, $query, "sii", $params = array($search_with_wildcard, $limit, $offset));
+                    WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ") LIMIT ? OFFSET ?";
+            $result = payload_deliver($conn, $query, "ii", $params = array($limit, $offset));
 
             // No rows
             if ($result->num_rows == 0) {
@@ -662,10 +685,20 @@ switch ($operation) {
             // Print table rows
             else {
                 while ($row = mysqli_fetch_assoc($result)) {
+                    $custAddress = "";
+                    $custName = "";
+                    foreach ($resultCust as $rs) {
+
+                        if ($row["cust_id"] == $rs["id"] && $row["address_id"] == $rs["address_info"][0]["address_id"]) {
+                            $custAddress = $rs["address_info"][0]["address"] . ", " . $rs["address_info"][0]["unit_no"] . ", " . $rs["address_info"][0]["postal_code"];
+                            $custName = $rs["first_name"] . " " . $rs["last_name"];
+                            break;
+                        }
+                    }
                     echo '<tr style="text-align: center;" operation="delivery" delivery_id="' . $row["order_id"] . '">
                     <td>' . $row["order_id"] . '</td>
-                    <td>' . $row["cust_address"] . '</td>
-                    <td>' . $row["cust_name"] . '</td>
+                    <td>' . $custAddress . '</td>
+                    <td>' . $custName . '</td>
                     <td>' . $row["status_name"] . '</td> 
                     <td><a href="#" class="edit" style="color: #bac34e;">View Details</a></td>
                 </tr>';
@@ -697,18 +730,25 @@ switch ($operation) {
                 </div>
             </div>';
 
-        print_search('Customer Address', $search, $printAdd = false);
+        $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+        $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
+        $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
+
+        $custArr = array();
+        foreach ($resultCust as $rs) {
+            array_push($custArr, "'" . $rs["id"] . "-" . $rs["address_info"][0]["address_id"] . "'");
+        }
+        $custStr = join(",", $custArr);
 
         // 1. Get order status count, convert to number of pages
-        $query = 'SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
-                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id' . (($addit_args != 0) ? ' AND os.status_id = ?' : '') . '
+        $query = "SELECT CEILING(COUNT(*)/?) AS total_pages FROM Order_Status AS os
+                    INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id" . (($addit_args != 0) ? " AND os.status_id = ?" : "") . "
                     LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                    LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
-                    AND CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ?';
+                    WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ")";
         if ($addit_args == 0) {
-            $result = payload_deliver($conn, $query, "is", $params = array($limit, $search_with_wildcard));
+            $result = payload_deliver($conn, $query, "i", $params = array($limit));
         } else {
-            $result = payload_deliver($conn, $query, "iis", $params = array($limit, $addit_args, $search_with_wildcard));
+            $result = payload_deliver($conn, $query, "ii", $params = array($limit, $addit_args));
         }
 
         $row = mysqli_fetch_assoc($result);
@@ -731,20 +771,18 @@ switch ($operation) {
                 </tr>';
 
         // 2. Get order status
-        $query = 'SELECT os.id, os.order_id, CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) AS cust_address, CONCAT(c.first_name, " ", c.last_name) AS cust_name, 
-                os.created_by AS staff_id, CONCAT(sta.first_name, " ", sta.last_name) AS staff_name, os.created_at, stat.id AS status_id, stat.name AS status_name
+        $query = "SELECT os.id, os.order_id, o.cust_id, o.address_id,
+                os.created_by AS staff_id, CONCAT(sta.first_name, ' ', sta.last_name) AS staff_name, os.created_at, stat.id AS status_id, stat.name AS status_name
                 FROM Order_Status AS os
-                INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id' . (($addit_args != 0) ? ' AND os.status_id = ?' : '') . '
+                INNER JOIN (SELECT order_id, MAX(status_id) AS status_id FROM Order_Status GROUP BY order_id) AS os2 ON os.order_id = os2.order_id AND os.status_id = os2.status_id" . (($addit_args != 0) ? " AND os.status_id = ?" : "") . "
                 LEFT JOIN SMart.Order AS o ON os.order_id=o.id 
-                LEFT JOIN Customer AS c ON o.cust_id=c.id 
-                LEFT JOIN Customer_Address AS ca ON o.address_id=ca.id 
                 LEFT JOIN Status AS stat ON os.status_id=stat.id 
                 LEFT JOIN Staff AS sta ON os.created_by=sta.id
-                WHERE CONCAT(ca.address, ", ", ca.unit_no, ", ", ca.postal_code) LIKE ? ORDER BY os.status_id ASC LIMIT ? OFFSET ?';
+                WHERE CONCAT(o.cust_id, '-', o.address_id) IN (" . $custStr . ") LIMIT ? OFFSET ?";
         if ($addit_args == 0) {
-            $result = payload_deliver($conn, $query, "sii", $params = array($search_with_wildcard, $limit, $offset));
+            $result = payload_deliver($conn, $query, "ii", $params = array($limit, $offset));
         } else {
-            $result = payload_deliver($conn, $query, "isii", $params = array($addit_args, $search_with_wildcard, $limit, $offset));
+            $result = payload_deliver($conn, $query, "iii", $params = array($addit_args, $limit, $offset));
         }
 
         // No rows
@@ -756,11 +794,21 @@ switch ($operation) {
         // Print table rows
         else {
             while ($row = mysqli_fetch_assoc($result)) {
+                $custAddress = "";
+                $custName = "";
+                foreach ($resultCust as $rs) {
+
+                    if ($row["cust_id"] == $rs["id"] && $row["address_id"] == $rs["address_info"][0]["address_id"]) {
+                        $custAddress = $rs["address_info"][0]["address"] . ", " . $rs["address_info"][0]["unit_no"] . ", " . $rs["address_info"][0]["postal_code"];
+                        $custName = $rs["first_name"] . " " . $rs["last_name"];
+                        break;
+                    }
+                }
                 echo '<tr style="text-align: center;" operation="order_all" order_all_id="' . $row["order_id"] . '">
                         <td>' . $row["id"] . '</td>
                         <td>' . $row["order_id"] . '</td>
-                        <td>' . $row["cust_address"] . '</td>
-                        <td>' . $row["cust_name"] . '</td>
+                        <td>' . $custAddress . '</td>
+                        <td>' . $custName . '</td>
                         <td>' . $row["staff_id"] . '</td>
                         <td>' . $row["staff_name"] . '</td>
                         <td>' . $row["created_at"] . '</td>
