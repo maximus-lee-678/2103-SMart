@@ -44,12 +44,15 @@ $(".rating-component .stars-box .star").on("click", function () {
 
 // Attempt to submit review
 $(".done").on("click", function () {
-    var reviews = {};
+    var reviews = [];
     var flag = true;
 
     var count = 0;
+    var order_id = $('.order_id').attr("order_id");
+    
     $('.ratingReview').each(function () {
-        reviews[count] = {"prod_id": $(this).attr("prod_id"), "stars": "", "comment": ""};
+        review = {"prod_id": $(this).attr("prod_id")}; 
+        reviews.push(review)
         count++;
     });
 
@@ -59,27 +62,26 @@ $(".done").on("click", function () {
             alert("No rating given for " + $(this).parent().parent().find(".prodDetails").children().html() + "!");
             flag = false;
         }
-
-        reviews[count].stars = $(this).attr("value");
+        
+        reviews[count]['stars'] = $(this).attr("value");
+        
         count++;
     });
 
     if (!flag) {
         return;
     }
-
+    
     count = 0;
     $('input[name="comment"]').each(function () {
-        reviews[count].comment = $(this).val();
+        reviews[count]["comment"] = $(this).val();
         count++;
-    });
+    });    
     
-    console.log(reviews);
-
     $.ajax({
         type: 'POST',
         url: 'review-process.php',
-        data: reviews,
+        data: {order_id: order_id, reviews: reviews},
         success: function () {
             // hide form stuff, show load bar
             $(".rating-component").hide();

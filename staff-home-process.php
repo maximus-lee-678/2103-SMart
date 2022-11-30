@@ -471,7 +471,7 @@ switch ($operation) {
 
             print_search('Customer Address', $search, $printAdd = false);
 
-            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex($search));
             $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
             $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
 
@@ -633,7 +633,7 @@ switch ($operation) {
 
             print_search('Customer Address', $search, $printAdd = false);
 
-            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+            $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex($search));
             $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
             $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
 
@@ -729,8 +729,10 @@ switch ($operation) {
                     </select>
                 </div>
             </div>';
+        
+        print_search('Customer Address', $search, $printAdd = false);
 
-        $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex(""));
+        $queryFind = array("address_info.address" => new \MongoDB\BSON\Regex($search));
         $queryProj = array("projection" => array("id" => 1, "last_name" => 1, "first_name" => 1, "address_info.$" => 1));
         $resultCust = $db->Customer->find($queryFind, $queryProj)->toArray();
 

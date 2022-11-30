@@ -57,6 +57,7 @@ $conn->close();
         </div>
 
         <section class="products">
+            <div hidden class='order_id' order_id='<?=$order_id?>'></div>
             <h1 class="title"> product <span>review</span> </h1>
 
             <?php
