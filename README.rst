@@ -1,6 +1,9 @@
 🛒 SMart
 =========
 | A PHP-based website that aggregates available products from various supermarkets.
+| It uses a Business to Consumers (B2C) platform, wherein an online retailer sells its products directly to consumers. 
+| This application allows consumers to place orders on items offered by four different supermarkets.
+|
 | Originally named **2103-SMart**, this project was created to review the theories and principles covered in our Database Management module.  
 
 👥 Team Members
